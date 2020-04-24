@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="UPA002_CHB"
+            corporation_id="cardif"
+            code="UPA002"
+            name="法國巴黎人壽一年定期意外傷害保險附約"
+            name_abbr="一年定期意外傷害保險附約"
+            unit="10000"
+            type_code="thunder"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            quantity="1"
+            input="amount"
+            premium="PREMIUM_VALUE"
+            is_main="no"
+            is_rider="yes"
+            last_modify_date="2017-01-01">
+
+        <param>
+            <pay_freq>
+                <item code="parent" />
+            </pay_freq>
+            <pay>
+                <item code="parent"/>
+            </pay>
+            <insure>
+                <item code="parent"/>
+            </insure>
+            <currency>
+                <item code="NTD" />
+            </currency>
+        </param>
+        <param>
+            <pay_freq>
+                <item code="month"/>
+            </pay_freq>
+            <pay>
+                <item code="parent"/>
+            </pay>
+            <insure>
+                <item code="parent"/>
+            </insure>
+        </param>
+
+        <input>
+            <item name="AMOUNT" label="保額" widget="input" unit="萬元" type="int" placeholder="請輸入保險金額"></item>
+        </input>
+
+        <init>
+            <!-- 受益人类型 -->
+            <item varType="customer" name="BENEFICIARY_CATEGORY" value=""></item>
+            <!-- 产品是否支持指定受益人 -->
+            <item varType="customer" name="BENEFICIARY_FLAG" value="TRUE"></item>
+            <item name="Q" value="AMOUNT/UNIT"/>
+            <item name="PREMIUM_VALUE" value="try(Q*0.73,0)" />
+        </init>
+
+        <risk>
+        </risk>
+
+        <interest>
+            <var name="PRM" param="A1" formula="A1 lt INSURE_PERIOD?PREMIUM*12:0" /><!--年交保费-->
+            <var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" /><!--累计保险费-->
+        </interest>
+
+        <attachment>
+           <benefit_table filter="table" parser="table">
+               <table desc="保險給付項目保險計畫表">
+                   <row type="title">
+                       <blank row="1" code="a">'保單年度'</blank>
+                       <blank row="1" code="b">'年齡'</blank>
+                       <blank row="1" code="e">'累積所繳保險費'</blank>
+                   </row>
+                   <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                       <row>
+                           <blank style="##0">I+1</blank>
+                           <blank style="##0">PARENT.INSURANT.AGE+I+1</blank>
+                           <blank align="right" style="#,###">IT.PRM_T(I)</blank>
+                       </row>
+                   </loop>
+               </table>
+           </benefit_table>
+
+            <!-- 保障內容 -->
+            <liability filter="liability" parser="liability">
+                <paragraph title="保險給付項目">
+                    <table>
+                        <row type="title">
+                            <blank>'保障項目'</blank>
+                            <blank>'給付金額（元）'</blank>
+                            <blank>'說明'</blank>
+                        </row>
+                        <row>
+                            <blank>'一般意外傷害身故保險金'</blank>
+                            <blank style="##0">AMOUNT</blank>
+                            <blank>'按保險金額給付身故保險金'</blank>
+                        </row>
+                        <row>
+                            <blank>'境外停留期間意外傷害身故保險金'</blank>
+                            <blank style="##0">AMOUNT</blank>
+                            <blank>'另按保險金額給付境外停留期間意外傷害身故保險金(註4)'</blank>
+                        </row>
+                        <row>
+                            <blank>'一般意外傷害失能保險金'</blank>
+                            <blank style="##0">'"保險金額"*最低等級比例萬元~"保險金額"*最高等級比例萬元'</blank>
+                            <blank>'按保險金額依失能等級(1~11級)比例給付'</blank>
+                        </row>
+                        <row>
+                            <blank>'境外停留期間意外傷害失能保險金'</blank>
+                            <blank style="##0">'"保險金額"*最低等級比例萬元~"保險金額"*最高等級比例萬元'</blank>
+                            <blank>'另按保險金額依失能等級(1~11級)比例給付(註5)'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+            </liability>
+
+            <!-- 欄位及專案說明 -->
+            <tips filter="tips" parser="tips">
+                <paragraph title="註1、">
+                            <item>'本公司每月依據扣款當月最後一個資產評價日本附約之保險金額計算附約保險成本，並依主契約約定之方式扣除。'</item>
+                </paragraph>
+                <paragraph title="註2、">
+                            <item>'意外傷害附約之保險期間為期一年，續保時，依續保生效當時依規定陳報主管機關之費率重新計算附約保險成本，最高可續保年齡為被保險人保險年齡達75歲或年金累積期間屆滿為止較早者。本附約於主契約撤銷或終止時，其效力亦隨同撤銷或終止。'</item>
+                </paragraph>
+                <paragraph title="註3、">
+                            <item>'本附約的保險成本自投資型主契約之保單帳戶價值中扣除，當保單帳戶價值不足以支付相關費用時，保單可能會面臨停效風險。。'</item>
+                </paragraph>
+                <paragraph title="註4、">
+                            <item>'如被保險人於境外停留期間內遭受意外傷害事故死亡者，本公司除給付「一般意外傷害身故保險金」外，另按保險金額的一倍給付「境外停留期間意外傷害身故保險金」。'</item>
+                </paragraph>
+                <paragraph title="註5、">
+                    <item>'被保險人於本附約有效期間內遭受保單條款約定的意外傷害事故，且事故發生時在約定的境外停留期間內，本公司除按保單條款約定給付一般意外傷害失能保險金外，另按保險金額乘以條款附表一所列之給付比例，再給付「境外停留期間意外傷害失能保險金」。'</item>
+                </paragraph>
+                <paragraph title="註6、">
+                    <item>'本附約所稱「境外停留期間」係指被保險人經中華民國管理入出境之主管機關出境證照查驗後，至中華民國入境證照查驗為止的期間，前述之境外停留期間單次最高以九十天為限，並以中華民國管理入出境之主管機關出境證照查驗當日為計算始日。'</item>
+                </paragraph>
+                <paragraph title="※" content="詳細重大疾病附約內容請參閱本商品之保單條款。">
+                </paragraph>
+            </tips>
+        </attachment>
+
+        <rule skip="">
+            <if condition="AGE lt 15 || AGE ge 65 " type="customer">
+                投保年龄：15 足歲－65 歲
+            </if>
+
+            <if condition="AMOUNT lt 1000000" type="customer">
+                最低新台幣 100 萬元，最高新台幣 500 萬,以萬元為單位
+            </if>
+
+            <if condition="AMOUNT gt 5000000" type="customer">
+                最低新台幣 100 萬元，最高新台幣 500 萬,以萬元為單位
+            </if>
+        </rule>
+    </product>
+</declare>

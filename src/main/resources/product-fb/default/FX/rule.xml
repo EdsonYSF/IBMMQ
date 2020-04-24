@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<rule>
+		
+		<if id="rule_0001" condition = "APPLICANT.AGE lt 18">
+			投保人要求：最小投保年龄：18周岁。
+		</if>
+		<if id="rule_0002" condition = "APPLICANT.AGE > 70 ">
+			投保人要求：投保人年龄小于等于70周岁。
+		</if>
+		<if id="rule_0003" condition = "INSURE_PERIOD > 1 and  (APPLICANT.AGE+PAY_PERIOD-1) >70">
+			投保人要求：投保人年龄+缴费期(PAY_PERIOD)限小于等于70周岁。
+		</if>
+	</rule>
+</declare>

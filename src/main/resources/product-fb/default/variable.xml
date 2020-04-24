@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="plan">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="USER" formula="THIS.USER"/>
+		<!-- <item name="APPLICANT" formula="THIS.APPLICANT"/> -->
+	</variable>
+
+	<variable type="product">
+
+		<item name="INSURANT_SIZE" formula="THIS.INSURANT_SIZE"/>
+
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<!-- <item name="APPLICANT" formula="THIS.APPLICANT"/> -->
+		<item name="DEF_ID" formula="PRODUCT_ID"/>
+
+		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
+		<item name="COMMISSION_PAY_FREQ_YEAR" formula="0" param="YEAR"/>
+		<item name="COMMISSION_RATE" formula="0" param="MONTH"/>
+
+		<item name="QUANTITY" formula="AMOUNT/UNIT_AMOUNT"></item>
+		<item name="PREMIUM" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="PREMIUM_DTL" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="PREMIUM_FY" formula="PREMIUM"/> <!-- 首年保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="PREMIUM_FT" formula="PREMIUM"/> <!-- 首期保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="AMOUNT_DTL" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY_DTL" formula="AMOUNT/UNIT"/>
+
+		<item name="INSURE_VALUE" formula="insure.VALUE"/>
+		<item name="INSURE_MODE" formula="insure.MODE"/>
+		<item name="INSURE_DESC" formula="insure.DESC"/>
+		<item name="INSURE_PERIOD" formula="insure.PERIOD"/>
+
+		<item name="PAY_VALUE" formula="pay.VALUE"/>
+		<item name="PAY_DESC" formula="pay.DESC"/>
+		<item name="PAY_MODE" formula="pay.MODE"/>
+		<item name="PAY_PERIOD" formula="pay.PERIOD"/>
+		<item name="PAY_CODE" formula="pay.CODE"/>
+
+		<item name="PAY_FREQ_CODE" formula="pay_freq.CODE"/>
+		<item name="PAY_FREQ_VALUE" formula="pay_freq.VALUE"/>
+
+		<item name="DRAW_AGE" formula="draw_age.VALUE"/>
+		<item name="DRAW_AGE_VALUE" formula="draw_age.VALUE"/>
+		<item name="DRAW_AGE_CODE" formula="draw_age.CODE"/>
+		<item name="DRAW_VALUE" formula="draw.VALUE"/>
+		<item name="DRAW_CODE" formula="draw.CODE"/>
+
+		<item name="BIRTHDAY_PAYMENT_AGE_VALUE" formula="birthday_payment_age.VALUE"/>
+		<item name="BIRTHDAY_PAYMENT_AGE_CODE" formula="birthday_payment_age.CODE"/>
+
+		<!-- 职业级别 -->
+		<item name="OCCUPATION_LEVEL_VALUE" formula="occupation_level.VALUE" />
+
+		<!--保险计划-->
+		<item name="PLAN_SELECT_VALUE" formula="plan_select.VALUE"/>
+		<item name="PLAN_SELECT_SHOW" formula="plan_select.DESC"/>
+
+		<!--社保(含新农合)-->
+		<item name="MEDICARE_CODE" formula="medicare.CODE"/>
+		<item name="MEDICARE_VALUE" formula="medicare.VALUE"/>
+		<item name="MEDICARE_SHOW" formula="medicare.DESC"/>
+
+		<!--免赔额-->
+		<item name="DEDUCTIBLE_VALUE" formula="deductible.VALUE"/>
+		<item name="DEDUCTIBLE_CODE" formula="deductible.CODE"/>
+
+		<item name="GET_ANNUITY_END_VALUE" formula="get_annuity_end.VALUE"/>
+		<item name="GET_ANNUITY_END_CODE" formula="get_annuity_end.CODE"/>
+
+		<!--保费等级-->
+		<item name="UNDERWRITING_CLASS_VALUE" formula="underwriting_class.VALUE"/>
+		<item name="UNDERWRITING_CLASS_CODE" formula="underwriting_class.CODE"/>
+
+		<!--年金领取方式-->
+		<item name="DRAW_WAY_VALUE" formula="draw_way.VALUE"/>
+		<item name="DRAW_WAY_CODE" formula="draw_way.CODE"/>
+
+		<!--额外年金领取年龄-->
+		<item name="EXTRA_DRAW_AGE_VALUE" formula="extra_draw_age.VALUE"/>
+		<item name="EXTRA_DRAW_AGE_CODE" formula="extra_draw_age.CODE"/>
+
+
+		<item name="ADD_PREMIUM" formula="add_premium"/>
+
+		<item name="ADD_DRAW" formula="add_draw"/>
+
+		<item name="IS_DRAW_VALUE" formula="is_draw.VALUE"/>
+		<item name="IS_DRAW_CODE" formula="is_draw.CODE"/>
+
+		<item name="BUY_REASONS_VALUE" formula="buy_reasons.VALUE"/>
+		<item name="BUY_REASONS_CODE" formula="buy_reasons.CODE"/>
+
+		<item name="FOR_BROKER_VALUE" formula="for_broker.VALUE"/>
+		<item name="FOR_BROKER_CODE" formula="for_broker.CODE"/>
+
+		<item name="TLR_PLAN" formula="tlr_plan.VALUE"/>
+		<item name="TLR_PLAN_CODE" formula="tlr_plan.CODE"/>
+
+	</variable>
+</declare>

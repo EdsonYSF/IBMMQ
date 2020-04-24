@@ -1,0 +1,517 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="HQL00145"
+            corporation_id="hengqin"
+            code="24040"
+            name="横琴优享银龄养老年金保险（分红型）"
+            name_abbr="优享银龄养老年金"
+            unit="1000"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            input="premium"
+            quantity="1"
+            amount="Q * DS.RATE[0][0]"
+            last_modify_date="2017-01-01">
+
+        <data>
+            <item parser="dds" value="HQL00145"/>
+        </data>
+
+        <param>
+            <pay_freq>
+                <item code="single"/>
+                <item code="year" default="yes"/>
+            </pay_freq>
+
+            <pay>
+                <item code="single"/>
+                <item code="term_3"/>
+                <item code="term_5" default="yes"/>
+                <item code="term_10"/>
+                <item code="term_15"/>
+                <item code="term_20"/>
+                <item code="term_30"/>
+            </pay>
+
+            <insure>
+                <item code="to_88" default="yes"/>
+                <item code="to_99"/>
+            </insure>
+
+            <frequency_of_pension_receipt>
+                <item code="1" default="yes"/>
+                <item code="2"/>
+            </frequency_of_pension_receipt>
+
+            <pension_pension_method>
+                <item code="1"/>
+                <item code="2"/>
+            </pension_pension_method>
+        </param>
+
+        <rider>
+
+        </rider>
+
+        <init>
+            <item name="Q" value="PREMIUM/UNIT"/>
+            <!-- 是否指定受益人 -->
+            <item name="ISSHOWBENEFICIARY">true</item>
+            <!-- 是否为长险 -->
+            <item name="ISLONG">false</item>
+            <!-- 是否为年金险 -->
+            <item name="ISANNUITY">true</item>
+            <!-- 是否可以添加附加险 -->
+            <item name="RIDERAVAILABLE">true</item>
+            <!-- 是否需要选择职业 -->
+            <item name="OCCUPATIONVISIBLE">false</item>
+        </init>
+
+        <interest>
+            <var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM"/>
+            <var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)"/>
+            <var name="PENSION" param="A1" formula="AGE + A1 >=59 ? (FREQUENCY_OF_PENSION_RECEIPT_VALUE == 1 ? AMOUNT : 0.085*AMOUNT) :0"/>
+            <var name="CV_VAL" param="A1" formula="Q*DS.CV[A1,0]"/>
+            <var name="EXPIRY" param="A1" formula="A1 == INSURE_PERIOD-1 ?IT.PRM_T(INSURE_PERIOD-1) :0"/>
+            <var name="BONUS" param="A1,A2" formula="Q*DS.DI[A1,A2]"/>
+            <var name="BONUS_T" param="A1,A2" formula="Q*DS.DI[A1,A2]"/>
+            <var name="SG_VAL" param="A1" formula="max(IT.PRM_T(A1),IT.CV_VAL(A1))"/><!--身故保险金-->
+            <var name="EXPIRATION" param="A1" formula="A1==INSURE_PERIOD-1 ? IT.PRM_T(A1) :0"/><!--身故保险金-->
+            <var name="ZJ_PRM" param="A1,A2" formula="try(IT.BONUS(A1,A2)+IT.PENSION(A1),0)"/><!--追加保险费-->
+            <var name="INITIAL_COST" param="A1,A2" formula="A1==0?10*0.01:IT.ZJ_PRM(A1-1,A2)*0.01"/><!--初始费用-->
+            <var name="THAT_YEAR_VAL" param="A1,A2" formula="A1==0?10-IT.INITIAL_COST(A1,A2):IT.ZJ_PRM(A1-1,A2)-IT.IT.INITIAL_COST(A1,A2)"/><!--当年进入万能账户的价值-->
+            <var name="END_THAT_YEAR_VAL_HIGE" param="A1,A2" formula="A1==0?IT.THAT_YEAR_VAL(A1,A2)*(1+0.06) : (IT.END_THAT_YEAR_VAL_HIGE(A1-1,A2)+IT.THAT_YEAR_VAL(A1,A2))*(1+0.06)"/><!--年末账户价值（年金给付前）高-->
+            <var name="END_THAT_YEAR_VAL_MID" param="A1,A2" formula="A1==0?IT.THAT_YEAR_VAL(A1,A2)*(1+0.045): (IT.END_THAT_YEAR_VAL_MID(A1-1,A2)+IT.THAT_YEAR_VAL(A1,A2))*(1+0.045)"/><!--年末账户价值（年金给付前）中-->
+            <var name="END_THAT_YEAR_VAL_WID" param="A1,A2" formula="A1==0?IT.THAT_YEAR_VAL(A1,A2)*(1+0.025): (IT.END_THAT_YEAR_VAL_WID(A1-1,A2)+IT.THAT_YEAR_VAL(A1,A2))*(1+0.025)"/><!--年末账户价值（年金给付前）低-->
+            <!--退保费用-->
+            <item name="SURRENDER_CHARGE" param="A1,A2">
+                if(A1 ==0){
+                if(A2==0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)*0.05;
+                }else if(A2==1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)*0.05;
+                }else if(A2==2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)*0.05;
+                }
+                }else if(A1==1){
+                if(A2==0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)*0.04;
+                }else if(A2==1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)*0.04;
+                }else if(A2==2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)*0.04;
+                }
+                }else if(A1==2){
+                if(A2==0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)*0.03;
+                }else if(A2==1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)*0.03;
+                }else if(A2==2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)*0.03;
+                }
+                }else if(A1==3){
+                if(A2==0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)*0.02;
+                }else if(A2==1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)*0.02;
+                }else if(A2==2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)*0.02;
+                }
+                }else if(A1==4){
+                if(A2==0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)*0.01;
+                }else if(A2==1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)*0.01;
+                }else if(A2==2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)*0.01;
+                }
+                }else{
+                return 0;
+                }
+            </item>
+            <!--年末身故保险金-->
+            <item name="END_YEAR_SG_VAL" param="A1,A2,A3">
+                if(A2 == 0){
+                return IT.END_THAT_YEAR_VAL_HIGE(A1,A2)+IT.PV_WN(A1,A2,A3);
+                }else if(A2 == 1){
+                return IT.END_THAT_YEAR_VAL_MID(A1,A2)+IT.PV_WN(A1,A2,A3);
+                }else if(A2 == 2){
+                return IT.END_THAT_YEAR_VAL_WID(A1,A2)+IT.PV_WN(A1,A2,A3);
+                }
+            </item>
+            <!--年末现金价值（年金给付前）-->
+            <item name="END_YEAR_XJ_VAL" param="A1,A2,A3">
+                if(A2 == 0){
+                return (IT.END_THAT_YEAR_VAL_HIGE(A1,A2)-IT.SURRENDER_CHARGE(A1,A2))+(IT.PV_WN(A1,A2)-IT.SV_WN(A1,A2,A3));
+                }else if(A2 == 1){
+                return (IT.END_THAT_YEAR_VAL_MID(A1,A2)-IT.SURRENDER_CHARGE(A1,A2))+(IT.PV_WN(A1,A2)-IT.SV_WN(A1,A2,A3));
+                }else if(A2 == 2){
+                return (IT.END_THAT_YEAR_VAL_WID(A1,A2)-IT.SURRENDER_CHARGE(A1,A2))+(IT.PV_WN(A1,A2)-IT.SV_WN(A1,A2,A3));
+                }
+            </item>
+
+            <var name="PRM_P_WN" param="A1,A2" formula="WN.IT.PRM_ZJ(A1,A2)" /><!-- 追加保险费-->
+            <var name="PRM_WN" param="A1" formula="WN.IT.PRM(A1)" /><!--年交保费-->
+            <var name="PRM_T_WN" param="A1" formula="WN.IT.PRM_P(A1)" /><!--累计保费-->
+            <var name="INC_WN" param="A1,A2" formula="WN.IT.INC(A1,A2)"/><!-- 初始费用 -->
+            <var name="CV_T_WN" param="A1,A2" formula="WN.IT.CV_T(A1,A2)"/><!--累计进入万能保单账户的价值 -->
+            <var name="PV_WN" param="A1,A2,A3" formula="WN.IT.PV(A1,A2,A3)"/><!-- 年末保单价值 -->
+            <var name="SV_WN" param="A1,A2,A3" formula="WN.IT.SV(A1,A2,A3)"/><!--退保费用-->
+        </interest>
+
+        <attachment>
+            <benefit_table filter="table" parser="table">
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="high" descDialog="高档(6%)" descPage="高">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,3),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="middle" descDialog="中档(4.5%)" descPage="中">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,4),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="low" descDialog="低档(2.5%)" descPage="低">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,5),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')"  desc="high" descDialog="高档(6%)" descPage="高">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'当年进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,3),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.ZJ_PRM(I-1,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.INITIAL_COST(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL_HIGE(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_SG_VAL(I,0,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,0,0),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="middle" descDialog="中档(4.5%)" descPage="中">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'当年进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,4),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.ZJ_PRM(I-1,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.INITIAL_COST(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL_MID(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_SG_VAL(I,1,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,1,1),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="low" descDialog="低档(2.5%)" descPage="低">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'养老年金'</blank>
+                        <blank row="1">'满期金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'当年进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PENSION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS_T(I,3),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.ZJ_PRM(I-1,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.INITIAL_COST(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL_WID(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_SG_VAL(I,2,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,2,2),2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_table>
+
+            <!-- 规范要求：符号使用中文符号，和前端约定使用英文逗号换行 -->
+            <liability filter="liability" parser="liability">
+                <paragraph title="1.养老年金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'被保险人于年满60周岁的首个保单周年日开始，在每一保单周年日仍生存，我们按本合同基本保险金额给付养老年金，直至保险期间届满前的最后一个保单周年日。
+                                养老年金有年领和月领两种方式，您可以选择其中一种领取方式：
+                                （1）按年领取养老年金的，养老年金领取日为年满60周岁的首个保单周年日及其后的年对应日，年领取金额=基本保险金额；
+                                （2）按月领取养老年金的，养老年金领取日为年满60周岁的首个保单周年日及其后的月对应日，月领取金额=8.5%×年领取金额。
+                                年/月对应日指的是保单生效日在每年/月的对应日，如果当月无对应的同一日，则以该月最后一日作为对应日。'
+                            </blank>
+                            <blank condition="FREQUENCY_OF_PENSION_RECEIPT_VALUE == 1">'年领：'+AMOUNT</blank>
+                            <blank condition="FREQUENCY_OF_PENSION_RECEIPT_VALUE == 2">'月领：'+0.085 * AMOUNT</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="2.满期金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'被保险人于保险期间届满时仍生存，我们按本合同已交保险费给付满期金，给付后本合同终止。'</blank>
+                            <blank>PREMIUM</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="3.身故保险金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'若被保险人身故，我们按被保险人身故时本合同已交保险费与现金价值的较大者给付身故保险金，给付后本合同终止。'
+                            </blank>
+                            <blank>'本合同已交保险费与现金价值的较大者'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+
+                <paragraph title="1.养老年金-优享银龄" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'被保险人于年满60周岁的首个保单周年日开始，在每一保单周年日仍生存，我们按本合同基本保险金额给付养老年金，直至保险期间届满前的最后一个保单周年日。
+                                养老年金有年领和月领两种方式，您可以选择其中一种领取方式：
+                                （1）按年领取养老年金的，养老年金领取日为年满60周岁的首个保单周年日及其后的年对应日，年领取金额=基本保险金额；
+                                （2）按月领取养老年金的，养老年金领取日为年满60周岁的首个保单周年日及其后的月对应日，月领取金额=8.5%×年领取金额。
+                                年/月对应日指的是保单生效日在每年/月的对应日，如果当月无对应的同一日，则以该月最后一日作为对应日。'
+                            </blank>
+                            <blank condition="FREQUENCY_OF_PENSION_RECEIPT_VALUE == 1">'年领：'+AMOUNT</blank>
+                            <blank condition="FREQUENCY_OF_PENSION_RECEIPT_VALUE == 2">'月领：'+0.085 * AMOUNT</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="2.满期金-优享银龄" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'被保险人于保险期间届满时仍生存，我们按本合同已交保险费给付满期金，给付后本合同终止。'</blank>
+                            <blank>PREMIUM</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="3.身故保险金-优享银龄" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'若被保险人身故，我们按被保险人身故时本合同已交保险费与现金价值的较大者给付身故保险金，给付后本合同终止。'
+                            </blank>
+                            <blank>'本合同已交保险费与现金价值的较大者'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="4.身故保险金-宜家年金（万能型）" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'若被保险人身故，按身故保险金申请日的保单账户价值给付身故保险金，同时合同效力终止。'
+                            </blank>
+                            <blank>'保单账户价值'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+            </liability>
+        </attachment>
+
+        <rule skip="">
+            <if condition="AGE lt 18 or AGE >55" type="customer">
+                投保年龄范围为18周岁至65周岁。
+            </if>
+
+            <if condition="PAY_FREQ_CODE == 'single' and (PREMIUM lt 3000 or PREMIUM % 10000>0)">
+                优享银龄交费方式为一次交清最低保费3000元，超出部分须为1000元的整数倍
+            </if>
+
+            <if condition="PAY_FREQ_CODE == 'year' and (PREMIUM lt 1000 or PREMIUM % 10000>0)">
+                优享银龄交费方式为年交最低保费1000元，超出部分须为1000元的整数倍
+            </if>
+
+            <if condition="(AGE lt 18 or AGE > 55) and PAY_PERIOD == 1">
+                优享银龄交费期间为1年交时，最大投保年龄不得超过55周岁
+            </if>
+            <if condition="(AGE lt 18 or AGE > 55) and PAY_PERIOD == 3">
+                优享银龄交费期间为3年交时，最大投保年龄不得超过55周岁
+            </if>
+            <if condition="(AGE lt 18 or AGE > 55) and PAY_PERIOD == 5">
+                优享银龄交费期间为5年交时，最大投保年龄不得超过55周岁
+            </if>
+            <if condition="(AGE lt 18 or AGE > 55) and PAY_PERIOD == 10">
+                优享银龄交费期间为10年交时，最大投保年龄不得超过55周岁
+            </if>
+            <if condition="(AGE lt 18 or AGE > 50) and PAY_PERIOD == 15">
+                优享银龄交费期间为15年交时，最大投保年龄不得超过50周岁
+            </if>
+            <if condition="(AGE lt 18 or AGE > 45) and PAY_PERIOD == 20">
+                优享银龄交费期间为20年交时，最大投保年龄不得超过45周岁
+            </if>
+
+        </rule>
+    </product>
+</declare>

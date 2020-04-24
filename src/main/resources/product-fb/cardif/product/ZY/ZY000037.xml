@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="ZY000037"
+			corporation_id="fuxing"
+			code="110063"
+			name="中意悦享安康重大疾病保险"
+			name_abbr="中意悦享安康重大疾病保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="CASH_VALUE_INDEX"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="ZY000037" />
+		</data>
+
+		<rider>
+			<product id="ZY000038"/>
+			<product id="ZY000039"/>
+			<product id="ZY000040"/>
+			<product id="ZY000041"/>
+		</rider>
+
+		<param>
+			<pay_freq>
+				<item code="single" />
+				<item code="year" />
+				<item code="half_year"/>
+				<item code="season"/>
+				<item code="month"/>
+			</pay_freq>
+			<pay>
+				<item code="single"/>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</pay>
+			<occupation_level>
+				<item code="1"/>
+				<item code="2"/>
+				<item code="3"/>
+				<item code="4"/>
+			</occupation_level>
+            <insure>
+                <item code="full_90"/>
+            </insure>
+		</param>
+
+		<input>
+			<item name="PAY_FREQ" label ="交费方式" widget="select">buildOption('pay_freq')</item>
+			<item name="PAY" label ="交费年期" widget="select">buildOption('pay')</item>
+			<item name="INSURE" label="保险期间" widget="select">buildOption('insure')</item>
+			<item name="AMOUNT" label="基本保险金额" widget="input"></item>
+			<item name="PREMIUM" label="首年保费" widget="label">PREMIUM</item>
+		</input>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="CASH_VALUE_INDEX">
+				var res=0;
+				if(PAY_FREQ_CODE == 'single'){
+					res=round(Q*DS.RATE[0][0],0);
+					}
+					else if(PAY_FREQ_CODE == 'year'){
+					res=round(Q*DS.RATE[0][0],0);
+					}else if(PAY_FREQ_CODE == 'half_year'){
+					res=round(Q*DS.RATE[0][0]*0.51,0);
+					}else if(PAY_FREQ_CODE == 'season'){
+					res=round(Q*DS.RATE[0][0]*0.27,0);
+					}else if(PAY_FREQ_CODE == 'month'){
+					res=round(Q*DS.RATE[0][0]*0.09,0);
+				}
+				return res;
+			</item>
+
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="Q*DS.DATA[0,A1]" /><!--现金价值-->
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'现金价值'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule>
+			<if condition="AMOUNT%1 !=0" type="customer">
+				保额只可输入整数
+			</if>
+			<if condition="AGE ge 18 and AMOUNT lt 100000 " type="customer">
+				保额：只可录入10-200万之间的
+			</if>
+			<if condition="AGE ge 18 and AMOUNT gt 2000000" type="customer">
+				保额：只可录入10-200万之间的
+			</if>
+			<if condition="AGE lt 18 and AMOUNT lt 100000" type="customer">
+				被保险人年龄为18周岁以下时，保额可录入值为10-80万元
+			</if>
+			<if condition="AGE lt 18 and AMOUNT gt 800000" type="customer">
+				被保险人年龄为18周岁以下时，保额可录入值为10-80万元
+			</if>
+
+
+			<if condition="AGE gt 62 and PAY_CODE != 'single'" type="customer">
+				产品运算失败，62岁以上仅支持一次性交清
+			</if>
+			<if condition="(AGE gt 60 and AGE le 62) and (PAY_CODE != 'single' and PAY_CODE != 'term_3')" type="customer">
+				产品运算失败，60岁以上不支持5年、10年、15年及20年交
+			</if>
+			<if condition="(AGE gt 55  and AGE le 60) and (PAY_CODE == 'term_20' or PAY_CODE == 'term_15' or PAY_CODE == 'term_10')" type="customer">
+				产品运算失败，55岁以上不支持10年、15年及20年交
+			</if>
+			<if condition="(AGE gt 50 and AGE le 55 )and (PAY_CODE == 'term_20' or PAY_CODE == 'term_15')" type="customer">
+				产品运算失败，50岁以上不支持15年及20年交
+			</if>
+			<if condition="(AGE gt 45 and AGE le 50) and PAY_CODE == 'term_20'" type="customer">
+				产品运算失败，45岁以上不支持20年交
+			</if>
+		</rule>
+	</product>
+</declare>

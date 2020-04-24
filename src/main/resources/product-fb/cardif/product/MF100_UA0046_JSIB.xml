@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="MF100_UA0046_JSIB"
+            corporation_id="cardif"
+            code="MF100_UA0046_JSIB"
+            name="法商法國巴黎人壽滿福100變額年金保險 "
+            name_abbr="滿福100變額年金保險 "
+            unit="1"
+            type_code="annuity"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            quantity="1"
+            input="premium"
+            amount="0"
+            last_modify_date="2017-01-01">
+
+        <rider>
+            <product id="UDD002_JSIB"/>
+            <product id="UPA002_JSIB"/>
+        </rider>
+
+
+        <param>
+            <pay_freq>
+                <item code="flexable" />
+            </pay_freq>
+
+            <pay>
+                <item code="term_1" />
+            </pay>
+
+            <insure>
+                <item code="to_full" />
+            </insure>
+
+             <pay_way>
+                <item code="remit" default="yes"/>
+                <item code="autopay" />
+            </pay_way>
+
+            <currency>
+                <item code="NTD" />
+            </currency>
+
+            <annuity_reward_way>
+                <item code="single"/>
+                <item code="term" />
+            </annuity_reward_way>
+
+            <annuity_reward_period>
+                <item code="term_10" />
+                <item code="term_15"  />
+                <item code="term_20" />
+            </annuity_reward_period>
+
+            <annuity_reward_freq>
+                <item code="monthly"/>
+                <item code="quarterly"/>
+                <item code="semi_annually"/>
+                <item code="annually"/>
+            </annuity_reward_freq>
+        </param>
+
+        <input>
+            <trial_vars code="proposal" layout="flow">
+                <item name="PAY_FREQ" label ="繳別" widget="select">buildOption('pay_freq')</item>
+                <item name="CURRENCY" label="保單幣別" widget="select">buildOption('currency')</item>
+                <item name="PREMIUM" label="保費" widget="input" unit="元" type="float" placeholder="請輸入保費"/>
+            </trial_vars>
+
+            <trial_vars code="apply" layout="fixed">
+                <item name="CURRENCY" label="幣別" widget="select">buildOption('currency')</item>
+                <item name="PREMIUM" label="保費" widget="input" unit="元" type="float" placeholder="請輸入保費"/>
+                <item name="PAY_FREQ" label ="繳別" widget="select">buildOption('pay_freq')</item>
+                <item name="PAY_WAY" label="繳費方式" widget="select">buildOption('pay_way')</item>
+                <item name="PAY_ANNUITY_AGE" canNull="true" canNullApp="true"  label="年金給付開始之保單年度" widget="input" type="int" placeholder="請輸入年度" tips="*若被保險人投保當時之保險年齡為六十一至七十歲者，請要保人務必於要保書上作選擇。"/>
+                <item name="fee_group_apply" label="年金累積期間屆滿給付方式" widget="group" layout="flow">
+                    <item name="ANNUITY_REWARD_WAY" label="給付方式" widget="radio" >buildOption('annuity_reward_way')</item>
+                    <item name="ANNUITY_REWARD_PERIOD" label="保證期間" widget="select">buildOption('annuity_reward_period')</item>
+                    <item name="ANNUITY_REWARD_FREQ" label="給付頻率" widget="select" >buildOption('annuity_reward_freq')</item>
+                </item>
+            </trial_vars>
+        </input>
+
+        <init>
+            <item varType="customer" type="string" name="premium_limit" value="此專案的保費範圍為100,000 ~ 300,000,000"/>
+            <!-- 受益人类型 -->
+            <item varType="customer" name="BENEFICIARY_CATEGORY" value="DEATH"/>
+            <!-- 产品是否支持指定受益人 -->
+            <item varType="customer" name="BENEFICIARY_FLAG" value="4"/>
+            <item name="invest_buy_ratio" value="MF,INVEST_ACCOUNT"/>
+            <item name="BIRTHDAY_PAYMENT_AGE_VALUE" value="INIT_BIRTHDAY_PAYMENT_AGE_VALUE!=null ? INIT_BIRTHDAY_PAYMENT_AGE_VALUE : 80" /> <!-- 年金领取年龄 -->
+            <item name="MGT_FEE_FIXED" value="PREMIUM lt 3000000 ? 100 : 0" />
+            <item name="m" value="BIRTHDAY_PAYMENT_AGE_VALUE - AGE" />
+            <item name="UDDM" value="[0.45,0.40,0.35,0.30,0.27,0.23,0.21,0.18,0.18,0.18,0.18,0.19,0.19,0.21,0.23,0.25,0.27,0.30,0.32,0.33,0.35,0.38,0.40,0.43,0.45,0.49,0.52,0.56,0.65,0.74,0.85,0.97,1.12,1.28,1.46,1.67,1.92,2.19,2.45,2.74,3.06,3.42,3.83,4.23,4.68,5.18,5.73,6.34,6.91,7.53,8.20,8.93,9.73,10.58,11.51,12.52,13.62,14.82,15.86,16.98,18.17,19.45,20.83,22.13,23.53,25.01,26.59,28.28,29.90,31.62,33.44,35.36,37.39,39.17,41.04,43.01]"/>
+            <item name="UDDF" value="[0.33,0.29,0.26,0.23,0.20,0.18,0.16,0.14,0.14,0.15,0.15,0.15,0.15,0.17,0.18,0.20,0.22,0.24,0.26,0.28,0.29,0.32,0.34,0.38,0.42,0.47,0.52,0.58,0.66,0.75,0.86,0.98,1.13,1.27,1.43,1.61,1.81,2.04,2.25,2.49,2.75,3.04,3.36,3.63,3.92,4.23,4.57,4.93,5.21,5.50,5.81,6.14,6.50,6.88,7.28,7.71,8.17,8.66,9.20,9.78,10.40,11.08,11.80,12.55,13.35,14.20,15.11,16.09,17.10,18.18,19.33,20.57,21.90,23.04,24.25,25.52]"/>
+        </init>
+
+        <risk>
+        </risk>
+
+        <interest>
+            <var name="BO" param="M1" formula="RIDER('UDD002_JSIB')==null?0:(M1 lt 76-AGE?(GENDER == 2 ?RIDER('UDD002_JSIB').Q*UDDF[M1+AGE]:RIDER('UDD002_JSIB').Q*UDDM[M1+AGE]):0)"/><!--UDD_COL-->
+            <var name="BP"  param="M1" formula="RIDER('UPA002_JSIB')==null?0: (M1 lt 76-AGE? RIDER('UPA002_JSIB').PREMIUM:0)"/><!--UPA_COL-->
+            <var name="BS" param="M1" formula="round(IT.BO(int((M1-1)/12)),0)+round(IT.BP(int((M1-1)/12)),0)" />
+            <var name="BBC" param="M1" formula="round(IT.BO(M1),0)+round(IT.BP(M1),0)" />
+            <var name="MGT_FEE_RATE" param="M1" formula="M1 le 48?(M1 le 36?(M1 le 24?(M1 le 12?0.0198:0.0186):0.017496) :0.017304 ):0" />
+            <var name="PRM" param="M1" formula="M1==1 ? PREMIUM : 0" /> <!-- 期繳保費，此處是躉交 -->
+            <var name="PRM_T" param="M1" formula="(M1>0?IT.PRM_T(M1-1):0)+IT.PRM(M1)" /> <!-- 總保費，此處是躉交 -->
+            <var name="MGT_FEE_YEAR" param="A1,A2" formula="IT.AT(A1*12+1,A2)+IT.AT(A1*12+2,A2)+IT.AT(A1*12+3,A2)+IT.AT(A1*12+4,A2)+IT.AT(A1*12+5,A2)+IT.AT(A1*12+6,A2)+IT.AT(A1*12+7,A2)+IT.AT(A1*12+8,A2)+IT.AT(A1*12+9,A2)+IT.AT(A1*12+10,A2)+IT.AT(A1*12+11,A2)+IT.AT(A1*12+12,A2)" /> <!-- 保單費用加總，按年計 -->
+            <var name="AT" param="M1,A2" formula="IT.AN(M1,A2)+IT.AO(M1)" /> <!-- 保单费用加总 -->
+            <var name="AO" param="M1" formula="MGT_FEE_FIXED" /><!--高保费-->
+            <var name="AN" param="M1,A2" formula="(IT.AI(M1,A2) * IT.MGT_FEE_RATE(M1))/12" />
+            <var name="AI" param="M1,A2" formula="IT.AG(M1,A2) * pow(1+A2,1.0/12.0)" /> <!-- 月底AV -->
+            <var name="AG" param="M1,A2" formula="M1 le (m+1)*12? IT.AA(M1)+IT.AZ(M1-1,A2):0" /> <!-- 月底AV(增额保费前) -->
+            <var name="AZ" param="M1,A2" formula="M1 le 0? 0: max(0,IT.AU(M1,A2))" /> <!-- 月底AV(部分解约后) -->
+            <var name="AU" param="M1,A2" formula="M1 le 0? 0: IT.AI(M1,A2)-IT.AT(M1,A2)-IT.BS(M1)" /> <!-- 月底AV(部分解约后) -->
+            <var name="AA" param="M1" formula="M1 == 1 ?PREMIUM-IT.Z(M1) :0" />
+            <var name="AMOUNT_VALUE" param="M1" formula="PREMIUM*AMOUNT_RATE_VAL_T" /> <!-- 基本保額 (AY) -->
+            <var name="INSURANCE_COST" param="M1,A2" formula="IT.AK(M1*12+1,A2)+IT.AK(M1*12+2,A2)+IT.AK(M1*12+3,A2)+IT.AK(M1*12+4,A2)+IT.AK(M1*12+5,A2)+IT.AK(M1*12+6,A2)+IT.AK(M1*12+7,A2)+IT.AK(M1*12+8,A2)+IT.AK(M1*12+9,A2)+IT.AK(M1*12+10,A2)+IT.AK(M1*12+11,A2)+IT.AK(M1*12+12,A2)" />
+            <var name="END_AV_YEAR" param="M1,A2" formula="IT.AZ(M1*12,A2)" /> <!-- 身故/完全失能保險金額-->
+            <var name="Z" param="M1" formula="M1==1?PREMIUM *((null !=ETF_RATE_VALUE and ''!=ETF_RATE_VALUE) ? (ETF_RATE_VALUE/100)*0.01 : 0.003):0" />
+        </interest>
+
+
+        <attachment>
+           <benefit_table filter="table" parser="table">
+
+               <table desc="" name="high">
+                   <row type="title">
+                       <blank row="1" code="a">'保單年度'</blank>
+                       <blank row="1" code="b">'年齡'</blank>
+                       <blank row="1" code="c">'累積所繳保險費'</blank>
+                       <blank row="1" code="d">'相關費用 註1'</blank>
+                   </row>
+                   <loop from="0" to="m" step="1" name="I">
+                       <row>
+                           <blank style="##0">I+1</blank>
+                           <blank style="##0">AGE+I</blank>
+                           <blank align="right" >IT.BBC(I)</blank>
+                           <blank align="right" >IT.BO(I)</blank>
+                           <blank align="right" >IT.BP(I)</blank>
+                       </row>
+                   </loop>
+               </table>
+
+               <table desc="假設報酬率6%" name="high">
+                   <row type="title">
+                       <blank row="1" code="a">'保單年度'</blank>
+                       <blank row="1" code="b">'年齡'</blank>
+                       <blank row="1" code="c">'累積所繳保險費'</blank>
+                       <blank row="1" code="d">'相關費用 註1'</blank>
+                       <blank row="1" code="e">'保險成本 註2'</blank>
+                       <blank row="1" code="f">'保單帳戶價值 註3'</blank>
+                   </row>
+                   <loop from="0" to="m" step="1" name="I">
+                       <row>
+                           <blank style="##0">I+1</blank>
+                           <blank style="##0">AGE+I</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_1_VALUE) le 0 ? '停效': IT.PRM_T(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_1_VALUE) le 0 ? '停效': IT.MGT_FEE_YEAR(I,REWARD_RATE_1_VALUE)+IT.Z(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_1_VALUE) le 0 ? '停效': IT.BBC(I)*12</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_1_VALUE) le 0 ? '停效': IT.END_AV_YEAR(I+1,REWARD_RATE_1_VALUE)</blank>
+                       </row>
+                   </loop>
+               </table>
+
+               <table desc="假設報酬率2%" name="mid">
+                   <row type="title">
+                       <blank row="1" code="a">'保單年度'</blank>
+                       <blank row="1" code="b">'年齡'</blank>
+                       <blank row="1" code="c">'累積所繳保險費'</blank>
+                       <blank row="1" code="d">'相關費用 註1'</blank>
+                       <blank row="1" code="e">'保險成本 註2'</blank>
+                       <blank row="1" code="f">'保單帳戶價值 註3'</blank>
+                   </row>
+                   <loop from="0" to="m" step="1" name="I">
+                       <row>
+                           <blank style="##0">I+1</blank>
+                           <blank style="##0">AGE+I</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_2_VALUE) le 0 ? '停效': IT.PRM_T(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_2_VALUE) le 0 ? '停效': IT.MGT_FEE_YEAR(I,REWARD_RATE_2_VALUE)+IT.Z(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_2_VALUE) le 0 ? '停效': IT.BBC(I)*12</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_2_VALUE) le 0 ? '停效': IT.END_AV_YEAR(I+1,REWARD_RATE_2_VALUE)</blank>
+                       </row>
+                   </loop>
+               </table>
+
+               <table desc="假設報酬率-6%" name="low">
+                   <row type="title">
+                       <blank row="1" code="a">'保單年度'</blank>
+                       <blank row="1" code="b">'年齡'</blank>
+                       <blank row="1" code="c">'累積所繳保險費'</blank>
+                       <blank row="1" code="d">'相關費用 註1'</blank>
+                       <blank row="1" code="e">'保險成本 註2'</blank>
+                       <blank row="1" code="f">'保單帳戶價值 註3'</blank>
+                   </row>
+                   <loop from="0" to="m" step="1" name="I">
+                       <row>
+                           <blank style="##0">I+1</blank>
+                           <blank style="##0">AGE+I</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_3_VALUE) le 0 ? '停效': IT.PRM_T(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_3_VALUE) le 0 ? '停效': IT.MGT_FEE_YEAR(I,REWARD_RATE_3_VALUE)+IT.Z(I+1)</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_3_VALUE) le 0 ? '停效': IT.BBC(I)*12</blank>
+                           <blank align="right" style="#,###.##">IT.END_AV_YEAR(I+1,REWARD_RATE_3_VALUE) le 0 ? '停效': IT.END_AV_YEAR(I+1,REWARD_RATE_3_VALUE)</blank>
+                       </row>
+                   </loop>
+               </table>
+            </benefit_table>
+
+            <!-- 欄位及專案說明 -->
+            <tips filter="tips" parser="tips">
+                <paragraph title="註1、">
+                    <item>相關費用＝保費費用+保單管理費+投資標的申購手續費。</item>
+                </paragraph>
+                <paragraph title="">
+                    <item>保費費用：保險費之0%。</item>
+                </paragraph>
+                <paragraph title="" condition="PREMIUM ge 3000000">
+                    <item>保單管理費(每月)：本件符合高保費優惠享保單維護費用優惠，高保費優惠標準試算為假設無單筆增額保費、無累積提領金額之結果。</item>
+                </paragraph>
+                <paragraph title="" condition="PREMIUM lt 3000000">
+                    <item>保單管理費(每月)：</item>
+                </paragraph>
+                <paragraph title="" content="保單管理費(每月)">
+                    <table>
+                        <row type="title">
+                            <blank>'年度'</blank>
+                            <blank>'帳管費(%)'</blank>
+                            <blank>'保單維護費用'</blank>
+                        </row>
+                        <row>
+                            <blank>'1'</blank>
+                            <blank>'0.1650'</blank>
+                            <blank>PREMIUM lt 3000000 ? 100 : 0</blank>
+                        </row>
+                        <row>
+                            <blank>'2'</blank>
+                            <blank>'0.1550'</blank>
+                            <blank>PREMIUM lt 3000000 ? 100 : 0</blank>
+                        </row>
+                        <row>
+                            <blank>'3'</blank>
+                            <blank>'0.1458'</blank>
+                            <blank>PREMIUM lt 3000000 ? 100 : 0</blank>
+                        </row>
+                        <row>
+                            <blank>'4'</blank>
+                            <blank>'0.1442'</blank>
+                            <blank>PREMIUM lt 3000000 ? 100 : 0</blank>
+                        </row>
+                        <row>
+                            <blank>'>=5'</blank>
+                            <blank>'0'</blank>
+                            <blank>PREMIUM lt 3000000 ? 100 : 0</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph title="">
+                    <item>投資標的申購手續費：指數股票型基金(ETF)每次為申購金額之1%；共同基金(MF)每次為申購金額之0%；投資帳戶每次為申購金額之0%；貨幣帳戶每次為申購金額之0%。</item>
+                </paragraph>
+                <paragraph title="註2、">
+                    <item>壽險保險成本為每月根據訂立本契約時被保險人的性別、體況、扣款當月(日曆月) 最後一個資產評價日之保險年齡及淨危險保額計算按月收取之。本契約每年的保險成本採用自然保費計算，每年收取的保險成本原則上逐年增加。如有附加附約，本費用包含附約保險成本。</item>
+                </paragraph>
+                <paragraph title="註3、">
+                    <item>本契約於壽險有效期間或年金累積期間內，自第一保單週年日（含）起於每保單週年日時起算，往前推算十二個月每月最後一個資產評價日之保單帳戶價值的平均值乘以0.1%做為加值給付金，並於保單週年日之後的第三個資產評價日投入至保單幣別之貨幣帳戶中。加值給付金完整說明詳本商品保險單條款。</item>
+                </paragraph>
+                <paragraph title="註4、">
+                    <item>本建議書所列保單帳戶價值及身故保額為年度末之值。</item>
+                </paragraph>
+            </tips>
+
+            <!-- 注意事項 -->
+            <notices filter="notices" parser="notices">
+                <paragraph title="注意事項" type="2">
+                    <item>1、本建議書保單帳戶價值試算以繳費幣別為計價基礎，不考慮投資標的計價貨幣單位的匯兌風險。</item>
+                    <item>2、本建議書保單帳戶價值及身故保額計算係假設保單無任何變更事項，且假設各投資標的投資年報酬率皆相同之試算結果。上述年報酬率僅供參考，不代表未來之投資績效。</item>
+                    <item>3、本保險為不分紅保險單，不參加紅利分配，並無紅利給付項目。</item>
+                    <item>4、本商品所連結之一切投資標的，其發行或管理機構以往投資績效不保證未來之投資收益，除保險契約另有約定外，代理銷售之合作銀行、保險代理人、保險經紀人及法國巴黎人壽不負投資盈虧之責，要保人投保前應詳閱商品說明書。因不同時間進場，將有不同之投資績效，過去之績效亦不代表未來績效之保證。所有投資皆具投資風險，最大可能損失為投資本金之全部。</item>
+                    <item>5、稅法相關規定或解釋與實質課稅原則認定，可能影響本商品所涉之投資報酬、給付金額及稅賦。</item>
+                    <item>6、本商品經法國巴黎人壽合格簽署人員檢視其內容業已符合一般精算原則及保險法令，惟為確保權益，基於保險公司與消費者衡平對等原則，消費者仍應詳加閱讀保險單條款與相關文件（如商品說明書），審慎選擇保險商品。本商品如有虛偽不實或違法情事，應由法國巴黎人壽及其負責人依法負責。</item>
+                    <item>7、本商品為投資型保險商品，要保人應向銷售人員確認其具備投資型商品銷售之資格，並要求詳細解說保險之內容及風險。</item>
+                    <item>8、本商品保險部分依保險法及相關規定受人身保險安定基金保障，專設帳簿記載投資資產之價值金額不受人身保險安定基金之保障。</item>
+                    <item>9、本商品非為存款商品，未受「存款保險」之保障。</item>
+                    <item>10、消費者於購買本保險商品前，應詳閱各種銷售文件內容，如要詳細了解本保險商品之相關附加費用、資訊公開說明文件或其他資訊，請查閱法國巴黎人壽網址：https://life.cardif.com.tw/。或來電查詢，以保障您的權益。免費客戶服務電話：0800-012-899；申訴電話：0800-012-899。</item>
+                    <item>11、本商品係由本公司提供並負擔基於保險契約所生之權利義務，保險代理人或保險經紀人代理銷售，合作銀行代收／代轉保費及保險文件，惟該合作銀行與保險代理人或保險經紀人與本公司並不因此而成立合夥、委任或僱傭等任何關係。</item>
+                    <item>12、本商品由代理銷售之保險代理人以合作銀行為本商品之行銷通路。各辦理單位備有法國巴黎人壽之保單條款，要保人須仔細閱讀，商品詳細內容以保單條款為準。</item>
+                    <item>13、投保後解約或不繼續繳費可能不利消費者，請慎選符合需求之保險商品。</item>
+                    <item>14、本建議書僅供參考，保險契約各項權利義務皆詳列於保單條款，消費者投保前務必詳加閱讀了解保單條款內容，並把握保單契約撤銷之時效（收到保單翌日起算十日內）。</item>
+                    <item>15、保單借款：若保戶在急需資金情況下，為避免中途解約而承擔投資標的提前贖回之損失，可依保單借款選擇辦理借款，未來當保戶申請辦理保險單借款時，以法國巴黎人壽網站(https://life.cardif.com.tw/)公告之實際借款利率為準。</item>
+                    <item>16、法國巴黎人壽自連結投資標的交易對手取得之報酬、費用折讓等各項利益，應於簽約前提供予要保人參考。</item>
+                    <item>17、人壽保險之死亡給付及年金保險之確定年金給付於被保險人死亡後給付於指定受益人者，依保險法第一百十二條規定不得作為被保險人之遺產，惟如涉有規避遺產稅等稅捐情事者，稽徵機關仍得依據有關稅法規定或稅捐稽徵法第十二條之一所定實質課稅原則辦理。相關實務案例請至本公司官網https://life.cardif.com.tw/查閱。</item>
+                    <item>18、本商品可能風險有信用風險、市場價格風險、法律風險、匯兌風險、流動性風險及清算風險、匯率風險。代理銷售之銀行、保代及法國巴黎人壽並無保本保息之承諾，投保人於投保前應審慎評估。</item>
+                    <item>19、基金進行配息前或投資帳戶進行資產撥回前，可能未先扣除行政管理相關費用，且基金的配息或投資帳戶之資產撥回機制可能由該投資標的之收益或本金中支付，任何涉及由本金支出的部分，可能導致原始投資金額減損，而當保單價值不足以支付相關費用時，則此保單將進入停效。</item>
+                    <item>20、本建議書一式兩份，一份附於保單內由客戶留存，一份由本公司存檔。</item>
+                </paragraph>
+            </notices>
+
+        </attachment>
+
+        <rule skip="">
+            <if condition="AGE gt 70 " type="customer">
+                被保人的投保年齡不得超過70歲
+            </if>
+            <if condition="PREMIUM lt 100000" type="customer">
+                交付首次投資配置金額時，採彈性交付者最低保險費為新臺幣十萬元整或等值約定外幣最高限制三億新台幣或等值外幣。
+            </if>
+            <if condition="PREMIUM gt 300000000" type="customer">
+                交付首次投資配置金額時，採彈性交付者最低保險費為新臺幣十萬元整或等值約定外幣最高限制三億新台幣或等值外幣。
+            </if>
+              <if >
+                if(JUDGE_VALUE != 'JYS'){
+                    if(PAY_ANNUITY_AGE lt 10){
+                        return '年金給付開始之保單年度，最短至少10年';
+                    }else{
+                        return null;
+                    }
+                }else{
+                return null;
+                }
+            </if>
+        </rule>
+    </product>
+</declare>

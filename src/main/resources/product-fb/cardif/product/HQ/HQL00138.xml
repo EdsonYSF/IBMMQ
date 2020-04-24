@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="HQL00138"
+            corporation_id="hengqin"
+            code="16260"
+            name="横琴附加少儿重大疾病保险"
+            name_abbr="附加少儿重大疾病"
+            unit="10000"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            is_main="no"
+            is_rider="yes"
+            input="amount"
+            quantity="1"
+            premium="RES_PREMIUM_VALUE"
+            last_modify_date="2017-01-01"
+    >
+
+        <data>
+            <item parser="dds" value="HQL00138"/>
+        </data>
+
+        <param>
+            <pay_freq>
+                <item code="parent"/>
+            </pay_freq>
+
+            <pay>
+                <item code="parent"/>
+            </pay>
+
+            <insure>
+                <item code="parent" />
+            </insure>
+
+            <basic_insurance_liability>
+                <item code="1" />
+                <item code="2" />
+            </basic_insurance_liability>
+
+            <optional_insurance_liability>
+                <item code="1" default="yes"/>
+                <item code="2"/>
+            </optional_insurance_liability>
+        </param>
+
+        <rider>
+
+        </rider>
+
+        <init>
+            <item name="Q" value="AMOUNT/UNIT"/>
+            <!-- 是否为长险 -->
+            <item name="ISLONG">true</item>
+            <!-- 是否为年金险 -->
+            <item name="ISANNUITY">false</item>
+            <!-- 是否指定受益人 -->
+            <item name="ISSHOWBENEFICIARY">false</item>
+            <!-- 是否可以添加附加险 -->
+            <item name="RIDERAVAILABLE">false</item>
+            <!-- 是否需要风险抄录 -->
+            <item name="NEEDRISKCA">false</item>
+            <!-- 是否需要产品说明书 -->
+            <item name="NEEDPRODUCTSTATE">false</item>
+
+            <item name="RES_PREMIUM_TRUE">
+                var res = 0;
+                if(PARENT.PAY_FREQ_CODE == 'half_year'){
+                res= (Q*DS.RATE[0][0])*0.52;
+                }else if(PARENT.PAY_FREQ_CODE == 'season'){
+                res= (Q*DS.RATE[0][0])*0.27;
+                }else if(PARENT.PAY_FREQ_CODE == 'month'){
+                res= (Q*DS.RATE[0][0])*0.09;
+                }else{
+                res= Q*DS.RATE[0][0];
+                }
+                return res;
+            </item>
+
+            <item name="RES_PREMIUM_FALSE">
+                var res = 0;
+                if(PARENT.PAY_FREQ_CODE == 'half_year'){
+                res= (Q*DS.RATE[0][1])*0.52;
+                }else if(PARENT.PAY_FREQ_CODE == 'season'){
+                res= (Q*DS.RATE[0][1])*0.27;
+                }else if(PARENT.PAY_FREQ_CODE == 'month'){
+                res= (Q*DS.RATE[0][1])*0.09;
+                }else{
+                res= Q*DS.RATE[0][1];
+                }
+                return res;
+            </item>
+            <item name="RES_PREMIUM_VALUE" value="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1 ? RES_PREMIUM_TRUE : RES_PREMIUM_FALSE"/>
+        </init>
+
+        <interest>
+            <var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM"/>
+            <var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)"/>
+            <var name="CV_VAL" param="A1" formula="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1 ? Q*DS.CV[A1,0] : Q*DS.CV[A1,1]"/>
+        </interest>
+
+        <attachment>
+            <benefit_app filter="table" parser="table">
+                <table>
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'少儿重大疾病保险金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1" condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">'少儿中症疾病保险金'</blank>
+                        <blank row="1" condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">'少儿轻症疾病保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(AMOUNT,2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0" condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">round(AMOUNT*0.5,2)+'元'</blank>
+                            <blank align="right" style="########0" condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">round(AMOUNT*0.3,2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_app>
+
+            <!-- 规范要求：符号使用中文符号，和前端约定使用英文逗号换行 -->
+            <liability filter="liability" parser="liability">
+                <paragraph title="1.少儿重大疾病保险金" condition="BASIC_INSURANCE_LIABILITY_VALUE == 1">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'本附加合同被保险人初次发生并被医院的专科医生确诊患有本附加合同约定的少儿重大疾病的（无论一项或多项）我们按本附加合同基本保险金额给付少儿重大疾病保险金，本附加合同终止。'
+                            </blank>
+                            <blank>round(AMOUNT,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="1.身故保险金" condition="BASIC_INSURANCE_LIABILITY_VALUE == 2">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'本附加合同被保险人身故的 我们按本附加合同已交保险费给付身故保险金本附加合同终止 。'</blank>
+                            <blank>round(PREMIUM,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="2.少儿中症疾病保险金"  condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'本附加合同被保险人初次发生并被医院的专科医生确诊患有本附加合同约定的少儿中症疾病我们按以下约定给付少儿中症疾病保险金：
+                                （1 ）首次少儿中症疾病保险金为本附加合同基本保险金额的50%
+                                （2 ）第二次少儿中症疾病保险金为本附加合同基本保险金额的60% 。
+                                每项少儿中症疾病保险金的给付次数以一次为限给付后该项少儿中症疾病的保险责任终止。
+                                本附加合同少儿中症疾病保险金的累计给付次数以两次为限当累计给付达到 两 次时 该项保险责任终止 。
+                                如果被保险人确诊患有两项或两项以上的少儿中症疾病且两次少儿中 症疾病的确诊之日相距不超过 180天 我们只给付一次 少儿中 症疾病保险金。'
+                            </blank>
+                            <blank>'首次:'+round(AMOUNT*0.5,2)+'元
+                                第二次:'+round(AMOUNT*0.6,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="3.少儿轻症疾病保险金"  condition="OPTIONAL_INSURANCE_LIABILITY_VALUE == 1">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'本附加合同被保险人初次发生并被医院的专科医生确诊患有本附加合同约定的少儿轻症疾病我们按以下约定给付少儿轻症疾病保险金：
+                                （1 ）首次少儿轻症疾病保险金为本附加合同基本保险金额的3 0%
+                                （2 ）第二次少儿轻症疾病保险金为本附加合同基本保险金额的4 0%
+                                （3 ）第三次少儿轻症疾病保险金为本附加合同基本保险金额的50% 。
+                                每项少儿轻症疾病保险金的给付次数以一次为限 给付后该项少儿轻症 疾病的保险责任终止。本保险责任终止。本附加附加合同合同少儿轻症少儿轻症疾病保险金的累计给付次数以疾病保险金的累计给付次数以三次为限次为限，当累计给付达到当累计给付达到三次时次时，该项保险责任终止该项保险责任终止。
+                                如果被保险人确诊患有两项或两项以上的如果被保险人确诊患有两项或两项以上的少儿轻症少儿轻症疾病疾病，，且两次且两次少儿轻症少儿轻症疾病疾病的确诊之日相距不超过的确诊之日相距不超过180天天，，我们只给付一次我们只给付一次少儿轻症少儿轻症疾病保险金。疾病保险金。'
+                            </blank>
+                            <blank >'首次:'+round(AMOUNT*0.3,2)+'元
+                                第二次:'+round(AMOUNT*0.4,2)+'元
+                                第三次:'+round(AMOUNT*0.5,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+            </liability>
+        </attachment>
+
+        <rule skip="">
+            <if condition="AMOUNT lt 10000 or AMOUNT % 10000 != 0">
+                最低投保基本保险金额≥10万元，超出部分须为1万元的整数倍；
+            </if>
+        </rule>
+    </product>
+</declare>

@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="FXL000029"
+		corporation_id="fuxing"
+		code="110058"
+		name="复星联合康乐一生重大疾病保险（2019）"
+		name_abbr="康乐一生（2019）"
+		unit="1000"
+		type_code="annuity"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		quantity="1"
+		input="amount"
+		premium="IT.TO_PRM"
+		last_modify_date="2017-01-01">
+
+		<data>
+			<item parser="dds" value="FXL000029" />
+		</data>
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq label="交费方式">
+				<item code="year" default="yes"/>
+			</pay_freq>
+
+			<!-- 交费年期 -->
+			<pay label="交费年期">
+				<item code="term_5" show="5年" />
+				<item code="term_10" show="10年" />
+				<item code="term_15" show="15年" />
+				<item code="term_20" default="yes" show="20年" />
+				<item code="term_30" show="30年" />
+			</pay>
+
+			<!-- 保险期间 -->
+			<insure label="保险期间">
+				<item code="to_70" show="保至70岁"/>
+				<item code="to_80" show="保至80岁"/>
+				<item code="full_105" default="yes" show="保至终身"/>
+			</insure>
+
+			<malignancy label="恶性肿瘤特定基本保险金">
+				<item code="yes" default="yes"/>
+				<item code="no"/>
+			</malignancy>
+		</param>
+
+		<rider>
+			<product id="FXL000022"/>
+		</rider>
+		<init>
+			<item name="Q" value="(AMOUNT/UNIT)"/>
+		</init>
+
+		<interest>
+			<var name="TO_PRM">
+				var malignancy_val=malignancy.CODE;
+				if(malignancy_val=='yes'){
+				return Q*DS.RATE[0][1];
+				}
+				return Q*DS.RATE[0][0];
+			</var>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:IT.TO_PRM" /><!--年交保险费-->
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" /><!--累计保险费-->
+			<var name="GREAT_PRM" param="A1" formula="AMOUNT*1" /><!--重大疾病保险金-->
+			<var name="CENTRE_PRM" param="A1" formula="AMOUNT*0.5*2" /><!--中症疾病保险金-->
+			<var name="LIGHT_PRM" param="A1" formula="AMOUNT*1.2" /><!--轻症疾病保险金-->
+			<!--身故保险金或全残保险金-->
+			<var name="SG" param="A1">
+				if(AGE lt 18){
+				return IT.PRM_T(A1);
+				}
+				return AMOUNT*1;
+			</var>
+			<var name="GREAT_PRM" param="A1" formula="AMOUNT*1" /><!--恶性肿瘤特定疾病保险金（可选责任）-->
+			<!--现金价值-->
+			<var name="CV" param="A1">
+				var malignancy_val=malignancy.CODE;
+				if(malignancy_val=='yes'){
+				return try(Q * (DS.DATA[A1,1]), 0);
+				}
+				return try(Q * (DS.DATA[A1,0]), 0);
+			</var>
+		</interest>
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'重大疾病保险金'</blank>
+						<blank row="1">'中症疾病保险金'</blank>
+						<blank row="1">'轻症疾病保险金'</blank>
+						<blank row="1">'轻症疾病或中症疾病豁免保险费'</blank>
+						<blank row="1">'身故保险金或全残保险金'</blank>
+						<blank row="1">'恶性肿瘤特定疾病保险金（可选责任）'</blank>
+						<blank row="1">'现金价值'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.GREAT_PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.CENTRE_PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.LIGHT_PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">'豁免已交纳的保险费'</blank>
+							<blank align="right" style="########0.00">round(IT.SG(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.GREAT_PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.CV(I),2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			
+			<liability filter="liability" parser="liability">
+				<paragraph title="1.重大疾病保险金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					  <row>
+					  <blank>'覆盖108种重大疾病。'</blank>
+					  <blank>round(AMOUNT*1,2)+'元'</blank>
+				  </row>
+				  </table>
+				</paragraph>
+				<paragraph title="2.中症疾病保险金">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+				  	<row>
+				  		<blank>'覆盖25种中症疾病。'</blank>
+						<blank>round(AMOUNT*0.5*2,2)+'元'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="3.轻症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖40种轻症疾病。'</blank>
+							<blank>'首次，保额*35%；第二次，保额*40%；第三次，保额*45%'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="4.轻症疾病或中症疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'自确诊日后本合 同首个保险费约定交纳日开始，直至本合同最后一次保险费约定交纳日止，本公司豁免前述期间内本合同应交纳的保险费。'</blank>
+							<blank>'豁免已交纳的保险费'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="5.身故保险金或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效之日起 180 天后因非意外的原因导致身故或全残，本公司给付身故保险金或全残保险金，同时本合同终止。被保险人在本合同生效之日起 180 天内因非 意外的原因导致身故或全残，本公司将按投保人已交纳的本合同累计保险费数额给付身故保险金或全残保险金，同时本合同终止。'</blank>
+                            <blank >'<![CDATA[被保险人<18岁，已交纳的本合同累积保险费数额（不计息）；被保险人≥18岁，保额*100%]]>'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="6. 恶性肿瘤特定疾病保险金（可选责任）">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'若首次发生的重大疾病为恶性肿瘤14以外的其他重大疾病，"&#x000A;"自重大疾病确诊之日起 180 天后，在本公司指定或认可的医疗机构由专科医生确诊初次发生恶性肿瘤，本公司按本合同基本保险 额给付恶性肿瘤额外保险。若首次发生的重大疾病为恶性肿瘤，自重大疾病确诊之日起 3 年后，在本公司指定或认可的医疗机构由专科医生确诊仍处于恶性肿瘤状态15，本公司按本合同基本保险金额给付恶性肿瘤额外保险金。'</blank>
+							<blank>round(AMOUNT*1,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule skip="">
+			<if condition="APPLICANT.AGE lt 18" type="customer">
+				投保年龄>=18周岁
+			</if>
+			<if condition="APPLICANT.AGE + PAY_VALUE  gt 70" type="customer">
+				<![CDATA[投保年龄：投保人年龄+缴费期限<=70周岁]]>
+			</if>
+			<if condition="DAY lt 30" type="customer">
+				被保年龄：出生满30天
+			</if>
+			<if condition="PAY_VALUE + AGE gt  65" type="customer">
+				被保年龄：最大被保人年龄50周岁，且被保险人在缴费期满时年龄不能超过 65 岁
+			</if>
+			<if condition="OCCUPATION_CATEGORY>4 or OCCUPATION_CATEGORY lt 1" type="customer">
+				仅限职业风险等级为1-4级的客户投保。
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 > 0">
+				 最低保额10000元，且需为1000元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

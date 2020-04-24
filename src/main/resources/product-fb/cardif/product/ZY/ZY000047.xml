@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="ZY000047"
+			corporation_id="zhongyi"
+			code="NC23"
+			name="中意永续我爱终身寿险（卓越版）"
+			name_abbr="中意永续我爱终身寿险（卓越版）"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="premium"
+			amount="CASH_VALUE_INDEX"
+			last_modify_date="2015-01-01">
+
+
+		<data>
+			<item parser="dds" value="ZY000047" />
+		</data>
+
+		<rider>
+			<product id="ZY000039"/>
+			<product id="ZY000041"/>
+		</rider>
+
+		<param>
+			<pay_freq>
+				<item code="single"/>
+				<item code="year"/>
+				<item code="half_year"/>
+				<item code="month"/>
+				<item code="season"/>
+			</pay_freq>
+			<pay>
+				<item code="single"/>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</pay>
+            <insure>
+				<item code="full_106"/>
+            </insure>
+			<plan_select>
+				<item code="0"/>
+			</plan_select>
+		</param>
+
+		<input>
+			<item name="PAY_FREQ" label ="交费方式" widget="select">buildOption('pay_freq')</item>
+			<item name="PAY" label ="交费年期" widget="select">buildOption('pay')</item>
+			<item name="INSURE" label="保险期间" widget="select">buildOption('insure')</item>
+			<item name="PLAN_SELECT" label="保障计划" widget="select">buildOption('plan_select')</item>
+			<item name="PREMIUM" label="年交保费" widget="input"></item>
+			<item name="AMOUNT" label="基本保险金额" widget="label">AMOUNT</item>
+		</input>
+
+		<init>
+			<item name="Q" value="PREMIUM/UNIT"/>
+			<item name="CASH_VALUE_INDEX">
+				var res=0;
+				if(PAY_FREQ_CODE == 'single'){
+				res=round(Q*DS.RATE[0][0],0);
+				}
+				else if(PAY_FREQ_CODE == 'year'){
+				res=round(Q*DS.RATE[0][0],0);
+				}else if(PAY_FREQ_CODE == 'half_year'){
+				res=round(Q*DS.RATE[0][0]*0.51,0);
+				}else if(PAY_FREQ_CODE == 'season'){
+				res=round(Q*DS.RATE[0][0]*0.27,0);
+				}else if(PAY_FREQ_CODE == 'month'){
+				res=round(Q*DS.RATE[0][0]*0.09,0);
+				}
+				return res;
+			</item>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">PAY_CODE</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="PREMIUM%1 !=0" type="customer">
+				保额只可输入整数
+			</if>
+			<if condition="APPLICANT.AGE lt 18" type="customer">
+				投保人18-60周岁
+			</if>
+			<if condition="APPLICANT.AGE gt 60" type="customer">
+				投保人18-60周岁
+			</if>
+
+			<if condition="DAY lt 7" type="customer">
+				被保险人7天-60周岁
+			</if>
+			<if condition="AGE gt 60" type="customer">
+				被保险人7天-60周岁
+			</if>
+			<if condition="(PAY_FREQ_CODE == 'single' or PAY_FREQ_CODE == 'year') and (PREMIUM lt 10000  or PREMIUM % 1000 != 0)" type="customer">
+				最低10000元，若为趸交、年交，需为1000元整数倍，若为季交、月交、半年交，则需为500的整数倍
+			</if>
+
+			<if condition="(PAY_FREQ_CODE != 'single' and  PAY_FREQ_CODE != 'year') and PREMIUM lt 10000  or PREMIUM % 500 != 0" type="customer">
+				最低10000元，若为趸交、年交，需为1000元整数倍，若为季交、月交、半年交，则需为500的整数倍
+			</if>
+		</rule>
+	</product>
+</declare>

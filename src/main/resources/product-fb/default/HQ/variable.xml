@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="plan">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="APPLICANT" formula="THIS.APPLICANT"/>
+	</variable>
+
+	<variable type="product">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="APPLICANT" formula="THIS.APPLICANT"/>
+		<item name="DEF_ID" formula="PRODUCT_ID"/>
+
+		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
+		<item name="COMMISSION_PAY_FREQ_YEAR" formula="0" param="YEAR"/>
+		<item name="COMMISSION_RATE" formula="0" param="MONTH"/>
+
+		<item name="PREMIUM_DTL" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="PREMIUM_FY" formula="PREMIUM"/> <!-- 首年保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="PREMIUM_FT" formula="PREMIUM"/> <!-- 首期保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="AMOUNT_DTL" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY_DTL" formula="AMOUNT/UNIT"/>
+
+		<item name="INSURE_CODE" formula="insure.CODE"/>
+		<item name="INSURE_VALUE" formula="insure.VALUE"/>
+		<item name="INSURE_MODE" formula="insure.MODE"/>
+		<item name="INSURE_DESC" formula="insure.DESC"/>
+		<item name="INSURE_PERIOD" formula="insure.PERIOD"/>
+
+		<item name="PAY_VALUE" formula="pay.VALUE"/>
+		<item name="PAY_DESC" formula="pay.DESC"/>
+		<item name="PAY_MODE" formula="pay.MODE"/>
+		<item name="PAY_PERIOD" formula="pay.PERIOD"/>
+		<item name="PAY_CODE" formula="pay.CODE"/>
+
+		<item name="RANK_VALUE" formula="rank.VALUE"/>
+		<item name="RANK_CODE" formula="rank.CODE"/>
+
+		<item name="DRAW_AGE" formula="draw_age.VALUE"/>
+		<item name="DRAW_VALUE" formula="draw.VALUE"/>
+		<item name="DRAW_DESC" formula="draw.DESC"/>
+		<item name="DRAW_FREQ_DESC" formula="draw_freq.DESC"/>
+		<item name="DRAW_FREQ_VALUE" formula="draw_freq.VALUE"/>
+
+		<item name="PAY_FREQ_CODE" formula="pay_freq.CODE"/>
+		<item name="PAY_FREQ_VALUE" formula="pay_freq.VALUE"/>
+
+		<item name="MEDICARE_CODE" formula="medicare.CODE"/>
+		<item name="MEDICARE_VALUE" formula="medicare.VALUE"/>
+		<item name="BIRTH_GOLD_DRAW_AGE_VALUE" formula="birth_gold_draw_age.VALUE"/><!--祝寿金领取年龄-->
+
+		<item name="PLAN_SELECT_VALUE" formula="plan_select.VALUE" />
+		<item name="PLAN_SELECT_SHOW" formula="plan_select.DESC" />
+
+		<item name="OCCUPATION_LEVEL_VALUE" formula="occupation_level.VALUE" />
+
+		<item name="ACCIDENT_HOSPITAL_DAILY_ALLOWANCE_VALUE" formula="accident_hospital_daily_allowance.VALUE" />
+		<item name="ACCIDENT_IC_DAILY_ALLOWANCE_VALUE" formula="accident_ic_daily_allowance.VALUE" />
+		<item name="HOSPITAL_DAILY_ALLOWANCE_VALUE" formula="hospital_daily_allowance.VALUE" />
+		<item name="CANCER_HOSPITAL_DAILY_ALLOWANCE_VALUE" formula="cancer_hospital_daily_allowance.VALUE" />
+		<item name="IC_DAILY_ALLOWANCE_VALUE" formula="ic_daily_allowance.VALUE" />
+		<item name="OPERATION_ALLOWANCE_VALUE" formula="operation_allowance.VALUE" />
+
+		<item name="AMOUNT_SELECT_VALUE" formula="amount_select.VALUE" />
+		<item name="DEDUCTIBLE_EXCESS_VALUE" formula="deductible_excess.VALUE" />
+		<item name="LOSS_RATION_VALUE" formula="loss_ration.VALUE" />
+		<item name="LOSS_RATION_SHOW" formula="loss_ration.DESC" />
+		<item name="SHGBXJ_VALUE" formula="shgbxj.VALUE" />
+		<item name="YES_OR_NO_VALUE" formula="yes_or_no.VALUE" />
+		<item name="DIVIDEND_COLLECTION_METHOD_VALUE" formula="dividend_collection_method.VALUE" />
+		<item name="DIVIDEND_COLLECTION_METHOD_SHOW" formula="dividend_collection_method.SHOW" />
+
+		<item name="FREQUENCY_OF_PENSION_RECEIPT_VALUE" formula="frequency_of_pension_receipt.VALUE" />
+		<item name="FREQUENCY_OF_PENSION_RECEIPT_SHOW" formula="frequency_of_pension_receipt.SHOW" />
+
+		<item name="PENSION_PENSION_METHOD_VALUE" formula="pension_pension_method.VALUE" />
+		<item name="PENSION_PENSION_METHOD_SHOW" formula="pension_pension_method.SHOW" />
+
+		<item name="BASIC_INSURANCE_LIABILITY_VALUE" formula="basic_insurance_liability.VALUE" />
+		<item name="BASIC_INSURANCE_LIABILITY_SHOW" formula="basic_insurance_liability.SHOW" />
+
+		<item name="OPTIONAL_INSURANCE_LIABILITY_VALUE" formula="optional_insurance_liability.VALUE" />
+		<item name="OPTIONAL_INSURANCE_LIABILITY_SHOW" formula="optional_insurance_liability.SHOW" />
+
+		<item name="AMOUNT_REQUIRED_VALUE" formula="amount_required.VALUE" />
+		<item name="AMOUNT_REQUIRED_SHOW" formula="amount_required.SHOW" />
+		<item name="AMOUNT_REQUIRED_CODE" formula="amount_required.CODE" />
+	</variable>
+</declare>

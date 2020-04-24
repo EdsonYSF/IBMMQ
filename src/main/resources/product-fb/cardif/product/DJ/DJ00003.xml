@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="DJ00003"
+			corporation_id="fuxing"
+			code="L11192"
+			name="安邦乐安一生重大疾病保险"
+			name_abbr="乐安一生"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="DJ00003" />
+		</data>
+		
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<!--交费期间-->
+			<pay>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_20"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="full_106"/>
+			</insure>
+
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="Q * DS.CV[A1][1]" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'轻症保险金'</blank>
+							<blank row="1">'重症保险金'</blank>
+							<blank row="1">'疾病终末期保险金'</blank>
+							<blank row="1">'年末现金价值'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="#,###">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(AMOUNT*0.3,2)+'元'</blank>
+								<blank align="right" style="#,###">round(AMOUNT,2)+'元'</blank>
+								<blank align="right" style="#,###">round(AMOUNT,2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.CSV(I),2)+'元'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="2.100种重疾保障（分5组）">
+					<table>
+						<row>
+							<blank>'因意外伤害或90日后，每次给付 '+Q*0.3+'万元，累计给付次数以三次为限，三次最高可赔付 '+AMOUNT*0.3*3+'元，合同继续有效。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.身故保险金">
+					<table>
+						<row>
+							<blank>'90日内，给付乐安一生重疾累计所交保险费；因意外伤害或90日后，首次给付'+Q+'万元，每组仅给付一次，给付后该组重大疾病的保险责任终止，每次重疾发生间隔期为180天，当累计给付达到五次时，本主险合同终止，五次最高可赔付'+AMOUNT*0.05+'元。
+								注：给付首次重大基本保险金后，该重大疾病所属组别的保险责任以及“身故保险金”、“疾病终末期保险金”、“轻症疾病保险金”及“轻症疾病 豁免保险费”的保险责任均终止，本合同的现金价值降为零。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3. 身故保障">
+					<table>
+						<row>
+							<blank>'90日内，给付乐安一生重疾累计所交保险费；因意外伤害或90日后，18周岁前给付乐安一生重疾累计已交保险费的200%；18周岁后给付'+Q+'万元。以上情形合同均终止。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="5. 轻/重症豁免保费保障">
+					<table>
+						<row>
+							<blank>'因意外伤害或90日后，初次发生合同所指的轻症疾病/重大疾病，豁免本合同自轻症疾病/重大疾病确诊之日起的续期保险费，合同继续有效。'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="AGE gt 60 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="(AGE gt 51 and AGE  lt 55) and PAY_CODE =='term_20'" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="(AGE gt 56 and AGE  lt 60) and (PAY_CODE =='term_10' or PAY_CODE =='term_20')" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+				基本保险金额≥10000元，超出部分须为1000元整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

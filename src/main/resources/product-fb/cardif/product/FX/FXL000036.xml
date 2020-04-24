@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="FXL000036"
+			corporation_id="fuxing"
+			code="110067"
+			name="复星联合复鑫保重大疾病保险"
+			name_abbr="复鑫保重大疾病保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="premium"
+			amount="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="FXL000036" />
+		</data>
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="term_3"/>
+				<item code="term_5"/>
+			</pay>
+			<insure>
+				<item code="full_105"/>
+			</insure>
+		</param>
+
+		<init>
+			<item name="Q" value="PREMIUM/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][0], 0)" />
+
+			<var name="MAJOR_LOW_VAL" param="A1" formula="max(IT.PRM_T(A1),IT.CSV(A1))"/>
+
+			<var name="MAJOR_IN_VAL" param="A1" formula="A1+AGE+1 ge 61 ? IT.PRM_T(A1)*1.2 : (A1+AGE+1 ge 41 ? IT.PRM_T(A1)*1.4 : (A1+AGE+1 ge 18 ? IT.PRM_T(A1)*1.6 :0))"/>
+
+			<var name="MAJOR_GIGH_VAL" param="A1" formula="max(IT.MAJOR_IN_VAL(A1),IT.CSV(A1),AMOUNT)"/>
+
+			<var name="MAJOR_VAL" param="A1" formula="A1+AGE+1 lt 18 ? IT.MAJOR_LOW_VAL(A1) : (A1>=PAY_PERIOD ?  IT.MAJOR_GIGH_VAL(A1) : IT.MAJOR_IN_VAL(A1))"/>
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'重大疾病保险金'</blank>
+							<blank row="1">'身故或全残保险金'</blank>
+							<blank row="1">'现金价值表'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="########0.00">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.MAJOR_VAL(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.MAJOR_VAL(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.CSV(I),2)+'元'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1.重大疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖108种重大疾病，须经本公司指定或认可的医疗机构由专科医生确诊，限赔付一次'</blank>
+							<blank>''</blank>
+						</row>
+						<row>
+							<blank>'合同生效180天后，被保险人在 18 周岁的保单周年日零时之前确诊初次发生本合同所列的一种或多种重大疾病'</blank>
+							<blank>'取以下两项金额中较大者：
+								1.本合同所交保险费。
+								2.被保险人确诊初次发生本合同所列的一种或多种重大疾病时本合同的现金价值。 '</blank>
+						</row>
+						<row>
+							<blank>'合同生效180天后，被保险人在 18 周岁的保单周年日零时之后确诊初次发生本合同所列的一种或多种重大疾病，且在本合同最后一个保险费的约定交纳日后的首个保单周年日零时之前确诊'</blank>
+							<blank>'本合同所交保险费×给付系数'</blank>
+						</row>
+						<row>
+							<blank>'合同生效180天后，被保险人在 18 周岁的保单周年日零时之后确诊初次发生本合同所列的一种或多种重大疾病，且在本合同最后一个保险费的约定交纳日后的首个保单周年日零时之后确诊'</blank>
+							<blank>'取以下三项金额中较大者：
+								1.本合同所交保险费×给付系数。
+								2.被保险人确诊初次发生本合同所列的一种或多种重大疾病时本合同的现金价值。
+								3.被保险人确诊初次发生本合同所列的一种或多种重大疾病时本合同的有效保险金额。 '</blank>
+						</row>
+						<row>
+							<blank>'合同生效180天内，被保险人确诊初次发生本合同列明的一种或多种重大疾病'</blank>
+							<blank>'本合同所交保险费'</blank>
+						</row>
+						<row>
+							<blank>'合同生效180天内，被保险人已经发生的疾病、症状或或病理改变且延续到本合同生效（若曾复效，则自本合同最后复效）之日起 180 天以后确诊发生本合同列明的一种或多种重大疾病'</blank>
+							<blank>'本合同所交保险费'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.身故或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在 18 周岁的保单周年日零时之前身故或全残'</blank>
+							<blank>'取以下两项金额中较大者：
+								1.本合同的所交保险费。
+								2.被保险人身故或全残时本合同的现金价值。 '</blank>
+						</row>
+						<row>
+							<blank>'被保险人在 18 周岁的保单周年日零时之后身故或全残，或被保险人投保时已满18 周岁且在本合同保险期间内身故或全残，且发生于本合同最后一个保险费的约定交纳日后的首个保单周年日零时之前'</blank>
+							<blank>'本合同所交保险费×给付系数  '</blank>
+						</row>
+						<row>
+							<blank>'被保险人在 18 周岁的保单周年日零时之后身故或全残，或被保险人投保时已满18 周岁且在本合同保险期间内身故或全残，且发生于本合同最后一个保险费的约定交纳日后的首个保单周年日零时之后'</blank>
+							<blank>'取以下三项金额中较大者：
+								1.本合同所交保险费×给付系数。
+								2.被保险人身故或全残时本合同的现金价值。
+								3.被保险人身故或全残时本合同的有效保险金额。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3.现金价值部分提取权">
+					<table>
+						<row type="title">
+							<blank>'提取规则'</blank>
+							<blank>'保额变更'</blank>
+						</row>
+						<row>
+							<blank>'在本合同第五个保险单周年日零时之后，如果本合同具有现金价值，投保人可以向本公司申请部分提取本合同的现金价值'</blank>
+							<blank>'金额将按照本次部分提取的现金价值金额与本次部分提取前本合同所具有的现金价值的比例，分别等比 例降低。现金价值部分提取后，若发生理赔，本公司支付的保险金也将等比例降低。现金价值部分领取后，不可再申请恢复原有基本保险金额及有效保险金额。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="4.表中所涉部分名词/概念解释">
+					<table>
+						<row type="title">
+							<blank>'名词/概念'</blank>
+							<blank>'释义'</blank>
+						</row>
+						<row>
+							<blank>'有效保险金额'</blank>
+							<blank>'首个保险年度，有效保险金额等于基本保险金额。从第二个保单年度起，各保单年度的有效保险金额按基本保险金额以3.5%年复利形式增加。
+								第n个保单年度的有效保险金额=基本保险金额×(1+3.5%)^(n-1)，其中n为保单年度数'</blank>
+						</row>
+						<row>
+							<blank>'给付系数'</blank>
+							<blank>'1.被保险人确诊重疾或身故时到达年龄大于等于18周岁且小于等于 40 周岁，则给付系数为160%。
+								2.被保险人确诊重疾或身故时到达年龄大于等于41周岁且小于等于60周岁，则给付系数为 140%。
+								3.被保险人确诊重疾或身故时到达年龄大于等于61周岁，则给付系数为120%。'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="OCCUPATION_CATEGORY>6 or OCCUPATION_CATEGORY lt 1" type="customer">
+				仅限职业风险等级为1-6级的客户投保。
+			</if>
+			<if condition="APPLICANT.AGE lt 18 " type="customer">
+				投保人：>=18周岁
+			</if>
+			<if condition="APPLICANT.AGE+PAY_VALUE + PAY_VALUE gt 70" type="customer">
+				投保人年龄+缴费期限小于等于70
+			</if>
+			<if condition="DAY lt 30 ">
+				被保人：>=30天
+			</if>
+			<if condition="AGE+PAY_VALUE + PAY_VALUE gt 65">
+				被保险人年龄+缴费年期小于等于65
+			</if>
+			<if condition="PREMIUM lt 5000 or PREMIUM%1!=0">
+				最低保费:5000元，超过部分须为1元的整数倍
+			</if>
+
+			<if condition="AGE le 40 and PREMIUM gt 1800000">
+				最高保费:0-40（含）周岁，期交总保费最高180万
+			</if>
+			<if condition="(AGE ge 41 and AGE le 65)  and PREMIUM gt 1200000">
+				最高保费:41-65（含）周岁，期交总保费最高120万
+			</if>
+
+		</rule>
+	</product>
+</declare>

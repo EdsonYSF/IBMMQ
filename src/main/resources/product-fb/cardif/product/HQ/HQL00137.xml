@@ -1,0 +1,1493 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="HQL00137"
+            corporation_id="hengqin"
+            code="24030"
+            name="横琴优享教育两全保险（分红型）"
+            name_abbr="优享教育"
+            name_abbr2="优享教育（分红险）"
+            unit="1000"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2019-10-18"
+            sale_end_date=""
+            quantity="1"
+            input="premium"
+            amount="AMOUNT_VALUE"
+            last_modify_date="2019-11-01"
+            benefit_title_page="低/中/高代表分红水平、万能结算利率"
+            benefit_title_dialog="分红水平/万能结算利率"
+            prod_category="1"
+            sub_category="3"
+            design_type="2"
+            grade_type="1"
+            period_type="1"
+    >
+
+        <data>
+            <item parser="dds" value="HQL00137"/>
+        </data>
+
+        <rider>
+            <product id="HQL00037"/>
+            <product id="HQL00038"/>
+            <product id="HQL00032"/>
+        </rider>
+
+        <param>
+            <pay_freq>
+                <item code="year" default="yes"/>
+            </pay_freq>
+            <pay>
+                <item code="term_3"/>
+                <item code="term_5" default="yes"/>
+            </pay>
+            <insure>
+                <item code="to_30"/>
+            </insure>
+            <dividend_collection_method>
+                <item code="1" default="yes"/>
+                <item code="2"/>
+                <item code="6"/>
+            </dividend_collection_method>
+        </param>
+
+
+        <init>
+            <item name="Q" value="PREMIUM/UNIT"/>
+            <item name="AMOUNT_VALUE" value="try(Q*DS.RATE[0][0],0)"/>
+            <item name="SSV_VALUE" value="PAY_FREQ_CODE=='single'?PREMIUM*0.1:PREMIUM*0.5"/>
+
+            <item name="ISLONG">true</item><!-- 是否为长险 -->
+            <item name="ISANNUITY">false</item><!-- 是否为年金险 -->
+            <!-- 年金领取方式-是否转入万能账户：优享一生单独销售false,和宜家捆绑销售时为true -->
+            <item name="TURNTOPOWERFUL">
+                if(PLAN.HasProduct('HQL00106'))
+                return true;
+                return false;
+            </item>
+            <item name="ISSHOWBENEFICIARY">true</item><!-- 是否指定受益人 -->
+            <item name="RIDERAVAILABLE">true</item><!-- 是否可以添加附加险 -->
+            <!-- 是否可以添加附加豁免险 -->
+            <item name="EXEMPT_RIDER_AVAILABLE">
+                !(PAY_PERIOD == 1 or (INSURANT.AGE == APPLICANT.AGE and INSURANT.GENDER == APPLICANT.GENDER and
+                INSURANT.NAME == APPLICANT.NAME))
+            </item>
+            <item name="NEEDRISKCA">true</item><!-- 是否需要风险抄录 -->
+            <item name="NEEDPRODUCTSTATE">true</item><!-- 是否需要产品说明书 -->
+            <!-- 绑定产品ID,多个以,分隔 -->
+            <item name="BINDPRODUCT" type="string">HQL00106</item>
+
+            <item name="ENDING" type="string">
+                1.保单年度末现金价值不含当年红利及满期创业金、教育金。
+                2.假设累积红利所用累积生息年利率假设为 3.0%，实际以本公司每年公布为准。
+                3.以上利益演示基于本公司的精算和其他假设，不代表本公司的历史经营业绩，也不代表对本公司未来经营业绩的预期，保单的红利分配是不保证的，在某些年度红利可能为0。
+            </item>
+            <item name="ENDING2" type="string">
+                本宣传内容仅供您理解产品使用，具体的保险责任、责任免除、犹豫期、合同解除及其他内容以保险条款的记载为准。温馨提示：在某些情况下我司不承担给付保险金的责任，犹豫期后退保会产生损失。
+            </item>
+
+            <!--获取万能险信息-->
+            <item name="WN">
+                var ppp = PLAN.PRODUCTS;
+                for(var i=0;i lt size(ppp);i++) {
+                var c = ppp[i];
+                if(c.PRODUCT_ID == 'HQL00106'){
+                return c;
+                }
+                }
+                return null;
+            </item>
+
+            <item name="hasDuty">true</item>
+            <item name="dutyNum" type="string">1</item>
+            <item name="DUTY_1_CODE" type="string">ID4030</item>
+            <item name="DUTY_1_AMNT" value="round(AMOUNT, 2)"/>
+            <item name="DUTY_1_PREM" value="round(PREMIUM, 2)"/>
+        </init>
+
+        <risk>
+        </risk>
+
+        <interest>
+            <var name="PRMX" param="A1,A2" formula="A1>=PAY_PERIOD?0:PLAN.DsFunction(A2).RATE[0,0]*QUANTITY" />
+            <var name="PRMX_T" param="A1,A2" formula="(A1>0?IT.PRMX(A1-1,A2):0)+IT.PRMX(A1)"/>
+
+            <var name="PRM_HQL00038" param="A1" formula="A1>=PAY_PERIOD?0:PLAN.Premium('HQL00038')" />
+            <var name="PRM_HQL00038_T" param="A1" formula="(A1>0?IT.PRM_HQL00038(A1-1):0)+IT.PRM_HQL00038(A1)"/>
+            <var name="PRM_HQL00037" param="A1" formula="A1>=PAY_PERIOD?0:PLAN.Premium('HQL00037')" />
+            <var name="PRM_HQL00037_T" param="A1" formula="(A1>0?IT.PRM_HQL00037(A1-1):0)+IT.PRM_HQL00037(A1)"/>
+            <var name="PRM_HQL00108" param="A1" formula="A1>=PAY_PERIOD?0:PLAN.Premium('HQL00108')" />
+            <var name="PRM_HQL00108_T" param="A1" formula="(A1>0?IT.PRM_HQL00108(A1-1):0)+IT.PRM_HQL00108(A1)"/>
+
+            <var name="SUM_AMOUNT_HQL00038" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00038')"/>
+            <var name="SUM_AMOUNT_HQL00037" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00037')"/>
+            <var name="SUM_AMOUNT_HQL00108" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00108')"/>
+            <var name="SUM_AMOUNT_HQL00025" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00025')"/>
+            <var name="SUM_AMOUNT_HQL00026" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00026')"/>
+            <var name="SUM_AMOUNT_HQL00028" param="A1" formula="PLAN.SumAmountWithPeriod(A1,'HQL00028')"/>
+
+            <var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM"/>
+            <var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)"/>
+            <var name="PENSION" param="A1" formula="AGE + A1 >=59 ? (FREQUENCY_OF_PENSION_RECEIPT_VALUE == 1 ? AMOUNT : 0.085*AMOUNT) :0"/>
+            <var name="PENSION_T" param="A1" formula="AGE + A1 >=59 ? (A1>0?IT.PENSION_T(A1-1):0)+IT.PENSION(A1) :0"/>
+            <var name="CV_VAL" param="A1" formula="Q*DS.DATA[A1,0]"/>
+            <var name="EXPIRY" param="A1" formula="A1 == INSURE_PERIOD-1 ?IT.PRM_T(INSURE_PERIOD-1) :0"/>
+            <var name="BONUS" param="A1,A2" formula="Q*DS.DI[A1,A2]"/>
+            <var name="SG_VAL" param="A1" formula="A1+AGE+1 lt 18 ? IT.PRM_T(A1) : IT.PRM_T(A1)*1.6"/><!--身故保险金-->
+            <var name="EXPIRATION" param="A1" formula="A1==INSURE_PERIOD-1 ? AMOUNT :0"/><!--满期金-->
+            <var name="ZJ_PRM" param="A1,A2" formula="try(IT.BONUS(A1,A2)+IT.JY_VAL(A1),0)"/><!--追加保险费-->
+            <var name="INITIAL_COST" param="A1,A2" formula="A1==0?10000*0.01:IT.ZJ_PRM(A1-1,A2)*0.01"/><!--初始费用-->
+            <var name="JY_VAL" param="A1" formula="A1+AGE+1 ge 18 ? (A1+AGE+1 gt 27?0:0.5*PREMIUM) :0"/><!--教育金-->
+            <var name="THAT_YEAR_VAL" param="A1,A2" formula="A1==0?10000-IT.INITIAL_COST(A1,A2):IT.ZJ_PRM(A1-1,A2)-IT.IT.INITIAL_COST(A1,A2)"/><!--当年进入万能账户的价值-->
+            <var name="END_THAT_YEAR_VAL" param="A1,A2,A3"  formula="A1==0?IT.THAT_YEAR_VAL(A1,A2)*(1+A3): (IT.END_THAT_YEAR_VAL(A1-1,A2,A3)+IT.THAT_YEAR_VAL(A1,A2))*(1+A3)"/><!--年末账户价值（年金给付前）-->
+
+
+            <var name="PRM_P_WN" param="A1,A2" formula="WN.IT.PRM_ZJ(A1,A2)"/><!-- 追加保险费-->
+            <var name="PRM_WN" param="A1" formula="WN.IT.PRM(A1)" /><!--年交保费-->
+            <var name="PRM_T_WN" param="A1" formula="WN.IT.PRM_P(A1)" /><!--累计保费-->
+            <var name="INC_WN" param="A1,A2" formula="WN.IT.INC(A1,A2)"/><!-- 初始费用 -->
+            <var name="CV_T_WN" param="A1,A2" formula="WN.IT.CV_T(A1,A2)"/><!--累计进入万能保单账户的价值 -->
+            <var name="PV_WN" param="A1,A2,A3" formula="WN.IT.PV(A1,A2,A3)"/><!-- 年末保单价值 -->
+            <!--退保费用-->
+            <item name="SURRENDER_CHARGE" param="A1,A2,A3">
+                if(A1 ==0){
+                return IT.END_THAT_YEAR_VAL(A1,A2,A3)*0.05;
+                }else if(A1==1){
+                return IT.END_THAT_YEAR_VAL(A1,A2,A3)*0.04;
+                }else if(A1==2){
+                return IT.END_THAT_YEAR_VAL(A1,A2,A3)*0.03;
+                }else if(A1==3){
+                return IT.END_THAT_YEAR_VAL(A1,A2,A3)*0.02;
+                }else if(A1==4){
+                return IT.END_THAT_YEAR_VAL(A1,A2,A3)*0.01;
+                }else{
+                return 0;
+                }
+            </item>
+            <var name="END_YEAR_XJ_VAL" param="A1,A2,A3" formula="IT.END_THAT_YEAR_VAL(A1,A2,A3)-IT.SURRENDER_CHARGE(A1,A2,A3)"/><!-- 年末现金价值 -->
+            <var name="SV_WN" param="A1,A2,A3" formula="WN.IT.SV(A1,A2,A3)"/><!--退保费用-->
+        </interest>
+
+        <attachment>
+            <benefit_table filter="table" parser="table">
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="low" descDialog="低档(2.5%)" descPage="低">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="middle" descDialog="中档(4.5%)" descPage="中">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="high" descDialog="高档(6%)" descPage="高">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'现金价值'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="low" descDialog="低档(2.5%)" descPage="低">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'累计进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                        <blank row="1">'年末身故总保险金'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)+IT.PRM_WN(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.ZJ_PRM(I-1,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.INITIAL_COST(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,2,0.025),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,2,0.025),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,2,0.025)+IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,2,0.025)+IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="middle" descDialog="中档(4.5%)" descPage="中">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'累计进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                        <blank row="1">'年末身故总保险金'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <!--<blank align="right" style="########0">round(IT.PRM(I)+IT.PRM_WN(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.ZJ_PRM(I-1,1),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.INITIAL_COST(I,1),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,1),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,1,0.045),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,1,0.045),2)+'元'</blank>-->
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,1,0.045)+IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,1,0.045)+IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="high" descDialog="高档(6%)" descPage="高">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'年交保险费'</blank>
+                        <blank row="1">'累计保险费'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'追加保险费'</blank>
+                        <blank row="1">'初始费用'</blank>
+                        <blank row="1">'累计进入万能账户的价值'</blank>
+                        <blank row="1">'年末账户价值（年金给付前）'</blank>
+                        <blank row="1">'退保费用'</blank>
+                        <blank row="1">'年末总现金价值（年金给付前）'</blank>
+                        <blank row="1">'年末身故总保险金'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <!--<blank align="right" style="########0">round(IT.PRM(I)+IT.PRM_WN(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.ZJ_PRM(I-1,0),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.INITIAL_COST(I,0),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.THAT_YEAR_VAL(I,0),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,0,0.06),2)+'元'</blank>-->
+                            <!--<blank align="right" style="########0">round(IT.SURRENDER_CHARGE(I,0,0.06),2)+'元'</blank>-->
+                            <blank align="right" style="########0">round(IT.END_YEAR_XJ_VAL(I,0,0.06)+IT.CV_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,0,0.06)+IT.SG_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.PRM(I)/365,2)+'元'</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_table>
+            <benefit_app2 filter="table" parser="table">
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="low" descDialog="低档(2.5%)" descPage="低">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="middle" descDialog="中档(4.5%)" descPage="中">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="!PLAN.HasProduct('HQL00106')" desc="high" descDialog="高档(6%)" descPage="高">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="low_low" descDialog="低档(2.5%) 红利(低)" descPage="2.5%低档利率 红利(低)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,0) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,2,0.025),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="low_middle" descDialog="低档(2.5%) 红利(中)" descPage="2.5%低档利率 红利(中)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,0) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,2,0.025),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="low_high" descDialog="低档(2.5%) 红利(高)" descPage="2.5%低档利率 红利(高)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,0) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,0) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,2,0.025),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="middle_low" descDialog="中档(4.5%) 红利(低)" descPage="4.5%中档利率 红利(低)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,1) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,1,0.045),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="middle_middle" descDialog="中档(4.5%) 红利(中)" descPage="4.5%中档利率 红利(中)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,1) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,1,0.045),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="middle_high" descDialog="中档(4.5%) 红利(高)" descPage="4.5%中档利率 红利(高)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,1) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,1) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,1,0.045),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table condition="PLAN.HasProduct('HQL00106')" desc="high_low" descDialog="高档(6%) 红利(低)" descPage="6%高档利率 红利(低)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,2),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,5),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,0,0.06),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="high_middle" descDialog="高档(6%) 红利(中)" descPage="6%高档利率 红利(中)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,1),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,4),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,0,0.06),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+                <table condition="PLAN.HasProduct('HQL00106')" desc="high_high" descDialog="高档(6%) 红利(高)" descPage="6%高档利率 红利(高)">
+                    <row type="title">
+                        <blank row="1">'年龄'</blank>
+                        <blank row="1">'保单年度'</blank>
+                        <blank row="1">'已交保费'</blank>
+                        <blank row="1">'教育金'</blank>
+                        <blank row="1">'满期创业金'</blank>
+                        <blank row="1">'年度红利'</blank>
+                        <blank row="1">'累积红利'</blank>
+                        <blank row="1">'身故保险金'</blank>
+                        <blank row="1">'年末万能账户价值'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'少儿重疾'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'中症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00038')" row="1">'轻症疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00037')" row="1">'特定疾病'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00025')" row="1">'意外伤害'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'癌症住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'重症监护津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00028')" row="1">'手术医疗津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外住院津贴'</blank>
+                        <blank condition="PLAN.HasProduct('HQL00026')" row="1">'意外伤害重症监护津贴'</blank>
+                        <blank row="1">'日投入'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">AGE+I+1</blank>
+                            <blank style="##0">I+1</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00108_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I) +IT.PRM_T_WN(I)+ IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.PRM_T(I)+IT.PRM_T_WN(I),2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.JY_VAL(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.EXPIRATION(I),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,0),2)+'元'</blank>
+                            <blank align="right" style="########0">round(IT.BONUS(I,3),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) + IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I) +IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.SUM_AMOUNT_HQL00108(I),2) +'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00038_T(I),2)+'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I) +IT.PV_WN(I,0,2) + IT.PRM_HQL00037_T(I),2) +'元'</blank>
+                            <blank condition="!PLAN.HasProduct('HQL00038') and !PLAN.HasProduct('HQL00037') and !PLAN.HasProduct('HQL00108')" align="right" style="########0">round(IT.SG_VAL(I),2) +IT.PV_WN(I,0,2) +'元'</blank>
+                            <blank align="right" style="########0">round(IT.END_THAT_YEAR_VAL(I,0,0.06),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.5,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00038')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00038(I)*0.3,2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00037')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00037(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00025')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00025(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(IT.SUM_AMOUNT_HQL00028(I),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2)+'元'</blank>
+                            <blank condition="PLAN.HasProduct('HQL00028')" align="right" style="########0">round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2)+'元'</blank>
+                            <blank align="right" style="########0">''</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_app2>
+
+            <liability filter="liability" parser="liability">
+                <paragraph title="1.满期创业金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'被保险人于保险期间届满时仍生存，我们按基本保险金额给付满期创业金，本合同终止。'</blank>
+                            <blank>round(AMOUNT,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="1.满期创业金-优享教育" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'若您选择一次性交清保险费，在本合同生效后的第5个及第6个保单周年日，若被保险人仍生存，我们按本合同年交保险费（见10.4）的10%给付特别生存金。;
+                                若您选择分期支付保险费，在本合同生效后的第5个及第6个保单周年日，若被保险人仍生存，我们按本合同年交保险费的50%给付特别生存金。'
+                            </blank>
+                            <blank>round(AMOUNT,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="2.教育金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank condition="PAY_PERIOD == 1">
+                                '自被保险人年满18周岁的首个保单周年日至年满22周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的20%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 1">round(PREMIUM*0.2,2)+'元'</blank>
+                            <blank condition="PAY_PERIOD == 3">
+                                '自被保险人年满18周岁的首个保单周年日至年满23周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的50%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 3">round(PREMIUM*0.5,2)+'元'</blank>
+                            <blank condition="PAY_PERIOD == 5">
+                                '自被保险人年满18周岁的首个保单周年日至年满27周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的50%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 5">round(PREMIUM*0.5,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="2.教育金-优享教育" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank condition="PAY_PERIOD == 1">
+                                '自被保险人年满18周岁的首个保单周年日至年满22周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的20%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 1">round(PREMIUM*0.2,2)+'元'</blank>
+                            <blank condition="PAY_PERIOD == 3">
+                                '自被保险人年满18周岁的首个保单周年日至年满23周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的50%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 3">round(PREMIUM*0.5,2)+'元'</blank>
+                            <blank condition="PAY_PERIOD == 5">
+                                '自被保险人年满18周岁的首个保单周年日至年满27周岁的首个保单周年日，若被保险人在每个保单周年日仍生存，我们按本合同年交保险费的50%给付教育金。'
+                            </blank>
+                            <blank condition="PAY_PERIOD == 5">round(PREMIUM*0.5,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="3.身故保险金" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'1）若被保险人于本合同生效或最后复效之日起90日内（含第90日当日）因疾病导致身故，我们按本合同已交保险费给付身故保险金，本合同终止。'</blank>
+                            <blank>'1）'+round(PREMIUM,2)+'元'</blank>
+                        </row>
+                        <row>
+                            <blank>
+                                '2）若被保险人因意外伤害事故导致身故，或者于本合同生效或最后复效之日起90日后因疾病导致身故，我们按被保险人身故时本合同已交保险费乘以下表所列身故时到达年龄对应的给付比例给付身故保险金，给付后本合同终止。'
+                            </blank>
+                            <blank>'2）'+round(PREMIUM,2)+'元*已交期数*给付比例'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="" condition="!PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'被保险人身故时的到达年龄'</blank>
+                            <blank>'给付比例'</blank>
+                        </row>
+                        <row>
+                            <blank>'0-17周岁'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'18-30周岁'</blank>
+                            <blank>'160%'</blank>
+                        </row>
+                        <row>
+                            <blank>'注：到达年龄=被保险人投保年龄+保单年度-1'</blank>
+                            <blank>''</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="3.身故保险金-优享教育" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'1）若被保险人于本合同生效或最后复效之日起90日内（含第90日当日）因疾病导致身故，我们按本合同已交保险费给付身故保险金，本合同终止。'</blank>
+                            <blank>'1）'+round(PREMIUM,2)+'元'</blank>
+                        </row>
+                        <row>
+                            <blank>
+                                '2）若被保险人因意外伤害事故导致身故，或者于本合同生效或最后复效之日起90日后因疾病导致身故，我们按被保险人身故时本合同已交保险费乘以下表所列身故时到达年龄对应的给付比例给付身故保险金，给付后本合同终止。'
+                            </blank>
+                            <blank>'2）'+round(PREMIUM,2)+'元*已交期数*给付比例'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'被保险人身故时的到达年龄'</blank>
+                            <blank>'给付比例'</blank>
+                        </row>
+                        <row>
+                            <blank>'0-17周岁'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'18-30周岁'</blank>
+                            <blank>'160%'</blank>
+                        </row>
+                        <row>
+                            <blank>'注：到达年龄=被保险人投保年龄+保单年度-1'</blank>
+                            <blank>''</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph title="4.身故保险金-宜家年金（万能型）" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'给付原因及标准'</blank>
+                            <blank>'给付限额'</blank>
+                        </row>
+                        <row>
+                            <blank>'若被保险人身故，我们按身故保险金申请日的保单账户价值给付身故保险金，同时本合同效力终止。'</blank>
+                            <blank>'保单账户价值'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+            </liability>
+            <liability2 filter="liability" parser="liability">
+                <paragraph title="固定领取">
+                    <table condition="PAY_PERIOD == 1">
+                        <row type="title">
+                            <blank>'18-22周岁每年可领取教育金'+carry(round(PREMIUM*0.2,2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PAY_PERIOD == 3">
+                        <row type="title">
+                            <blank>'18-23周岁每年可领取教育金'+carry(round(PREMIUM*0.5,2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PAY_PERIOD == 5">
+                        <row type="title">
+                            <blank>'18-27周岁每年可领取教育金'+carry(round(PREMIUM*0.5,2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title">
+                            <blank>'保险期间届满时仍生存，可领取满期创业金'+round(AMOUNT,2)+'元'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph title="万能账户" condition="PLAN.HasProduct('HQL00106')">
+                    <table>
+                        <row type="title">
+                            <blank>'所有年金自动进入账户，财富二次增值。保底2.5%，上不封顶，账户可追加可领取，自由支配，按需规划。'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph title="浮动分红">
+                    <table>
+                        <row type="title">
+                            <blank>'保单可分红，共享助增值'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph title="身故伤残保障">
+                    <table>
+                        <row type="title">
+                            <blank>'优享教育身故保障最高'+carry(round(PLAN.Premium('HQL00137'),2))+'元*已交期数*160%'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00038')">
+                        <row type="title">
+                            <blank>
+                                '附加少儿重大疾病保险身故保障'+carry(round(PLAN.Premium('HQL00038'),2))+'元*已交期数'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00037')">
+                        <row type="title">
+                            <blank>
+                                '附加少儿特定疾病保险身故保障'+carry(round(PLAN.Premium('HQL00037'),2))+'元*已交期数'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00108')">
+                        <row type="title">
+                            <blank>
+                                '个人意外伤害保险身故保障'+carry(round(PLAN.SumAmount('HQL00108'),2))+'元'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00108')">
+                        <row type="title">
+                            <blank>
+                                '个人意外伤害保险伤残保障'+carry(round(PLAN.SumAmount('HQL00108'),2))+'元*伤残评定比例'
+                            </blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph condition="PLAN.HasProduct('HQL00032')" button="{exemption: '附加豁免'}" title="保费豁免">
+                    <table>
+                        <row type="title">
+                            <blank>'投保人因患有112种重大疾病，56种特定疾病或身故可豁免优享教育两全保险（分红型）、附加少儿重大疾病保险、附加少儿特定疾病保险后续保险费'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph condition="PLAN.HasProduct('HQL00038') or PLAN.HasProduct('HQL00037')"  button="{serious: '少儿重疾',given: '少儿特定疾病'}"  title="健康保障">
+                    <table condition="PLAN.HasProduct('HQL00038')">
+                        <row type="title">
+                            <blank>
+                                '107种少儿重疾保障'+carry(round(PLAN.SumAmount('HQL00038'),2))+'元'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00038') and PLAN.Var('HQL00038','optional_insurance_liability') == 1">
+                        <row type="title">
+                            <blank>
+                                '18种少儿中症疾病可赔2次，最高保障'+carry(round(PLAN.SumAmount('HQL00038')*1.1,2))+'元'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00038') and PLAN.Var('HQL00038','optional_insurance_liability') == 1">
+                        <row type="title">
+                            <blank>
+                                '34种少儿轻症疾病可赔3次，最高保障'+carry(round(PLAN.SumAmount('HQL00038')*1.2,2))+'元'
+                            </blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00037')">
+                        <row type="title">
+                            <blank>
+                                '20种少儿特定疾病保障'+carry(round(PLAN.SumAmount('HQL00037'),2))+'元'
+                            </blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph condition="PLAN.HasProduct('HQL00025')" title="医疗保障">
+                    <table>
+                        <row type="title">
+                            <blank>'意外伤害医疗保险金'+carry(round(PLAN.SumAmount('HQL00025'),2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00028')">
+                        <row type="title">
+                            <blank>'一般住院日额津贴保险金'+carry(round(PLAN.ProductOption('HQL00028','hospital_daily_allowance'),2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00028')">
+                        <row type="title">
+                            <blank>'癌症住院日额津贴保险金'+carry(round(PLAN.ProductOption('HQL00028','cancer_hospital_daily_allowance'),2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00028')">
+                        <row type="title">
+                            <blank>'重症监护日额津贴保险金'+carry(round(PLAN.ProductOption('HQL00028','ic_daily_allowance'),2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00028')">
+                        <row type="title">
+                            <blank>'手术医疗津贴保险金'+carry(round(PLAN.SumAmount('HQL00028'),2))+'元*给付比例 '</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00026')">
+                        <row type="title">
+                            <blank>'意外伤害住院日额津贴保险金'+carry(round(PLAN.ProductOption('HQL00026','accident_hospital_daily_allowance'),2))+'元'</blank>
+                        </row>
+                    </table>
+                    <table condition="PLAN.HasProduct('HQL00026')">
+                        <row type="title">
+                            <blank>'意外伤害重症监护日额津贴保险金'+carry(round(PLAN.ProductOption('HQL00026','accident_ic_daily_allowance'),2))+'元 '</blank>
+                        </row>
+                    </table>
+                </paragraph>
+            </liability2>
+        </attachment>
+
+        <rule>
+            <if condition="DAY lt 27 or AGE > 12" type="customer">
+                被保人年龄：出生满 28 天-12 周岁。
+            </if>
+            <if condition="PREMIUM lt 10000 or PREMIUM%1000!=0">
+                交费要求：最低投保保费金额10000元，超过部份须为1000元的整数倍。
+            </if>
+            <if condition="!PLAN.HasProduct('HQL00106') and DIVIDEND_COLLECTION_METHOD_VALUE == 6">
+                仅搭配/关联万能险投保才支持转入万能账户
+            </if>
+            <if condition="DAY lt 27 or AGE > 12" type="plan">
+                被保人年龄：出生满 28 天-12 周岁。
+            </if>
+        </rule>
+    </product>
+</declare>

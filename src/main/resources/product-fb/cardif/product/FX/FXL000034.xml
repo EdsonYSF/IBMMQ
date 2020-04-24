@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="FXL000034"
+			corporation_id="fuxing"
+			code="120021"
+			name="复星联合附加星保倍护理保险"
+			name_abbr="附加星保倍护理保险"
+			unit="1000"
+			type_code="exempt"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			is_main="no"
+			is_rider="yes"
+			quantity="1"
+			input="amount"
+			premium="AMOUNT/UNIT*DS.RATE[0][0]"
+			last_modify_date="2019-08-31">
+
+		<data>
+			<item parser="dds" value="FXL000034" />
+		</data>
+
+
+		<param>
+			<pay_freq>
+				<item code="parent" />
+			</pay_freq>
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+			</insure>
+		</param>
+
+		<init>
+			<!--<item name="INSURANT">APPLICANT</item>-->
+			<!--<item name="INS">PARENT.INSURANT</item>-->
+			<!--<item name="INSURE_PERIOD">INSURE_VALUE-INS.AGE</item>-->
+			<item name="Q" value="AMOUNT/UNIT"/>
+
+			<item name="PRM_EXEMPT">
+				var total = 0;
+				var list = PLAN.PRODUCTS;
+				for (var x = 0; x lt size(list); x++) {
+				var p = list[x];
+					if ((p.PARENT == THIS.PARENT or p == THIS.PARENT) and p != THIS and p.PAY_PERIOD == THIS.PARENT.PAY_PERIOD) {
+						total += p.PREMIUM;
+					}
+				}
+				return total;
+			</item>
+
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][0], 0)" />
+			<var name="JK_PRM" param="A1" formula="A1==INSURE_PERIOD-1?'本附加险已缴纳的保费+主合同已缴纳的保费':0" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'当前保费'</blank>
+						<blank row="1">'累计保费'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'长期护理保险金'</blank>
+						<blank row="1">'豁免保险金'</blank>
+						<blank row="1">'健康维护保险金'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.CSV(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)*(I+1),2)+'元'</blank>
+							<blank align="right" style="########0.00">IT.JK_PRM(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1.长期护理保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'自本附加合同生效之日起因意外原因，或自本附加合同生效之日（若曾复效，则自本附加合同最后复效之日）起90天后因非意外的原因，被保险人进入本附加合同约定的长期护理状态，并在观察期结束后仍处于长期护理状态的，本公司将在观察期结束后，按本附加合同累计已交纳的保险费与主合同累计已交纳的保险费二者之和给付长期护理保险金，且观察期结束后首个主合同的保险费约定交纳日开始，直至主合同最后一次保险费约定交纳日止，本公司豁免前述期间内主合同应交纳的保险费'</blank>
+							<blank>'本附加险已缴纳的保费=每期保费*已缴费期数
+								+
+								主合同已缴纳的保费=每期保费*已缴费年期'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本附加合同生效（若曾复效，则自本附加合同最后复效）之日起90天后因非意外的原因确诊初次发生主合同列明的一种或多种中症疾病或轻症疾病，则自确诊日后首个本附加合同的保险费约定交纳日开始，直至本附加合同最后一次保险费约定交纳日止，本公司豁免前述期间内本附加合同应交纳的保险费'</blank>
+							<blank>'本附加险未缴纳的保费=每期保费*剩余交费期数'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3.健康维护保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'（一）若本公司已给付主合同的首次重大疾病保险金，或身故或全残责任保险金，则健康维护保险金为0
+								（二）若本公司未给付主合同的首次重大疾病保险金，或身故或全残责任保险金，保险期间届满时，若被保险人生存、未处于观察期且本附加合同有效，或若被保险人处于观察期且本附加合同有效，观察期结束后生存且未处于长期护理状态的，本公司按本附加合同累计已交纳的保险费与主合同累计已交纳的保险费二者之和给付健康维护保险金'</blank>
+							<blank>'本附加险已缴纳的保费=每期保费*缴费年期
+								+
+								主合同已缴纳的保费=每期保费*交费年期'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<!--<if condition="APPLICANT.AGE lt 16 " type="customer">-->
+				<!--投保人：>=16周岁-->
+			<!--</if>-->
+			<!--<if condition="APPLICANT.AGE+PAY_VALUE gt 70 " type="customer">-->
+				<!--投保人的年龄在缴费期满时不能超过70周岁！-->
+			<!--</if>-->
+			<!--<if condition="DAY lt 30 ">-->
+				<!--投保人：>=30天-->
+			<!--</if>-->
+			<!--<if condition="AGE gt 60">-->
+				<!--被保险人年龄超过60周岁！-->
+			<!--</if>-->
+			<!--<if condition="AMOUNT lt 50000">-->
+				<!--最低保额:5W-->
+			<!--</if>-->
+			<!--<if condition="PREMIUM lt 1000">-->
+				<!--最低保费:1000元-->
+			<!--</if>-->
+			<!--<if condition="OCCUPATION_CATEGORY>6 or OCCUPATION_CATEGORY lt 1" type="customer">-->
+				<!--仅限职业风险等级为1-6级的客户投保。-->
+			<!--</if>-->
+			<!--&lt;!&ndash;投保要求&ndash;&gt;-->
+			<!--<if condition="PLAN.INSURANT.RELATION_APPLICANT == '06'">-->
+				<!--仅支持本人、父母、子女、配偶关系投保-->
+			<!--</if>-->
+		</rule>
+	</product>
+</declare>

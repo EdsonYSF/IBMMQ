@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="ZY000040"
+			corporation_id="fuxing"
+			code="110063"
+			name="中意悦享百万医疗保险"
+			name_abbr="中意悦享百万医疗保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			is_rider="yes"
+			input="nono"
+			premium="RES_PREMIUM_VALUE"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="ZY000040" />
+		</data>
+
+		<param>
+			<medicare>
+				<item code="yes" />
+				<item code="no" />
+			</medicare>
+		</param>
+
+		<input>
+			<item name="MEDICARE" label ="有无社保" widget="select">buildOption('medicare')</item>
+			<item name="AMOUNT" label="基本保险金额" widget="input">1000000</item>
+			<item name="PREMIUM" label="首年保费" widget="label">PREMIUM</item>
+		</input>
+
+		<init>
+			<item name="Q" value="1000000"/>
+			<item name="RES_PREMIUM_VALUE">
+				var res = 0;
+				if(MEDICARE_VALUE == 1){
+					res=Q*DS.RATE[0][0];
+				}else{
+					res=Q*DS.RATE[0][1];
+				}
+				return res;
+			</item>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="AMOUNT%1 !=0" type="customer">
+				保额只可输入整数
+			</if>
+			<if condition="DAY lt 30 and AGE ge 60" type="customer">
+				被保险人出生满30天-60周岁
+			</if>
+		</rule>
+	</product>
+</declare>

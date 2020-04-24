@@ -1,0 +1,3444 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="FXL000031"
+            corporation_id="fuxing"
+            code="110060"
+            name="复星联合乐健一生中端医疗保险（2019版）"
+            name_abbr="乐健一生中端医疗保险（2019版）"
+            unit="1000"
+            type_code="annuity"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            quantity="1"
+            input="none"
+            amount="0"
+            premium="round(IT.PRM_T,2)"
+            last_modify_date="2017-01-01">
+
+        <data>
+            <item parser="dds" value="FXL000031"/>
+        </data>
+
+        <param>
+            <pay label="交费年期">
+                <item code="single" default="yes"/>
+            </pay>
+
+            <insure label="保险期间">
+                <item code="term_1" default="yes"/>
+            </insure>
+
+            <medicare label="有无社保">
+                <item code="default" default="yes"/>
+                <item code="yes"/>
+                <item code="no"/>
+            </medicare>
+
+            <renewal label="是否自动续保">
+                <item code="yes" />
+                <item code="no"/>
+            </renewal>
+
+
+            <hospital_duty label="一般住院、恶性肿瘤医疗责任">
+                <item code="1" default="yes"/>
+                <item code="2"/>
+                <item code="3"/>
+                <item code="4"/>
+                <item code="5"/>
+                <item code="6"/>
+                <item code="7"/>
+                <item code="8"/>
+                <item code="9"/>
+            </hospital_duty>
+
+            <hospital_deductible label="住院年免赔额">
+                <item code="0" default="yes"/>
+                <item code="5000"/>
+                <item code="10000"/>
+                <item code="15000"/>
+                <item code="20000"/>
+            </hospital_deductible>
+
+            <cancer_duty label="恶性肿瘤住院津贴责任">
+                <item code="1" default="yes"/>
+                <item code="2"/>
+                <item code="3"/>
+                <item code="4"/>
+                <item code="5"/>
+                <item code="6"/>
+                <item code="7"/>
+                <item code="8"/>
+                <item code="9"/>
+            </cancer_duty>
+
+            <outpatient_duty label="门急诊医疗责任">
+                <item code="0"/>
+                <item code="1" default="yes"/>
+                <item code="2"/>
+                <item code="3"/>
+                <item code="4"/>
+                <item code="9"/>
+            </outpatient_duty>
+
+            <deductible_type label="免赔类型">
+                <item code="0"/>
+                <item code="1"/>
+            </deductible_type>
+
+            <clinic_deductible_second label="门急诊次免赔额" condition="DEDUCTIBLE_TYPE_VALUE == '0'">
+                <item code="0" default="yes"/>
+                <item code="50"/>
+                <item code="100"/>
+                <item code="200"/>
+                <item code="500"/>
+            </clinic_deductible_second>
+
+            <clinic_deductible label="门急诊年免赔额" condition="DEDUCTIBLE_TYPE_VALUE == '1'">
+                <item code="0" default="yes"/>
+                <item code="200"/>
+                <item code="500"/>
+                <item code="1300"/>
+            </clinic_deductible>
+
+
+            <juveniles label="未成年人检查与免疫医疗责任">
+                <item code="0" default="yes"/>
+                <item code="9"/>
+            </juveniles>
+
+            <compensation_ratio label="赔付比例 ">
+                <item code="1" default="yes"/>
+            </compensation_ratio>
+        </param>
+
+        <input>
+            <item name="AMOUNT_YB"  widget="hidden">AMOUNT_YB</item>
+            <item name="AMOUNT_ZL"  widget="hidden">AMOUNT_ZL</item>
+            <item name="AMOUNT_MZ"  widget="hidden">AMOUNT_MZ</item>
+            <item name="AMOUNT_WCN" widget="hidden">AMOUNT_WCN</item>
+           <!-- <item name="PREMIUM_YB" widget="hidden">round(GENERAL_PRM,2)</item>
+            <item name="PREMIUM_ZL" widget="hidden">round(CANCER_PRM,2)</item>
+            <item name="PREMIUM_MZ" widget="hidden">round(IT.AOMR_PRM,2)</item>
+            <item name="PREMIUM_WCN" widget="hidden">round(IT.NONAGE_PRM,2)</item>-->
+        </input>
+        <init>
+            <item name="PREMIUM_A" widget="hidden" value="round(IT.GENERAL_PRM,2)"></item>
+            <item name="PREMIUM_B" widget="hidden" value="round(IT.CANCER_PRM,2)"></item>
+            <item name="PREMIUM_C" widget="hidden" value="round(IT.AOMR_PRM,2)"></item>
+            <item name="PREMIUM_D" widget="hidden" value="round(IT.NONAGE_PRM,2)"></item>
+            <item name="AMOUNT_YB">
+                var amount = 0;
+                if(HOSPITAL_DUTY_VALUE == 1){
+                    amount = 150000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 2){
+                    amount = 300000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 3){
+                    amount = 800000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 4){
+                    amount = 1500000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 5){
+                    amount = 300000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 6){
+                    amount = 800000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 7){
+                    amount = 1500000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 8){
+                    amount = 2000000;
+                }
+                if(HOSPITAL_DUTY_VALUE == 9){
+                    amount = 2000000;
+                }
+                return amount;
+            </item>
+
+            <item name="AMOUNT_ZL">
+                var amount = 0;
+                if(CANCER_DUTY_VALUE == 1){
+                    amount = 6000;
+                }
+                if(CANCER_DUTY_VALUE == 2){
+                    amount = 6000;
+                }
+                if(CANCER_DUTY_VALUE == 3){
+                    amount = 9000;
+                }
+                if(CANCER_DUTY_VALUE == 4){
+                    amount = 9000;
+                }
+                if(CANCER_DUTY_VALUE == 5){
+                    amount = 9000;
+                }
+                if(CANCER_DUTY_VALUE == 6){
+                    amount = 12000;
+                }
+                if(CANCER_DUTY_VALUE == 7){
+                    amount = 12000;
+                }
+                if(CANCER_DUTY_VALUE == 8){
+                    amount = 18000;
+                }
+                if(CANCER_DUTY_VALUE == 9){
+                    amount = 30000;
+                }
+                return amount;
+            </item>
+            <item name="AMOUNT_MZ">
+                var amount = 0;
+                if(OUTPATIENT_DUTY_VALUE == 1){
+                    amount = 10000;
+                }
+                if(OUTPATIENT_DUTY_VALUE == 2){
+                    amount = 15000;
+                }
+                if(OUTPATIENT_DUTY_VALUE == 3){
+                    amount = 20000;
+                }
+                if(OUTPATIENT_DUTY_VALUE == 4){
+                    amount = 35000;
+                }
+                if(OUTPATIENT_DUTY_VALUE == 9){
+                    amount = 50000;
+                }
+                return amount;
+            </item>
+            <item name="AMOUNT_WCN">
+                var amount = 0;
+                if(JUVENILES_VALUE == 9){
+                    amount = 5000;
+                }
+                return amount;
+            </item>
+        </init>
+        <interest>
+
+
+            <!--住院年免赔额调整因子-->
+            <var name="DEDUCTIBLE">
+                var hospital_deductible_val=HOSPITAL_DEDUCTIBLE_VALUE;
+                if(hospital_deductible_val == 0){
+                return 1;
+                }else if(hospital_deductible_val == 1){
+                return 0.7;
+                }else if(hospital_deductible_val == 2){
+                return 0.6;
+                }else if(hospital_deductible_val == 3){
+                return 0.55;
+                }else if(hospital_deductible_val == 4){
+                return 0.5;
+                }
+            </var>
+
+            <!--一般住院、恶性肿瘤医疗责任-->
+            <var name="HOSPITAL_DUTY">
+                var medicare_val=MEDICARE_VALUE; <!--有无社保-->
+                var hospital_duty_val=HOSPITAL_DUTY_VALUE;<!--一般住院、恶性肿瘤医疗责任-->
+                if(medicare_val == 2){
+                if(hospital_duty_val == 1){
+                return 0;
+                }else if(hospital_duty_val == 2){
+                return 1;
+                }else if(hospital_duty_val == 3){
+                return 2;
+                }else if(hospital_duty_val == 4){
+                return 3;
+                }else if(hospital_duty_val == 5){
+                return 4;
+                }else if(hospital_duty_val == 6){
+                return 5;
+                }else if(hospital_duty_val == 7){
+                return 6;
+                }else if(hospital_duty_val == 8){
+                return 7;
+                }else if(hospital_duty_val == 9){
+                return 8;
+                }
+                }else{
+                if(hospital_duty_val == 1){
+                return 9;
+                }else if(hospital_duty_val == 2){
+                return 10;
+                }else if(hospital_duty_val == 3){
+                return 11;
+                }else if(hospital_duty_val == 4){
+                return 12;
+                }else if(hospital_duty_val == 5){
+                return 13;
+                }else if(hospital_duty_val == 6){
+                return 14;
+                }else if(hospital_duty_val == 7){
+                return 15;
+                }else if(hospital_duty_val == 8){
+                return 16;
+                }else if(hospital_duty_val == 9){
+                return 17;
+                }
+                }
+            </var>
+
+            <!--门急诊年免赔调整因子或门急诊次免赔调整因子-->
+            <var name="AOMR_SETMEAL">
+                var medicare_val=MEDICARE_VALUE; <!--有无社保-->
+                var outpatient_duty_val=OUTPATIENT_DUTY_VALUE; <!--门急诊医疗责任-->
+                if(medicare_val == 2){
+                if(outpatient_duty_val ==1){
+                return 0;
+                }else if(outpatient_duty_val ==2){
+                return 1;
+                }else if(outpatient_duty_val ==3){
+                return 2;
+                }else if(outpatient_duty_val ==4){
+                return 3;
+                }else if(outpatient_duty_val ==9){
+                return 4;
+                }else if(outpatient_duty_val ==0){
+                return 66;
+                }
+                }else{
+                if(outpatient_duty_val == 1){
+                return 5;
+                }else if(outpatient_duty_val == 2){
+                return 6;
+                }else if(outpatient_duty_val == 3){
+                return 7;
+                }else if(outpatient_duty_val == 4){
+                return 8;
+                }else if(outpatient_duty_val == 9){
+                return 9;
+                }else if(outpatient_duty_val ==0){
+                return 66;
+                }
+                }
+            </var>
+
+            <!--门急诊年免赔调整因子或门急诊次免赔调整因子-->
+            <var name="OUTPATIENT_DIVISOR">
+                var deductible_type_val=DEDUCTIBLE_TYPE_VALUE;<!--免赔类型-->
+                var clinic_deductible_second_val=CLINIC_DEDUCTIBLE_SECOND_VALUE;<!--门急诊次免赔额-->
+                var clinic_deductible_val=CLINIC_DEDUCTIBLE_VALUE;<!--门急诊年免赔额-->
+                if(deductible_type_val == 0){
+                    if(clinic_deductible_second_val == 0){
+                    return 1;
+                    }else if(clinic_deductible_second_val == 1){
+
+                         <!--门急诊医疗责任-->
+                        if(OUTPATIENT_DUTY_VALUE == 3 or OUTPATIENT_DUTY_VALUE == 4 or OUTPATIENT_DUTY_VALUE == 9){
+                        return 0.95;
+                        }
+                        return 0.89;
+                    }else if(clinic_deductible_second_val == 2){
+                        if(OUTPATIENT_DUTY_VALUE == 3 or OUTPATIENT_DUTY_VALUE == 4 or OUTPATIENT_DUTY_VALUE == 9){
+                        return 0.90;
+                        }
+                        return 0.79;
+                    }else if(clinic_deductible_second_val == 3){
+                        if(OUTPATIENT_DUTY_VALUE == 3 or OUTPATIENT_DUTY_VALUE == 4 or OUTPATIENT_DUTY_VALUE == 9){
+                        return 0.80;
+                        }
+                        return 0.62;
+                    }else if(clinic_deductible_second_val == 4){
+                        if(OUTPATIENT_DUTY_VALUE == 3 or OUTPATIENT_DUTY_VALUE == 4 or OUTPATIENT_DUTY_VALUE == 9){
+                        return 0.65;
+                        }
+                        return 0.35
+                    }
+                }else{
+                    if(clinic_deductible_val == 0){
+                    return 1;
+                    }else if(clinic_deductible_val == 1){
+                    return 0.96;
+                    }else if(clinic_deductible_val == 2){
+                    return 0.92;
+                    }else if(clinic_deductible_val == 3){
+                    return 0.80;
+                    }
+                }
+            </var>
+
+            <!--恶性肿瘤日津贴-->
+            <var name="CANCER_DUTY_CLICK">
+                if(CANCER_DUTY_VALUE == 1){
+                return 100;
+                }else if(CANCER_DUTY_VALUE == 2){
+                return 100;
+                }else if(CANCER_DUTY_VALUE == 3){
+                return 150;
+                }else if(CANCER_DUTY_VALUE == 4){
+                return 150;
+                }else if(CANCER_DUTY_VALUE == 5){
+                return 150;
+                }else if(CANCER_DUTY_VALUE == 6){
+                return 200;
+                }else if(CANCER_DUTY_VALUE == 7){
+                return 200;
+                }else if(CANCER_DUTY_VALUE == 8){
+                return 300;
+                }else if(CANCER_DUTY_VALUE == 9){
+                return 500;
+                }
+            </var>
+
+            <var name="GENERAL_PRM" formula="(DS.RATE[0,IT.HOSPITAL_DUTY] * IT.DEDUCTIBLE * 1)*0.95"/><!--一般住院医疗保险金责任及恶性肿瘤医疗保险金责任-->
+            <var name="CANCER_PRM" formula="(DS.BR[0,0]*IT.CANCER_DUTY_CLICK)/100*0.95"/><!--恶性肿瘤住院津贴保险金责任-->
+            <var name="AOMR_PRM" formula="((IT.AOMR_SETMEAL!=66?DS.DV[0,IT.AOMR_SETMEAL]:0) * IT.OUTPATIENT_DIVISOR *1)*0.95"/><!--门急诊医疗保险金责任-->
+            <var name="NONAGE_PRM" formula="(JUVENILES_VALUE > 1 ? DS.BR[0,1] *1 :0)*0.95"/><!--未成年人检查与免疫医疗保险金责任-->
+            <var name="PRM_T" formula="IT.GENERAL_PRM + IT.CANCER_PRM +IT.AOMR_PRM + IT.NONAGE_PRM"/><!--总保费-->
+
+        </interest>
+
+        <attachment>
+            <liability filter="liability" parser="liability">
+                <paragraph condition="HOSPITAL_DUTY_CODE=='1'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐一'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'15万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额10000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='2'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐二'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'30万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='3'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐三'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'80万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='4'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐四'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'150万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='5'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐五'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'30万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额40000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='6'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐六'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'80万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额50000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='7'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐七'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'150万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='8'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐八'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'200万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='9'">
+                    <table>
+                        <row type="title">
+                            <blank>'一般住院医疗保险金（必选）'</blank>
+                            <blank>'套餐九-神州行'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的私立医疗机构和公立医疗机构的普通部、特需门诊或病房，不限社保定点医院'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>
+                                '被保险人在本公司网络医疗机构（不含昂贵医院）接受住院治疗的，对于被保险人发生的、本公司与投保人约定类型的保险责任范围内的费用中应当由本公司承担部分，本公司将直接与相关医疗机构结算，毋需被保险人先行给付。'
+                            </blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'200万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='1'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐一'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'15万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额10000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='2'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐二'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'30万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='3'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐三'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'80万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='4'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐四'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'150万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='5'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐五'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'30万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额40000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='6'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐六'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'80万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'累计赔付限额50000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='7'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐七'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'150万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='8'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐八'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'200万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额1500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额600元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="CANCER_DUTY_CODE=='9'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤医疗保险金（必选）'</blank>
+                            <blank>'套餐九-神州行'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的私立医疗机构和公立医疗机构的普通部、特需门诊或病房，不限社保定点医院'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>
+                                '被保险人在本公司网络医疗机构（不含昂贵医院）接受住院治疗的，对于被保险人发生的、本公司与投保人约定类型的保险责任范围内的费用中应当由本公司承担部分，本公司将直接与相关医疗机构结算，毋需被保险人先行给付。'
+                            </blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'200万元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title" col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'床位费'</blank>
+                            <blank>'日费用限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'膳食费、护理费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'重症监护室费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费、麻醉费、药品费、材料费、医疗机构拥有的医疗设备（不含耐用医疗设备）使用费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费、医生费、会诊费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术植入器材费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'陪床费'</blank>
+                            <blank>'日费用限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为住院医疗的特殊门诊费用'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊肾透析费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊恶性肿瘤治疗费，包括：'</blank>
+                        </row>
+                        <row>
+                            <blank>'（1）化学疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（2）放射疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（3）肿瘤免疫疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（4）肿瘤内分泌疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'（5）肿瘤靶向疗法'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'器官移植后的门诊抗排异治疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'门诊手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'住院前后门急诊医疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'质子重离子治疗费'</blank>
+                            <blank>'含（境内不限医疗机构）'</blank>
+                        </row>
+                        <row>
+                            <blank>'同城急救车费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'临终关怀费用'</blank>
+                            <blank>'累计日数限额30日'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='1'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐一'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'6000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日100元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='2'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐二'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'6000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日100元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='3'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐三'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'9000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日150元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='4'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐四'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'9000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日150元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='5'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐五'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'9000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日150元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='6'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐六'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'12000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日200元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='7'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐七'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'12000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日200元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='8'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐八'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>'无'</blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'18000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日300元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="HOSPITAL_DUTY_CODE=='9'">
+                    <table>
+                        <row type="title">
+                            <blank>'恶性肿瘤住院津贴保险金（必选）'</blank>
+                            <blank>'套餐九-神州行'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的私立医疗机构和公立医疗机构的普通部、特需门诊或病房，不限社保定点医院'</blank>
+                        </row>
+                        <row>
+                            <blank>'医疗服务网站'</blank>
+                            <blank>
+                                '被保险人在本公司网络医疗机构（不含昂贵医院）接受住院治疗的，对于被保险人发生的、本公司与投保人约定类型的保险责任范围内的费用中应当由本公司承担部分，本公司将直接与相关医疗机构结算，毋需被保险人先行给付。'
+                            </blank>
+                        </row>
+                        <row>
+                            <blank>'年度赔付限额'</blank>
+                            <blank>'30000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'恶性肿瘤住院日额补贴'</blank>
+                            <blank>'每日500元，年度最高60天'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+
+                <paragraph condition="OUTPATIENT_DUTY_CODE=='1'">
+                    <table>
+                        <row type="title">
+                            <blank>'门急诊医疗保险金（可选）'</blank>
+                            <blank>'套餐一'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'10000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                        <row  col="2">
+                            <blank>'费用项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'挂号费、诊察费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'药品费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'非正式住院的留院观察费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中医(不含中式理疗)费用'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'牙科意外伤害医疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为门诊医疗的临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="OUTPATIENT_DUTY_CODE=='2'">
+                    <table>
+                        <row type="title">
+                            <blank>'门急诊医疗保险金（可选）'</blank>
+                            <blank>'套餐二'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'15000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                        <row  col="2">
+                            <blank>'费用项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'挂号费、诊察费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'药品费'</blank>
+                            <blank>'累计赔偿限额10000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'非正式住院的留院观察费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中医(不含中式理疗)费用'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'牙科意外伤害医疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为门诊医疗的临终关怀费用'</blank>
+                            <blank>'不含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="OUTPATIENT_DUTY_CODE=='3'">
+                    <table>
+                        <row type="title">
+                            <blank>'门急诊医疗保险金（可选）'</blank>
+                            <blank>'套餐三'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                        <row  col="2">
+                            <blank>'费用项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'挂号费、诊察费'</blank>
+                            <blank>'次赔付限额500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'药品费'</blank>
+                            <blank>'累计赔偿限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'非正式住院的留院观察费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额4000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'与住院情形对应费用合计:累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'中医(不含中式理疗)费用'</blank>
+                            <blank>'累计次数限额15次,累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'牙科意外伤害医疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为门诊医疗的临终关怀费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="OUTPATIENT_DUTY_CODE=='4'">
+                    <table>
+                        <row type="title">
+                            <blank>'门急诊医疗保险金（可选）'</blank>
+                            <blank>'套餐四'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的医疗机构的普通部、特需门诊或病房'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'35000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                        <row  col="2">
+                            <blank>'费用项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'挂号费、诊察费'</blank>
+                            <blank>'次赔付限额500元'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'药品费'</blank>
+                            <blank>'累计赔偿限额30000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'非正式住院的留院观察费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔偿限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额4000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'与住院情形对应费用合计:累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'中医(不含中式理疗)费用'</blank>
+                            <blank>'累计次数限额15次，累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'牙科意外伤害医疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为门诊医疗的临终关怀费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="OUTPATIENT_DUTY_CODE=='9'">
+                    <table>
+                        <row type="title">
+                            <blank>'门急诊医疗保险金（可选）'</blank>
+                            <blank>'套餐九-神州行'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的私立医疗机构和公立医疗机构的普通部、特需门诊或病房，不限社保定点医院'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'50000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'30天'</blank>
+                        </row>
+                        <row  col="2">
+                            <blank>'费用项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'挂号费、诊察费'</blank>
+                            <blank>'次赔付限额1000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'治疗费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'药品费'</blank>
+                            <blank>'累计赔偿限额30000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'检查检验费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'手术费'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'非正式住院的留院观察费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'中式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔偿限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'西式理疗费'</blank>
+                            <blank>'累计次数限额10次,累计赔付限额4000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'耐用医疗设备费'</blank>
+                            <blank>'与住院情形对应费用合计:累计赔付限额20000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'中医(不含中式理疗)费用'</blank>
+                            <blank>'累计次数限额15次，累计赔付限额2000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'牙科意外伤害医疗费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'视为门诊医疗的临终关怀费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+
+                <paragraph condition="JUVENILES_VALUE == 9">
+                    <table>
+                        <row type="title">
+                            <blank>'未成年人检查与免疫医疗保险金（可选）'</blank>
+                            <blank>'套餐九-神州行'</blank>
+                        </row>
+                        <row>
+                            <blank>'可适用医疗机构'</blank>
+                            <blank>'本公司指定或认可的私立医疗机构和公立医疗机构的普通部、特需门诊或病房，不限社保定点医院'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付限额'</blank>
+                            <blank>'5000元'</blank>
+                        </row>
+                        <row>
+                            <blank>'赔付比例'</blank>
+                            <blank>'100%'</blank>
+                        </row>
+                        <row>
+                            <blank>'等待期'</blank>
+                            <blank>'0天'</blank>
+                        </row>
+                    </table>
+                    <table>
+                        <row type="title"  col="2">
+                            <blank>'项目'</blank>
+                        </row>
+                        <row>
+                            <blank>'常规医疗检查（未满18周岁可使用）'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'预防性保健费用（未满18周岁可使用）'</blank>
+                            <blank>'含'</blank>
+                        </row>
+                        <row>
+                            <blank>'免疫费用'</blank>
+                            <blank>'含'</blank>
+                        </row>
+
+                    </table>
+                </paragraph>
+            </liability>
+        </attachment>
+
+        <rule skip="">
+            <if condition="OCCUPATION_CATEGORY > 4 or OCCUPATION_CATEGORY lt 1">
+                仅接受职业风险等级1-4级投保。
+            </if>
+
+            <!--投保要求-->
+            <if condition="PLAN.INSURANT.RELATION_APPLICANT == '06'">
+                仅支持本人、父母、子女、配偶关系投保
+            </if>
+            <if condition="APPLICANT.AGE gt 55 and AGE gt 40" type="customer">
+                55周岁以上投保人需要搭配40周岁以下的被保人
+            </if>
+
+            <!--限制职业-->
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102'  and HOSPITAL_DUTY_CODE == '5'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102'  and HOSPITAL_DUTY_CODE == '6'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102'  and HOSPITAL_DUTY_CODE == '7'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102'  and HOSPITAL_DUTY_CODE == '8'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102'  and HOSPITAL_DUTY_CODE == '9'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103'  and HOSPITAL_DUTY_CODE == '5'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103'  and HOSPITAL_DUTY_CODE == '6'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103'  and HOSPITAL_DUTY_CODE == '7'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103'  and HOSPITAL_DUTY_CODE == '8'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103'  and HOSPITAL_DUTY_CODE == '9'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104'  and HOSPITAL_DUTY_CODE == '5'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104'  and HOSPITAL_DUTY_CODE == '6'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104'  and HOSPITAL_DUTY_CODE == '7'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104'  and HOSPITAL_DUTY_CODE == '8'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104'  and HOSPITAL_DUTY_CODE == '9'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+
+
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202'  and HOSPITAL_DUTY_CODE == '5'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202'  and HOSPITAL_DUTY_CODE == '6'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202'  and HOSPITAL_DUTY_CODE == '7'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202'  and HOSPITAL_DUTY_CODE == '8'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202'  and HOSPITAL_DUTY_CODE == '9'">
+                医护人员的基础保险责任仅支持选择套餐一至四
+            </if>
+
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102' and OUTPATIENT_DUTY_CODE != '0'">
+                医护人员不支持选择门急诊医疗责任
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103' and OUTPATIENT_DUTY_CODE != '0'">
+                医护人员不支持选择门急诊医疗责任
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104' and OUTPATIENT_DUTY_CODE != '0'">
+                医护人员不支持选择门急诊医疗责任
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202' and OUTPATIENT_DUTY_CODE != '0'">
+                医护人员不支持选择门急诊医疗责任
+            </if>
+
+
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100102' and HOSPITAL_DEDUCTIBLE_SHOW == '0'">
+                医护人员住院年免赔额不能为0元
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100103' and HOSPITAL_DEDUCTIBLE_SHOW == '0'">
+                医护人员住院年免赔额不能为0元
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100104' and HOSPITAL_DEDUCTIBLE_SHOW == '0'">
+                医护人员住院年免赔额不能为0元
+            </if>
+            <if condition="PLAN.INSURANT.OCCUPATION_CODE == '100202' and HOSPITAL_DEDUCTIBLE_SHOW == '0'">
+                医护人员住院年免赔额不能为0元
+            </if>
+
+
+            <if condition="APPLICANT.AGE lt 16" type="customer">
+                最小投保年龄>=16周岁
+            </if>
+            <if condition="APPLICANT.AGE  gt 70" type="customer">
+                <![CDATA[最大投保人年龄<=70周岁]]>
+            </if>
+            <if condition="DAY lt 30" type="customer">
+                最小被保人年龄出生满30天
+            </if>
+            <if condition="AGE gt 54" type="customer">
+                <![CDATA[最大被保人年龄<=54周岁]]>
+            </if>
+
+            <!--一般住院、恶性肿瘤医疗保险金-->
+            <if condition="HOSPITAL_DUTY_CODE == '1' and CANCER_DUTY_CODE != '1'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '2' and CANCER_DUTY_CODE != '2'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '3' and CANCER_DUTY_CODE != '3'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '4' and CANCER_DUTY_CODE != '4'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '5' and CANCER_DUTY_CODE != '5'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '6' and CANCER_DUTY_CODE != '6'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '7' and CANCER_DUTY_CODE != '7'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '8' and CANCER_DUTY_CODE != '8'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '9' and CANCER_DUTY_CODE != '9'" type="customer">
+                一般住院、恶性肿瘤医疗保险金以及恶性肿瘤住院津贴保险金投保时必须选择相同的套餐
+            </if>
+
+            <!--门急诊医疗责任-->
+            <if condition="AGE gt 54 and OUTPATIENT_DUTY_CODE == '1'" type="customer">
+                当被保人年龄＞54周岁时，不可投门急诊医疗责任
+            </if>
+            <if condition="AGE gt 54 and OUTPATIENT_DUTY_CODE == '2'" type="customer">
+                当被保人年龄＞54周岁时，不可投门急诊医疗责任
+            </if>
+            <if condition="AGE gt 54 and OUTPATIENT_DUTY_CODE == '3'" type="customer">
+                当被保人年龄＞54周岁时，不可投门急诊医疗责任
+            </if>
+            <if condition="AGE gt 54 and OUTPATIENT_DUTY_CODE == '4'" type="customer">
+                当被保人年龄＞54周岁时，不可投门急诊医疗责任
+            </if>
+            <if condition="AGE gt 54 and OUTPATIENT_DUTY_CODE == '9'" type="customer">
+                当被保人年龄＞54周岁时，不可投门急诊医疗责任
+            </if>
+
+
+            <!--未成年人检查与免疫医疗责任-->
+            <if condition=" JUVENILES_VALUE == 9 and OUTPATIENT_DUTY_CODE == '0'" type="customer">
+                当投保门急诊医疗责任后才可投保未成年人检查与免疫医疗责任
+            </if>
+            <if condition=" JUVENILES_VALUE == 9 and AGE gt 18 " type="customer">
+                仅支持未成年人投保未成年人检查与免疫医疗责任（小于18周岁）
+            </if>
+
+            <!--套餐搭配规则-->
+            <if condition="HOSPITAL_DUTY_CODE == '1' and  OUTPATIENT_DUTY_CODE != '0' and  OUTPATIENT_DUTY_CODE != '1' and OUTPATIENT_DUTY_CODE != '2'" type="customer">
+                投保基础保险责任套餐一至四，仅可搭配门急诊套餐一或二
+            </if>
+            <if condition=" HOSPITAL_DUTY_CODE == '2' and  OUTPATIENT_DUTY_CODE != '0' and OUTPATIENT_DUTY_CODE != '1' and OUTPATIENT_DUTY_CODE != '2'" type="customer">
+                投保基础保险责任套餐一至四，仅可搭配门急诊套餐一或二
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '3' and  OUTPATIENT_DUTY_CODE != '0' and OUTPATIENT_DUTY_CODE != '1' and OUTPATIENT_DUTY_CODE != '2'" type="customer">
+                投保基础保险责任套餐一至四，仅可搭配门急诊套餐一或二
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '4' and  OUTPATIENT_DUTY_CODE != '0' and OUTPATIENT_DUTY_CODE != '1' and OUTPATIENT_DUTY_CODE != '2'" type="customer">
+                投保基础保险责任套餐一至四，仅可搭配门急诊套餐一或二
+            </if>
+
+
+            <if condition="HOSPITAL_DUTY_CODE == '5' and OUTPATIENT_DUTY_CODE == '9'" type="customer">
+                投保基础保险责任套餐五至八，可搭配门急诊套餐一至四
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '6' and OUTPATIENT_DUTY_CODE == '9'" type="customer">
+                投保基础保险责任套餐五至八，可搭配门急诊套餐一至四
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '7' and OUTPATIENT_DUTY_CODE == '9'" type="customer">
+                投保基础保险责任套餐五至八，可搭配门急诊套餐一至四
+            </if>
+            <if condition="HOSPITAL_DUTY_CODE == '8' and OUTPATIENT_DUTY_CODE == '9'" type="customer">
+                投保基础保险责任套餐五至八，可搭配门急诊套餐一至四
+            </if>
+
+            <if condition="JUVENILES_VALUE =='9' and HOSPITAL_DUTY_CODE != '9' and OUTPATIENT_DUTY_CODE != '9'" type="customer">
+                神州行套餐包含基础保险责任套餐九、恶性肿瘤住院津贴保险金责任套餐九、门急诊套餐九以及未成年人检查与免疫医疗保险金责任，其中门急诊套餐九以及未成年人检查与免疫医疗保险金责任可选。
+            </if>
+        </rule>
+    </product>
+</declare>

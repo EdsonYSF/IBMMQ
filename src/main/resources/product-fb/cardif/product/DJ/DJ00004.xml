@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="DJ00004"
+			corporation_id="fuxing"
+			code="L11196"
+			name="安邦家业星终身寿险"
+			name_abbr="家业星"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="premium"
+			amount="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="DJ00004" />
+		</data>
+		
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<!--交费期间-->
+			<pay>
+				<item code="term_3"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="full_106"/>
+			</insure>
+
+		</param>
+
+		<init>
+			<item name="Q" value="PREMIUM/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][0],0)" />
+			<var name="SG" param="A1" >
+				var ret=0;
+				if(A1+AGE-1 lt 18){
+					ret=max(try(IT.PRM(A1),0),try(IT.CSV(A1),0));
+				}else if(A1+AGE-1 ge 18  and A1+AGE-1 le 40){
+					ret=max(try(IT.PRM_T(A1),0)*1.6,try(IT.CSV(A1),0));
+				}else if(A1+AGE-1 ge 41  and A1+AGE-1 lt 60){
+					ret=max(try(IT.PRM_T(A1),0)*1.4,try(IT.CSV(A1),0));
+				}else if(A1+AGE-1 ge 60){
+					ret=max(try(IT.PRM_T(A1),0)*1.2,try(IT.CSV(A1),0));
+				}
+				return ret;
+			</var>
+			<var name="QC_PRM" param="A1" formula="IT.SG(A1)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'年末现金价值'</blank>
+							<blank row="1">'身故或全残保险金'</blank>
+							<blank row="1">'航空意外身故或全残保险金'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="#,###">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.CSV(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.SG(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.QC_PRM(I),2)+'元'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1.身故或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row >
+							<blank>'18周岁前： 给付实际累计交纳的保险费与被保险人身故或全残时保单的现金价值二者之较大者，合同终止。'</blank>
+						</row>
+						<row >
+							<blank>'18周岁后（含18周岁保单生效对应日）主险合同交费期间届满后的首个保单周年日之前身故或全残：
+								给付被保险人身故或全残时保单的现金价值与累计已交保险费乘身故或全残给付比例表对应的比例二者之较大者，合同终止。'</blank>
+						</row>
+						<row >
+							<blank>'18周岁后（含18周岁保单生效对应日）主险合同交费期间届满后的首个保单周年日之后身故或全残：
+								给付被保险人身故或全残时保单的现金价值、当年度保险金额与累计已交保险费乘身故或全残给付比例表对应的比例三者之较大者，合同终止。'</blank>
+						</row>
+						<row >
+							<blank>'注： 到达年龄=被保险人原始投保年龄+被保险人身故或全残时保单年度数-1
+								身故或全残给付比例表
+								到达年龄               比例
+								18-40周岁            160%
+								41-60周岁            140%
+								61周岁及以上        120%'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2. 航空意外身故或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row >
+							<blank>'被保险人在以乘客身份乘坐合法商业运营的民航班机时，并遵守承运人关于安全乘坐的规定，自持有效机票检票并进入所乘民航班机舱门时起至抵达目的地走出所乘民航班机舱门的期间内遭受意外伤害事故，并自意外伤害事故发生之日起180日内因该意外伤害事故身故或全残的：
+								给付身故保险金或全残保险金+当年度保险金额，合同终止。'</blank>
+							<blank>'身故保险金或全残保险金+当年度保险金额'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 " type="customer">
+				被保人年龄：28天-55周岁
+			</if>
+			<if condition="AGE gt 55 " type="customer">
+				被保人年龄：28天-55周岁
+			</if>
+			<if condition="(AGE gt 41 and AGE  lt 45) and PAY_CODE =='term_20'" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="(AGE gt 46 and AGE  lt 50) and (PAY_CODE =='term_15' or PAY_CODE =='term_20')" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="(AGE gt 51 and AGE  lt 55) and (PAY_CODE !='term_3' or PAY_CODE !='term_5')" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="PREMIUM lt 10000 or PREMIUM % 1000 != 0">
+				最低投保保费金额≥10000元，超出部分需为1000元整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

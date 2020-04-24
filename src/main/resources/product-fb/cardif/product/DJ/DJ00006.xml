@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="DJ00006"
+			corporation_id="dajia"
+			code="L11193"
+			name="安邦附加乐安一生两全保险"
+			name_abbr="乐安一生两全"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			is_main="no"
+			is_rider="yes"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="DJ00006" />
+		</data>
+		
+
+		<param>
+
+			<!--交费期间-->
+			<pay>
+				<item code="parent"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="full_80"/>
+			</insure>
+
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][1],0)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="AGE gt 60 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="(AGE gt 51 and AGE  lt 55) and PAY_CODE =='term_20'" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="(AGE gt 56 and AGE  lt 60) and (PAY_CODE =='term_3' or PAY_CODE =='term_5')" type="customer">
+				交费期间选择不正确
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+				最低保险金额10000元，超过部分需为1000元的整数倍
+			</if>
+		</rule>
+	</product>
+</declare>

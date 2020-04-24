@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="FXL000035"
+			corporation_id="fuxing"
+			code="110063"
+			name="复星联合星保倍重大疾病保险"
+			name_abbr="星保倍"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="FXL000035" />
+		</data>
+		
+		<rider>
+			<product id="FXL000034"/>
+		</rider>
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="single" />
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="to_70"/>
+				<item code="to_80"/>
+				<item code="to_105"/>
+			</insure>
+			<kxzr>
+				<item code="0" />
+				<item code="1" />
+			</kxzr>
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][0], 0)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'现金价值'</blank>
+							<blank row="1">'首次重大疾病保险金'</blank>
+							<blank row="1">'第二次重大疾病保险金'</blank>
+							<blank row="1">'首次中症疾病保险金'</blank>
+							<blank row="1">'第二次中症疾病保险金'</blank>
+							<blank row="1">'首次轻症疾病保险金'</blank>
+							<blank row="1">'第二次轻症疾病保险金'</blank>
+							<blank row="1">'身故保险金'</blank>
+							<blank row="1">'全残保险金'</blank>
+							<blank row="1">'首次恶性肿瘤复发和持续保险金'</blank>
+							<blank row="1">'第二次恶性肿瘤复发和持续保险金'</blank>
+							<blank row="1">'被保人重疾豁免保费'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="########0.00">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.CSV(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*1.2+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*0.5+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*0.5+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*0.4+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*0.45+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT+'元'</blank>
+								<blank align="right" style="########0.00">AMOUNT*1.2+'元'</blank>
+								<blank align="right" style="########0.00">'保单后续保费'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1.重大疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共108种。
+								（一）首次重大疾病保险金
+								被保险人在保险期间内因意外或本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊除此发生本合同所列的一种或多种重大疾病，本公司按本合同基本保险金额给付首次重大疾病保险金。
+								（二）第二次重大疾病保险金
+								在本公司已按合同的约定给付首次重大疾病保险金的情况下，被保险人自首次重大疾病确诊之日起满一年或一年以后，确诊初次发生本合同所列的除首次重大疾病以外的一种或多种重大疾病，本公司按本合同基本保险金额的120%给付第二次重大疾病保险金。'</blank>
+							<blank>'首次重大疾病保险金：本合同基本保险金额
+								第二次重大疾病保险金：本合同基本保险金额*120%'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.中症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共25种。被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因确诊初次发生本合同列明的一种或多种中症疾病，针对被保险人被确诊的每项中症疾病，本公司按本合同基本保险金额的50%给付中症疾病保险金。
+								每种中症疾病限给付一次，给付后该种中症疾病保险金责任终止。不同中症疾病可以多次给付，但本合同的中症疾病保险金累计给付以两次为限。'</blank>
+							<blank>'本合同基本保险金额*50%*2'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3.轻症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共40种。被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因确诊初次发生本合同列明的一种或多种轻症疾病，针对被保险人被确诊的每项轻症疾病，本公司按本合同基本保险金额的一定给付比例给付轻症疾病保险金。
+								每种轻症疾病限给付一次，给付后该种轻症疾病保险责任终止。不同轻症疾病可以多次给付，但本合同的轻症疾病保险金累计给付以三次为限'</blank>
+							<blank>'首次：本合同基本保险金额*35%；
+								第二次：本合同基本保险金额*40%；
+								第三次：本合同基本保险金额*45%；'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="4.豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因确诊初次发生本合同列明的一种或多种重大疾病、中症疾病或轻症疾病，则自确诊日后首个本合同的保险费约定交纳日开始，直至本合同最后一次保险费约定交纳日止，本公司豁免前述期间内本合同应交纳的保险费。本公司视豁免的保险费为已交纳的保险费，本合同继续有效。'</blank>
+							<blank>'每期保费*剩余交费期数'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="5.身故或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因导致身故或全残'</blank>
+							<blank>'（1）未满18周岁（不含18周岁生日：身故或全残保险金 = 投保人已交纳的本合同累计保险费（不计息）×200%；
+								（2）已满18周岁：身故或全残保险金=本合同基本保险金额。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				
+				
+				<paragraph  title="6.首次恶性肿瘤复发和持续保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'（一）首次恶性肿瘤复发和持续保险金
+								被保险人在本合同生效之日起90天后被确诊初次发生恶性肿瘤，且在确诊之日后生存满三年或三年以上的情况下，若被保险人确诊仍处于恶性肿瘤状态
+								（二）第二次恶性肿瘤复发和持续保险金
+								被保险人在满足首次恶性肿瘤复发和持续保险金给付条件之日后生存满三年或以上，被保险人确诊仍处于恶性肿瘤状态'</blank>
+							<blank>'首次恶性肿瘤复发和持续保险金：本合同的基本保险金额
+								第二次恶性肿瘤复发和持续保险金：本合同的基本保险金额*120%'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="1.重大疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或本附加合同生效（若曾复效，则自本附加合同最后复效）之日起90 天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本附加合同所列的一种或多种重大疾病'</blank>
+							<blank>'豁免续期保费'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="2.中症疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本附加合同生效（若曾复效，则自本附加合同最后复效）之日起90 天后因非意外的原因在本公司指定的或认可的医疗机构由专科医生确诊初次发生本附加合同列明的一种或多种中症疾病'</blank>
+							<blank>'豁免续期保费'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="3.轻症疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或本附加合同生效（若曾复效，则自本附加合同最后复效）之日起90 天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本附加合同所列的一种或多种轻症疾病'</blank>
+							<blank>'豁免续期保费'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="4.身故或全残豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内身故或全残'</blank>
+							<blank>'豁免续期保费'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="5.疾病终末期豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本附加合同生效（若曾复效，则自本附加合同最后复效）之日起90 天后因非意外的原因在本公司指定或认可的医疗机构的专科医生确诊初次达到疾病终末期阶段'</blank>
+							<blank>'豁免续期保费'</blank>
+						</row>
+					</table>
+				</paragraph>
+				
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="APPLICANT.AGE lt 16 " type="customer">
+				投保人：>=16周岁
+			</if>
+			<if condition="APPLICANT.AGE+PAY_VALUE gt 70 " type="customer">
+				投保人的年龄在缴费期满时不能超过70周岁！
+			</if>
+			<if condition="DAY lt 30 ">
+				投保人：>=30天
+			</if>
+			<if condition="AGE gt 60">
+				被保险人年龄超过60周岁！
+			</if>
+			<if condition="AMOUNT lt 50000">
+				最低保额:5W
+			</if>
+			<if condition="PREMIUM lt 1000">
+				最低保费:1000元
+			</if>
+			<if condition="OCCUPATION_CATEGORY>6 or OCCUPATION_CATEGORY lt 1" type="customer">
+				仅限职业风险等级为1-6级的客户投保。
+			</if>
+			<!--投保要求-->
+			<if condition="PLAN.INSURANT.RELATION_APPLICANT == '06'">
+				仅支持本人、父母、子女、配偶关系投保
+			</if>
+		</rule>
+	</product>
+</declare>

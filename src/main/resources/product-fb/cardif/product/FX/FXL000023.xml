@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="FXL000023"
+			corporation_id="fuxing"
+			code="110050"
+			name="复星联合星相印重大疾病保险"
+			name_abbr="星相印重大疾病保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="REAL_PREMIUM"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="FXL000023" />
+		</data>
+		
+		<rider>
+			<product id="FXL000022"/>
+			<product id="FXL000030"/>
+		</rider>
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="single" />
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="single"/>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="to_105"/>
+			</insure>
+			<protection_plan>
+				<item code="-1" value="-1" show=""/>
+				<item code="3" />
+				<item code="5" />
+				<item code="4" />
+				<item code="6" />
+				<item code="7" />
+			</protection_plan>
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="REAL_PREMIUM">
+				var premium = 0;
+				if(PROTECTION_PLAN_VALUE == 3) {
+					premium = Q*DS.RATE[0][0];
+				}
+				if(PROTECTION_PLAN_VALUE == 4) {
+					premium = Q*DS.RATE[0][1];
+				}
+				if(PROTECTION_PLAN_VALUE == 5) {
+					premium = Q*DS.RATE[0][2];
+				}
+				if(PROTECTION_PLAN_VALUE == 6) {
+					premium = Q*DS.RATE[0][3];
+				}
+				if(PROTECTION_PLAN_VALUE == 7) {
+				premium = Q*DS.RATE[0][4];
+				}
+				return round(premium,2);
+			</item>
+			
+			<item name="CASH_VALUE_INDEX">
+				var cash_value_index = 0;
+				if(PROTECTION_PLAN_VALUE == 3) {
+					cash_value_index = 0;
+				}
+				if(PROTECTION_PLAN_VALUE == 4) {
+					cash_value_index = 1;
+				}
+				if(PROTECTION_PLAN_VALUE == 5) {
+					cash_value_index = 2;
+				}
+				if(PROTECTION_PLAN_VALUE == 6) {
+					cash_value_index = 3;
+				}
+				return cash_value_index;
+			</item>
+			
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="PRM_S" param="A1" formula="AGE+A1>=18?IT.PRM_F(A1):IT.PRM_T(A1)*2" />
+			<var name="CSV" param="A1" formula="try(Q * (PROTECTION_PLAN_VALUE ==7 ? DS.SC[A1][0] :DS.DATA[A1][CASH_VALUE_INDEX]), 0)" />
+			<var name="CSV_" param="A1" formula="AGE+A1>104?AMOUNT:IT.CSV(A1+1)" />
+			<var name="AMT" param="A1" formula="max(IT.PRM_T(A1),IT.CSV_(A1))" />
+			<var name="PRM_F" param="A1" formula="max(IT.AMT(A1),AMOUNT)" />
+
+
+
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						
+						<blank row="1">'现金价值'</blank>
+					
+						<blank row="1">'首次重大疾病保险金'</blank>
+						<blank row="1">'第二次重大疾病保险金'</blank>
+						<blank row="1">'第三次重大疾病保险金'</blank>
+						<blank row="1">'第四次重大疾病保险金'</blank>
+						<blank row="1">'第五次重大疾病保险金'</blank>
+						<blank row="1">'第六次重大疾病保险金'</blank>
+						
+						<blank row="1">'身故或全残保险金'</blank>
+						<blank row="1">'疾病终末期保险金'</blank>
+						
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'首次中症疾病保险金'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'第二次中症疾病保险金'</blank>
+						
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'首次轻症疾病保险金'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'第二次轻症疾病保险金'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'第三次轻症疾病保险金'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'第四次轻症疾病保险金'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'第五次轻症疾病保险金'</blank>
+						
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 5 || PROTECTION_PLAN_VALUE == 6 ">'特定疾病保险金'</blank>
+						<blank row="1">'重大疾病豁免保险费'</blank>
+						<blank row="1" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">'中症、轻症疾病豁免保险费'</blank>
+
+					</row>
+					<loop from="0" to="INSURE_PERIOD" step="1" name="I">
+						<row> 
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">IT.PRM(I)</blank>
+							<blank align="right" style="########0.00">IT.PRM_T(I)</blank>
+							
+							<blank align="right" style="########0.00">round(IT.CSV(I),2)</blank>
+							
+							<blank align="right" style="########0.00">AMOUNT</blank>
+							<blank align="right" style="########0.00">AMOUNT*1.1</blank>
+							<blank align="right" style="########0.00">AMOUNT*1.2</blank>
+							<blank align="right" style="########0.00">AMOUNT*1.3</blank>
+							<blank align="right" style="########0.00">AMOUNT*1.4</blank>
+							<blank align="right" style="########0.00">AMOUNT*1.5</blank>
+							
+							<blank align="right" style="########0.00">AMOUNT</blank>
+							<blank align="right" style="########0.00">AMOUNT</blank>
+							
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.5</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.5</blank>
+							
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.3</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.35</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.4</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.45</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.5</blank>
+							
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 5 || PROTECTION_PLAN_VALUE == 6 ">AMOUNT*0.3</blank>
+							<blank align="right" style="########0.00">IT.PRM(I)*(PAY_PERIOD-I-1)</blank>
+							<blank align="right" style="########0.00" condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 ">IT.PRM(I)*(PAY_PERIOD-I-1)</blank>
+
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="重大疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共有108种,分为六组，每组限赔付一次'</blank>
+							<blank>'首次重大疾病保险金：基本保险金额；
+									第二次重大疾病保险金：基本保险金额*110%；
+									第三次重大疾病保险金：基本保险金额*120%；
+									第四次重大疾病保险金：基本保险金额*130%；
+									第五次重大疾病保险金：基本保险金额*140%；
+									第六次重大疾病保险金：基本保险金额*150%；'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="身故或全残保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内身故或全残'</blank>
+							<blank>'基本保险金额'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="疾病终末期保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因在本公司指定或认可的医疗机构的专科医生确诊初次达到疾病终末期阶段'</blank>
+							<blank>'基本保险金额'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 || PROTECTION_PLAN_VALUE == 7" title="中症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共有25种，每种给付1次，累计给付以2次为限'</blank>
+							<blank>'首次中症疾病保险金：基本保险金额*50%；
+									第二次中症疾病保险金：基本保险金额*50%；'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 || PROTECTION_PLAN_VALUE == 7" title="轻症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'共有40种，每种给付1次，累计给付以5次为限'</blank>
+							<blank>'首次轻症疾病保险金：基本保险金额*30%；
+									第二次轻症疾病保险金：基本保险金额*35%；
+									第三次轻症疾病保险金：基本保险金额*40%；
+									第四次轻症疾病保险金：基本保险金额*45%；
+									第五次轻症疾病保险金：基本保险金额*50%；'</blank>
+						</row>
+					</table>
+				</paragraph>
+				
+				
+				<paragraph condition="PROTECTION_PLAN_VALUE == 5 || PROTECTION_PLAN_VALUE == 6 || PROTECTION_PLAN_VALUE == 7 " title="特定疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'少儿、成年男性、成年女性每组各19种，共57种，每种给付1次，累计给付以1次为限'</blank>
+							<blank>'基本保额*0.3'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph condition="PROTECTION_PLAN_VALUE == 4 || PROTECTION_PLAN_VALUE == 6 || PROTECTION_PLAN_VALUE == 7 " title="中症、轻症疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同列明的一种或多种轻症疾病或中症疾病'</blank>
+							<blank>'每期保费*剩余交费期数'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="重大疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内因意外，或在本合同生效（若曾复效，则自本合同最后复效）之日起90天后因非意外的原因在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同列明的一种或多种重大疾病'</blank>
+							<blank>'每期保费*剩余交费期数'</blank>
+						</row>
+					</table>
+				</paragraph>
+				
+			</liability>
+
+
+		</attachment>
+
+		<rule >
+			<if condition="APPLICANT.AGE lt 18 or APPLICANT.AGE gt 70" type="customer">
+				投保人：年满18周岁至70岁。
+			</if>
+			<if condition = "INSURE_PERIOD > 1 and (APPLICANT.AGE+PAY_PERIOD) >70">
+				投保人：交费期满时投保险人年龄不得超过70周岁
+			</if>
+			<if condition="DAY lt 30 or AGE gt 60">
+				被保人：年满30天至60岁。
+			</if>
+			<if condition = "INSURE_PERIOD > 1 and (AGE+PAY_PERIOD) >65">
+				被保人：交费期满时被保险人年龄不得超过65周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+				最低保额:1w,单位保额：千元.
+			</if>
+			<if condition="(DAY ge 30 and AGE lt 18) and AMOUNT gt 500000 ">
+				未成年人基本保额不可超过50万
+			</if>
+			<!--<if condition="AGE ge 18 and AMOUNT gt 1500000">
+				本险种基本保额不可超过150万
+			</if>-->
+			<if condition="AGE lt 10  and AMOUNT gt 200000">
+				被保险人年龄小于等于9周岁，保额超过20万
+			</if>
+			<if condition="AGE ge 10 and AGE lt 18 and AMOUNT gt 500000">
+				被保险人年龄小于等于17周岁，保额超过50万
+			</if>
+			<if condition="OCCUPATION_CATEGORY>4 or OCCUPATION_CATEGORY lt 1" type="customer">
+				仅限职业风险等级为1-4级的客户投保。
+			</if>
+			<if condition="PROTECTION_PLAN_VALUE == -1" type="customer">
+				请选择保障计划。
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+    <product
+            id="SITC_TCCB"
+            corporation_id="cardif"
+            code="SITC"
+            name="法商法國巴黎人壽幸福世貸遞減定期壽險"
+            name_abbr="幸福世貸定期壽險"
+            unit="10000"
+            type_code="life"
+            sequence="1000"
+            sale_begin_date="2017-01-01"
+            sale_end_date=""
+            quantity="1"
+            input="amount"
+            premium="PREMIUM_VALUE"
+            last_modify_date="2017-01-01">
+
+        <data>
+            <item parser="dds" value="SITC_TCCB" />
+        </data>
+
+        <param>
+            <!--繳別-->
+            <pay_freq>
+                <item code="single" />
+                <item code="annually" />
+                <item code="semi_annually" />
+                <item code="quarterly" />
+                <item code="monthly" />
+            </pay_freq>
+
+            <pay>
+                <item code="term_1"/>
+                <item code="term_5" />
+                <item code="term_10" />
+                <item code="term_15" />
+                <item code="term_20" />
+                <item code="term_25" />
+                <item code="term_30" />
+            </pay>
+
+            <insure>
+                <item code="term_2" filter="pay_freq.CODE=='single'"/>
+                <item code="term_3" filter="pay_freq.CODE=='single'"/>
+                <item code="term_4" filter="pay_freq.CODE=='single'"/>
+                <item code="term_5"/>
+                <item code="term_6" filter="pay_freq.CODE=='single'"/>
+                <item code="term_7" filter="pay_freq.CODE=='single'"/>
+                <item code="term_8" filter="pay_freq.CODE=='single'"/>
+                <item code="term_9" filter="pay_freq.CODE=='single'"/>
+                <item code="term_10"/>
+                <item code="term_11" filter="pay_freq.CODE=='single'"/>
+                <item code="term_12" filter="pay_freq.CODE=='single'"/>
+                <item code="term_13" filter="pay_freq.CODE=='single'"/>
+                <item code="term_14" filter="pay_freq.CODE=='single'"/>
+                <item code="term_15"/>
+                <item code="term_16" filter="pay_freq.CODE=='single'"/>
+                <item code="term_17" filter="pay_freq.CODE=='single'"/>
+                <item code="term_18" filter="pay_freq.CODE=='single'"/>
+                <item code="term_19" filter="pay_freq.CODE=='single'"/>
+                <item code="term_20" default="yes" />
+                <item code="term_21" filter="pay_freq.CODE=='single'"/>
+                <item code="term_22" filter="pay_freq.CODE=='single'"/>
+                <item code="term_23" filter="pay_freq.CODE=='single'"/>
+                <item code="term_24" filter="pay_freq.CODE=='single'"/>
+                <item code="term_25"/>
+                <item code="term_26" filter="pay_freq.CODE=='single'"/>
+                <item code="term_27" filter="pay_freq.CODE=='single'"/>
+                <item code="term_28" filter="pay_freq.CODE=='single'"/>
+                <item code="term_29" filter="pay_freq.CODE=='single'"/>
+                <item code="term_30"/>
+            </insure>
+
+            <pay_method>
+                <item code="cash" />
+                <!--<item code="loan" />-->
+            </pay_method>
+
+            <!--幣別-->
+            <currency>
+                <item code="NTD" />
+            </currency>
+
+            <pay_way>
+                <item code="remit"/>
+                <item code="autopay" default="yes"/>
+                <item code="credit"/>
+            </pay_way>
+
+            <pay_way_xq>
+                <item code="remit"/>
+                <item code="autopay" default="yes"/>
+                <item code="credit"/>
+            </pay_way_xq>
+
+            <auto_pay>
+                <item code="Y" />
+                <item code="N" />
+            </auto_pay>
+        </param>
+
+        <input>
+            <trial_vars code="proposal" layout="fixed">
+                <item name="LOAN_AMOUNT" label="貸款金額（萬元）"  placeholder="請輸入貸款金額" widget="input" type="int"/>
+                <item name="AMOUNT" label="保險金額（萬元）"  placeholder="請輸入保險金額" widget="input" type="int"/>
+                <item name="LOAN_TERM" label="貸款年期（年）" placeholder="請輸入貸款年期" widget="input" type="int" tips="* (共24期）"/>
+                <item name="INSURE" label="保險年期（年）" placeholder="20年" widget="select">buildOption('insure')</item>
+                <item name="LOAN_GRACE_PERIOD" canNull="true" label="貸款寬限期" placeholder="依據配置信息顯示" widget="input" type="int"/>
+                <item widget="group" name="fee_group">
+                    <item name="PAY_FREQ" label="繳費方式" widget="select">buildOption('pay_freq')</item>
+                    <item name="PAY_METHOD" label="" widget="select" append="true">buildOption('pay_method')</item>
+                    <item name="PAY" label="繳費年期" widget="select">buildOption('pay')</item>
+                    <item name="PREMIUM_LOAN_TERM" label="保費融資年期" placeholder="依據配置信息顯示" widget="input" type="int"/>
+                </item>
+            </trial_vars>
+            <trial_vars code="apply">
+                <item name="CURRENCY" label="幣別" widget="select" inputType="apply">buildOption('currency')</item>
+                <item name="PAY_FREQ" label="繳別" widget="select" inputType="apply">buildOption('pay_freq')</item>
+                <item name="PAY" label="繳費年期" widget="select" inputType="apply">buildOption('pay')</item>
+                <item name="INSURE" label="保險年期" widget="select" inputType="apply">buildOption('insure')</item>
+                <item widget="group" label="繳費方式"  name="fee_group_pay_way">
+                    <item name="PAY_WAY" label="首期" widget="select">buildOption('pay_way')</item>
+                    <item name="PAY_WAY_XQ" label="續期" widget="select" append="true">buildOption('pay_way_xq')</item>
+                </item>
+                <item name="AMOUNT" label="保額（萬元）" placeholder="請輸入保險金額" widget="input" inputType="apply"/>
+                <item name="AUTO_PAY" label="自動墊繳" widget="radio" inputType="apply" >buildOption('auto_pay')</item>
+            </trial_vars>
+        </input>
+
+        <init>
+            <item name="LOAN_TERM" value="20"/><!--贷款年期-->
+            <item name="LOAN_AMOUNT" value="100"/><!--贷款金额-->
+            <item name="LOAN_GRACE_PERIOD" value=""/><!--贷款宽限期-->
+            <item varType="customer" name="DZDJ_SERVER" desc="服务" value="TRUE" widget="radio"/>
+            <!-- 受益人类型 -->
+            <item varType="customer" name="BENEFICIARY_CATEGORY" value="DEATH"/>
+            <!-- 产品是否支持指定受益人 -->
+            <item varType="customer" name="BENEFICIARY_FLAG" value="TRUE"/>
+            <item name="GENERIC_LOAN" value="1" /> <!-- 一般型房贷 -->
+            <item name="ENSURING_LOAN" value="2" /> <!-- 保障型房贷 -->
+            <item name="Q" value="AMOUNT"/>
+            <!--高保费折扣-->
+            <item name="PRM_FACTOR">
+                var f = 0;
+                if(PAY_FREQ_VALUE == 1 or PAY_FREQ_VALUE == 0){
+                f = 1;
+                } else if(PAY_FREQ_VALUE == 2) {
+                f = 0.088;
+                } else if(PAY_FREQ_VALUE == 3) {
+                f = 0.262;
+                } else if(PAY_FREQ_VALUE == 4) {
+                f = 0.52;
+                }
+                return f;
+            </item>
+            <!--折扣后保费-->
+            <item name="DISCOUNT_PREMIUM_VALUE">
+                var ret = 0;
+                if(PAY_FREQ_VALUE > 0){
+                if(AMOUNT lt 500) {
+                ret = try(Q*DS.RATE_YEAR[0][0],0);
+                } else if(AMOUNT lt 800) {
+                ret = try(Q*DS.RATE_YEAR[0][1],0);
+                } else if(AMOUNT lt 1500) {
+                ret = try(Q*DS.RATE_YEAR[0][2],0);
+                } else if(AMOUNT lt 3000) {
+                ret = try(Q*DS.RATE_YEAR[0][3],0);
+                } else {
+                ret = try(Q*DS.RATE_YEAR[0][4],0);
+                }
+                ret = PRM_FACTOR*ret;
+                }
+                return ret;
+            </item>
+            <!--最终保费-->
+            <item name="PREMIUM_VALUE">
+                var ret = 0;
+                if(PAY_METHOD_VALUE == 1){
+                ret = PREMIUM_VALUE_ONE;
+                }else{
+                if(PREMIUM_VALUE_ONE lt PREMIUM_VALUE_TWO){
+                ret = ROTATION_PREMIUM_VALUE;
+                }else{
+                ret = PREMIUM_VALUE_TWO;
+                }
+                }
+                return ret;
+            </item>
+            <!--保费1-->
+            <item name="PREMIUM_VALUE_ONE">
+                if(PAY_FREQ_VALUE > 0){
+                var ret = 0;
+                ret = Q*DS.RATE_YEAR[0][0];
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }else{
+                var ret = 0;
+                ret = Q*DS.RATE_SINGLE[0][0];
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }
+            </item>
+            <!--保额2-->
+            <item name="AMOUNT_VALUE_TWO">
+                var amount_two=0;
+                amount_two=(PREMIUM_VALUE_ONE/10000)+AMOUNT;
+                return round(amount_two,0);
+            </item>
+            <!--保费2-->
+            <item name="PREMIUM_VALUE_TWO">
+                if(PAY_FREQ_VALUE > 0){
+                var ret = 0;
+                ret = AMOUNT_VALUE_TWO*DS.RATE_YEAR[0][0];
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }else{
+                var ret = 0;
+                ret = AMOUNT_VALUE_TWO*DS.RATE_SINGLE[0][INSURE_VALUE-2];
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }
+            </item>
+            <!--最终保额-->
+            <item name="FINAL_AMOUNT_VALUE">
+                var ret=0;
+                if(PAY_METHOD_VALUE == 1){
+                ret=AMOUNT;
+                }else{
+                if(PREMIUM_VALUE_ONE lt PREMIUM_VALUE_TWO){
+                ret = ROTATION_AMOUNT_VALUE;
+                }else{
+                ret = AMOUNT_VALUE_TWO;
+                }
+                }
+                return round(ret,0);
+            </item>
+            <!--轮转保费判断-->
+            <item name="ROTATION_PREMIUM_JUDGE">
+                if(PREMIUM_VALUE_ONE lt PREMIUM_VALUE_TWO){
+                var AddAmount = 0;
+                var rotation_premium=0;
+                var final_amount_two=0;
+                if((PREMIUM_VALUE_TWO - PREMIUM_VALUE_ONE) lt 10000){
+                AddAmount = 10000;
+                }else{
+                AddAmount = PREMIUM_VALUE_TWO - ((PREMIUM_VALUE_TWO - PREMIUM_VALUE_ONE)/10000) - PREMIUM_VALUE_ONE;
+                }
+                rotation_premium = PREMIUM_VALUE_ONE + AddAmount;
+                return rotation_premium;
+                }
+            </item>
+            <!--轮转保额-->
+            <item name="ROTATION_AMOUNT_VALUE">
+                var final_amount=0;
+                final_amount=round((ROTATION_PREMIUM_JUDGE/10000)+AMOUNT,0);
+                return round(final_amount,0);
+            </item>
+            <!--轮转保费-->
+            <item name="ROTATION_PREMIUM_VALUE">
+                if(PAY_FREQ_VALUE > 0){
+                var ret = 0;
+                if(AMOUNT lt 500) {
+                ret = try(ROTATION_AMOUNT_VALUE*DS.RATE_YEAR[0][0],0);
+                } else if(AMOUNT lt 800) {
+                ret = try(ROTATION_AMOUNT_VALUE*DS.RATE_YEAR[0][1],0);
+                } else if(AMOUNT lt 1500) {
+                ret = try(ROTATION_AMOUNT_VALUE*DS.RATE_YEAR[0][2],0);
+                } else if(AMOUNT lt 3000) {
+                ret = try(ROTATION_AMOUNT_VALUE*DS.RATE_YEAR[0][3],0);
+                } else {
+                ret = try(ROTATION_AMOUNT_VALUE*DS.RATE_YEAR[0][4],0);
+                }
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }else{
+                var ret = 0;
+                ret = ROTATION_AMOUNT_VALUE*DS.RATE_SINGLE[0][INSURE_VALUE-2];
+                ret = PRM_FACTOR*ret;
+                return ret;
+                }
+            </item>
+
+            <item name="LOAN_AMOUNT_VAL"  value="INIT_LOAN_AMOUNT_VALUE!=null and INIT_LOAN_AMOUNT_VALUE!=''? INIT_LOAN_AMOUNT_VALUE*10000: 1000000"/>
+            <!-- 贷款額 需要input传入-->
+            <item name="LOAN_AMOUNT_VALUE"  value="PAY_METHOD_VALUE == 1 ? LOAN_AMOUNT_VAL : LOAN_AMOUNT_VAL + PREMIUM_VALUE"/>
+            <!-- 贷款宽限期 需要input传入-->
+            <item name="INIT_LOAN_GRACE_PERIOD_VALUE"  value="LOAN_GRACE_PERIOD!=null and LOAN_GRACE_PERIOD !='' ? LOAN_GRACE_PERIOD : 0"/>
+            <!-- 贷款年期 需要input传入-->
+            <item name="LOAN_TERM_VALUE" value="INIT_LOAN_TERM_VALUE!=null ? INIT_LOAN_TERM_VALUE : 20"/>
+            <!-- 保險金額，躉交+貸款 包含保費+房貸；否則 僅房貸 -->
+            <item name="LOAN_AMOUNT_T">
+                return FINAL_AMOUNT_VALUE;
+            </item>
+        </init>
+
+        <interest>
+            <!--保费-->
+            <var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+            <!--累积保费-->
+            <var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+            <!-- 貸款利率 -->
+            <var name="LOAN_RATE" param="A1,A2" >
+                var ret = 0;
+                if(RATE_INFO_VALUE != null) {
+                for (var x = 0; x lt size(RATE_INFO_VALUE); x++) {
+                var p = RATE_INFO_VALUE[x];
+                if(A1 != null and A1 ge p[0] and A1 le p[1]){
+                if(A2==GENERIC_LOAN){
+                ret = p[2];
+                } else if (A2==ENSURING_LOAN){
+                ret = p[3];
+                }
+                }
+                }
+                }
+                return ret;
+            </var>
+            <!--应还本金-->
+            <var name="PRINCIPAL_REPAYMENT" param="A1,A2">
+                var result = 0;
+                if (A1 != null and A1 gt INIT_LOAN_GRACE_PERIOD_VALUE*12) {
+                result= IT.PAY_RATE_MONTH(A1,A2)-IT.INTEREST_PAYABLE(A1,A2);
+                }else{
+                result=0;
+                }
+                return result;
+            </var>
+            <!--应还利息-->
+            <var name="INTEREST_PAYABLE" param="A1,A2">
+                var result = 0;
+                var rate = IT.LOAN_RATE(A1,A2);
+                var ret=((IT.RESIDUAL_PRINCIPAL(A1-1,A2)*rate)/12);
+                result= round(ret/100,0);
+                return result;
+            </var>
+            <!--剩余本金-->
+            <var name="RESIDUAL_PRINCIPAL" param="A1,A2">
+                var result = 0;
+                if(PAY_METHOD_VALUE == 1){
+                if(A1==0){
+                result=LOAN_AMOUNT_VALUE-IT.PRINCIPAL_REPAYMENT(A1,A2);
+                }else if(A1!=240){
+                result=IT.RESIDUAL_PRINCIPAL(A1-1,A2)-IT.PRINCIPAL_REPAYMENT(A1,A2);
+                }
+                }else{
+                if(A2==GENERIC_LOAN){
+                if(A1==0){
+                result=LOAN_AMOUNT_VAL;
+                }else if(A1!=240){
+                result=IT.RESIDUAL_PRINCIPAL(A1-1,A2)-IT.PRINCIPAL_REPAYMENT(A1,A2);
+                }
+                }else{
+                if(A1==0){
+                result=LOAN_AMOUNT_VALUE;
+                }else if(A1!=240){
+                result=IT.RESIDUAL_PRINCIPAL(A1-1,A2)-IT.PRINCIPAL_REPAYMENT(A1,A2);
+                }
+                }
+                }
+                return result;
+            </var>
+            <!--階段利率期初本金-->
+            <var name="STAGE_RESIDUAL_PRINCIPAL" param="A1,A2">
+                var result = 0;
+                if(IT.STAGE(A1,A2)==IT.STAGE(A1-1,A2)){
+                result=IT.STAGE_RESIDUAL_PRINCIPAL(A1-1,A2);
+                }else{
+                result=IT.RESIDUAL_PRINCIPAL(A1-1,A2);
+                }
+                return result;
+            </var>
+            <!--階段利率剩餘期數-->
+            <var name="STAGE" param="A1" >
+                var ret = 0;
+                if(RATE_INFO_VALUE != null) {
+                for (var x = 0; x lt size(RATE_INFO_VALUE); x++) {
+                var p = RATE_INFO_VALUE[x];
+                if(A1 != null and A1 ge p[0] and A1 le p[1]){
+                if(x!=0){
+                ret = (LOAN_TERM_VALUE*12)-RATE_INFO_VALUE[x-1][1];
+                }else{
+                ret = LOAN_TERM_VALUE*12;
+                }
+                }
+                }
+                }
+                return ret;
+            </var>
+            <!-- 应还本息、月付金額 A2取值GENERIC或者ENSURING對應於一般貸款和保障型貸款-->
+            <var name="PAY_RATE_MONTH" param="A1,A2">
+                var result = 0;
+                if (A1 != null and A1 gt INIT_LOAN_GRACE_PERIOD_VALUE*12) {
+                var rate = IT.LOAN_RATE(A1,A2)/100;
+                var nper = IT.STAGE(A1,A2);
+                var amountValue=STAGE_RESIDUAL_PRINCIPAL(A1,A2);
+                result = round(pmt(rate,nper,amountValue),0);
+                }else{
+                result = IT.INTEREST_PAYABLE(A1,A2);
+                }
+                return result;
+            </var>
+            <!-- 一般贷款余额 -->
+            <var name="LEFT_LOAN" param="A1,A2">
+                var ret=0;
+                if(A1==1){
+                ret=LOAN_AMOUNT_VALUE;
+                }else{
+                var rate = IT.LOAN_RATE(A1-1,A2);
+                var monthRate = rate/12;
+                ret = IT.LEFT_LOAN(A1-1,A2)-(IT.PAY_RATE_MONTH(A1-1,A2)-round(IT.LEFT_LOAN(A1-1,A2)*monthRate,0));
+                }
+                return ret;
+            </var>
+            <!-- 贷款余额 -->
+            <var name="LOAN_D_VALUE" param="A1" formula="IT.PAY_RATE_MONTH(A1,ENSURING_LOAN)-IT.PAY_RATE_MONTH(A1,GENERIC_LOAN)" />
+            <!--解约金-->
+            <var name="RELEASE_MONEY" param="A1">
+                if(PAY_FREQ_VALUE lt 1){
+                return FINAL_AMOUNT_VALUE*DS.RELEASE_SINGLE[A1,0];
+                }else {
+                return FINAL_AMOUNT_VALUE*DS.RELEASE_YEAR[A1,0];
+                }
+            </var>
+        </interest>
+
+        <attachment>
+            <benefit_table filter="table" parser="table">
+                <table desc="月付金比較表"  code="fdbjb1">
+                    <row type="title">
+                        <blank row="2" code="a">'贷款期数（月）'</blank>
+                        <blank row="1" col="2" code="b">'一般房貸(A)'</blank>
+                        <blank row="1" col="2" code="c">'保障型房貸(B)'</blank>
+                        <blank row="1" code="d">'比较(B-A)'</blank>
+                    </row>
+                    <row type="title">
+                        <blank row="1" code="e">'利率'</blank>
+                        <blank row="1" code="f">'月付金額'</blank>
+                        <blank row="1" code="g">'利率'</blank>
+                        <blank row="1" code="h">'月付金額'</blank>
+                        <blank row="1" code="i">'月付金額差額(B-A)'</blank>
+                    </row>
+                    <loop from="0" to="size(RATE_INFO_VALUE)-1" step="1" name="I">
+                        <row>
+                            <blank>'第'+ round(RATE_INFO_VALUE[I][0],0) + '-第' + round(RATE_INFO_VALUE[I][1],0) + '月'</blank>
+                            <blank align="right" style="#,###">round(RATE_INFO_VALUE[I][2],2)+'%'</blank>
+                            <blank align="right" style="#,###">IT.PAY_RATE_MONTH(RATE_INFO_VALUE[I][0],GENERIC_LOAN)</blank>
+                            <blank align="right" style="#,###">round(RATE_INFO_VALUE[I][3],2)+'%'</blank>
+                            <blank align="right" style="#,###">IT.PAY_RATE_MONTH(RATE_INFO_VALUE[I][0],ENSURING_LOAN)</blank>
+                            <blank align="right" style="#,###">IT.LOAN_D_VALUE(RATE_INFO_VALUE[I][0])</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table desc="還款試算表"  code="fdbjb2">
+                    <row type="title">
+                        <blank row="3" code="a">'贷款期間(年)'</blank>
+                        <blank row="1" col="3" code="b">'一般房貸(A)'</blank>
+                        <blank row="1" col="3" code="c">'保障型房貸(B)'</blank>
+                        <blank row="1" col="1" code="d">'比较（B-A）'</blank>
+                    </row>
+                    <row type="title">
+                        <blank row="1" col="3" code="e">'貸款金額'+INIT_LOAN_AMOUNT_VALUE+'萬元'</blank>
+                        <blank row="1" col="3" code="f">'貸款金額'+INIT_LOAN_AMOUNT_VALUE+'萬元'</blank>
+                        <blank row="1" col="1" code="g">''</blank>
+                    </row>
+                    <row type="title">
+                        <blank row="1" code="h">'利率'</blank>
+                        <blank row="1" code="i">'月付金額'</blank>
+                        <blank row="1" code="j">'貸款餘額(年末)'</blank>
+                        <blank row="1" code="k">'利率'</blank>
+                        <blank row="1" code="o">'月付金額'</blank>
+                        <blank row="1" code="p">'貸款餘額(年末)'</blank>
+                        <blank row="1" code="q">'月付金額差額'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank>I+1</blank>
+                            <blank align="right" style="#,###">IT.LOAN_RATE((I+1)*12,GENERIC_LOAN)+'%'</blank>
+                            <blank align="right" style="#,###">I lt LOAN_TERM_VALUE-1?IT.PAY_RATE_MONTH((I+1)*12,GENERIC_LOAN):0</blank>
+                            <blank align="right" style="#,###">I lt LOAN_TERM_VALUE-1?IT.RESIDUAL_PRINCIPAL((I+1)*12,GENERIC_LOAN):0</blank>
+                            <blank align="right" style="#,###">IT.LOAN_RATE((I+1)*12,ENSURING_LOAN)+'%'</blank>
+                            <blank align="right" style="#,###">I lt LOAN_TERM_VALUE-1?IT.PAY_RATE_MONTH((I+1)*12,ENSURING_LOAN):0</blank>
+                            <blank align="right" style="#,###">I lt LOAN_TERM_VALUE-1?IT.RESIDUAL_PRINCIPAL((I+1)*12,ENSURING_LOAN):0</blank>
+                            <blank align="right" style="#,###">(I lt LOAN_TERM_VALUE-1?IT.PAY_RATE_MONTH((I+1)*12,ENSURING_LOAN):0)-(I lt LOAN_TERM_VALUE-1?IT.PAY_RATE_MONTH((I+1)*12,GENERIC_LOAN):0)</blank>
+                        </row>
+                    </loop>
+                </table>
+
+                <table desc="保額暨解約金"  code="bejyj">
+                    <row type="title">
+                        <blank row="1" code="a">'保單年度'</blank>
+                        <blank row="1" code="b">'保險金額'</blank>
+                        <blank row="1" code="c">'房貸餘額'</blank>
+                        <blank row="1" code="d">'家人保障'</blank>
+                        <blank row="1" code="e">'年度末解約金'</blank>
+                    </row>
+                    <loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+                        <row>
+                            <blank style="##0">I+1</blank>
+                            <blank align="right" style="#,###" >round(LOAN_AMOUNT_T*10000,0)</blank>
+                            <blank align="right" style="#,###">I lt LOAN_TERM_VALUE-1?IT.RESIDUAL_PRINCIPAL((I+1)*12,ENSURING_LOAN):0</blank>
+                            <blank align="right" style="#,###">round(LOAN_AMOUNT_T*10000,0)-(I lt LOAN_TERM_VALUE-1?IT.RESIDUAL_PRINCIPAL((I+1)*12,ENSURING_LOAN):0)</blank>
+                            <blank align="right" style="#,###" >IT.RELEASE_MONEY(I)</blank>
+                        </row>
+                    </loop>
+                </table>
+            </benefit_table>
+
+            <!-- 保障內容 -->
+            <liability filter="liability" parser="liability">
+                <paragraph title="保障金額" type="1">
+                    <table>
+                        <row type="title">
+                            <blank>'給付項目'</blank>
+                            <blank>'疾病或意外導致死亡'</blank>
+                            <blank>'搭乘陸上公共交通工具意外身故'</blank>
+                            <blank>'搭乘水上公共交通工具意外身故'</blank>
+                            <blank>'搭乘空中公共交通工具意外身故'</blank>
+                            <blank>'疾病導致完全失能'</blank>
+                            <blank>'意外導致完全失能'</blank>
+                            <blank>'意外導致重大傷害失能（2-6級）'</blank>
+                            <blank>'意外導致重大燒燙傷'</blank>
+                        </row>
+                        <row>
+                            <blank>'身故保險金'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                        </row>
+                        <row>
+                            <blank>'完全失能保險金'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                        </row>
+                        <row>
+                            <blank>'完全失能扶助保險金'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>'最高'+round(LOAN_AMOUNT_T*0.5,0)+'萬'</blank>
+                            <blank>'最高'+round(LOAN_AMOUNT_T*0.5,0)+'萬'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                        </row>
+                        <row>
+                            <blank>'特定意外傷害身故保險金'</blank>
+                            <blank>''</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*2,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*3,0)+'萬'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                        </row>
+                        <row>
+                            <blank>'重大傷害失能安養保險金'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>'一級：'+round(LOAN_AMOUNT_T*0.5,0)+'萬'</blank>
+                            <blank>'依等級給付'+round(LOAN_AMOUNT_T*0.45,0)+'萬-'+round(LOAN_AMOUNT_T*0.25,0)+'萬'</blank>
+                            <blank>''</blank>
+                        </row>
+                        <row>
+                            <blank>'重大燒燙傷保險金'</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>''</blank>
+                            <blank>round(LOAN_AMOUNT_T*0.4,0)+'萬'</blank>
+                        </row>
+                        <row>
+                            <blank>'合計'</blank>
+                            <blank>round(LOAN_AMOUNT_T,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*2,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*3,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*4,0)+'萬'</blank>
+                            <blank>'最高'+round(LOAN_AMOUNT_T*1.5,0)+'萬'</blank>
+                            <blank>'最高'+round(LOAN_AMOUNT_T*2,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*0.45,0)+'萬-'+round(LOAN_AMOUNT_T*0.25,0)+'萬'</blank>
+                            <blank>round(LOAN_AMOUNT_T*0.4,0)+'萬'</blank>
+                        </row>
+                    </table>
+                </paragraph>
+                <paragraph title="保障給付說明" type="2">
+                    <item>1.身故保險金:按保險金額給付「身故保險金」。</item>
+                    <item>2.完全失能保險金:按保險金額給付「完全失能保險金」。</item>
+                    <item>3.完全失能扶助保險金:按完全失能保險金的百分之五給付，每年給付一次，最高給付十次。</item>
+                    <item>4.特定意外傷害身故保險金:
+                        a. 搭乘「空中公共交通工具」另按保險金額三倍給付。
+                        b. 搭乘「水上公共交通工具」另按保險金額二倍給付。
+                        c. 搭乘「陸上公共交通工具」另按保險金額一倍給付。
+                    </item>
+                    <item>5.重大傷害失能安養保險金:其金額按保險金額的百分之五十，乘上依被保險人的重大傷害失能程度對應於失能程度與保險金給付表所載之「給付比例」計算。</item>
+                    <item>6.重大燒燙傷保險金:按保險金額的百分之四十給付「重大燒燙傷保險金」。</item>
+                </paragraph>
+            </liability>
+
+            <!-- 注意事項 -->
+            <notices filter="notices" parser="notices">
+                <paragraph title="注意事項" type="2">
+                    <item>'1.本保險商品於訂立契約前應提供要保人保單條款樣本且不低於三日審閱期間之權利。'</item>
+                    <item>'2.消費者於購買本保險商品前，應詳閱各種銷售文件內容，本保險商品之預定費用率(預定附加費用率)最高81.6%，最低36.3%；如要詳細了解其他相關資訊，請查閱法國巴黎人壽網址https://life.cardif.com.tw/，或洽免付費服務專線0800-012-899，以保障您的權益。'</item>
+                    <item>'3.本保險商品經法國巴黎人壽合格簽署人員檢視其內容業已符合一般精算原則及保險法令，惟為確保權益，基於保險公司與消費者衡平對等原則，消費者仍應詳加閱讀保險單條款與相關文件，審慎選擇保險商品。本保險商品如有虛偽不實或違法情事，應由法國巴黎人壽及其負責人依法負責。'</item>
+                    <item>'4.投保後解約或不繼續繳費可能不利消費者，請慎選符合需求之保險商品。'</item>
+                    <item>'5.投保後解約時，將無法領回全部保險費，解約金之詳細說明，請詳細參閱保單條款。'</item>
+                    <item>'6.本建議書僅供參考，保險契約各項權利義務皆詳列於保單條款，消費者務必詳加閱讀了解，並把握保單契約撤銷之時效(收到保單翌日起算十日內)。'</item>
+                    <item>'7.本保險商品為不分紅保單，不參加紅利分配，並無紅利給付項目。'</item>
+                    <item>'8.本保險商品依保險法及相關規定受「人身保險安定基金」保障。'</item>
+                    <item>'9.本保險商品非存款商品，無受「存款保險」保障。'</item>
+                    <item>'10.人壽保險之死亡給付及年金保險之確定年金給付於被保險人死亡後給付於指定受益人者，依保險法第一百十二條規定不得作為被保險人之遺產，惟如涉有規避遺產稅等稅捐情事者，稽徵機關仍得依據有關稅法規定或稅捐稽徵法第十二條之一所定實質課稅原則辦理。相關實務案例請至法國巴黎人壽官網https://life.cardif.com.tw/查閱。'</item>
+                    <item>'11.本商品由法國巴黎人壽發行並負擔基於保險契約所生之權利義務，並由保險代理人/保險經紀人或合作銀行代理銷售，合作銀行代收/代轉保險費及保險文件。惟承保與否及保險給付之責任由法國巴黎人壽負責。保險代理人/保險經紀人或合作銀行與法國巴黎人壽並無合夥、委任或僱傭等任何關係。'</item>
+                    <item>'12.本建議書關於保險商品之資訊由法國巴黎人壽提供，關於貸款之相關資訊由合作銀行提供，惟合作銀行保留本專案貸款准駁之權利。'</item>
+                    <item>'13.本商品之紛爭處理及申訴管道：法國巴黎人壽免費申訴電話：0800-012-899、傳真電話：02-6636-3457、電子信箱(email)：group_assurance_tw_parislife@tw.cardif.com。'</item>
+                    <item>'14.稅法相關規定或解釋之改變與實質課稅原則認定，可能會影響本商品之給付金額及稅賦。'</item>
+                    <item>'15.本商品由代理銷售之保險代理人/保險經紀人或合作銀行以合作銀行為本保險商品之行銷通路。各辦理單位備有法國巴黎人壽之保單條款，要保人須仔細閱讀，商品詳細內容以保單條款為準。'</item>
+                    <item>'16.要保人投保時，招攬人員應主動出示其具備主管機關規定銷售資格之證件，並告知其授權範圍及詳細解說保險商品之內容；招攬人員如未主動出示告知，要保人應要求其出示並詳細告知。'</item>
+                    <item>'17.法國巴黎人壽資訊公開說明文件，請查閱法國巴黎人壽網址https://life.cardif.com.tw/，或洽免付費服務專線0800-012-899。'</item>
+                    <item>'18.本建議書內容係根據客戶需求作成之保險規劃建議，但不構成要約、要約之引誘或締結契約或交易之確認或承諾，且本公司保有最後承保與否之權利。'</item>
+                </paragraph>
+            </notices>
+
+
+        </attachment>
+
+        <rule skip="">
+            <if condition="APPLICANT.AGE lt 20 or APPLICANT.AGE > 65" type="customer">
+                要保年齡限制為20足歲以上65足歲以下
+            </if>
+            <if condition="AGE+INSURE_VALUE > 80" type="customer">
+                被保險人投保年齡與保險期間之和不得大於80歲
+            </if>
+            <if condition="LOAN_TERM_VALUE lt 2 or LOAN_TERM_VALUE gt 30" type="customer">
+                貸款年期必須在2年-30年之間
+            </if>
+            <if condition="INIT_LOAN_GRACE_PERIOD_VALUE > 5" type="customer">
+                貸款寬限期必須在0-5年
+            </if>
+            <if condition="AMOUNT gt INIT_LOAN_AMOUNT_VALUE*1.25" type="customer">
+                保險金額不得大於貸款金額的1.25倍
+            </if>
+            <if condition="AMOUNT lt 100" type="customer">
+                保額不得低於下限100萬元。
+            </if>
+            <if condition="AMOUNT ge 6000" type="customer">
+                保額不得高於上限6000萬元。
+            </if>
+            <if condition="PREMIUM_VALUE le 1500" type="customer">
+                首期保險費不得低於1500元
+            </if>
+            <if condition="PAY_FREQ_VALUE >0 and PAY_VALUE != INSURE_VALUE " type="customer">
+                交費方式選擇期繳、繳費期間和保險期間選擇不正確
+            </if>
+            <if condition="PAY_FREQ_VALUE lt 1 and PAY_VALUE != 1 " type="customer">
+                交費方式選擇趸缴、繳費期間選擇不正確
+            </if>
+        </rule>
+    </product>
+</declare>

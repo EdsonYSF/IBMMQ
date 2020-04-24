@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="L11200"
+			corporation_id="dajia"
+			code="L11200"
+			name="大家超惠保重大疾病保险"
+			name_abbr="超惠保"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="Q*DS.ZGRATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="L11200" />
+		</data>
+
+		<param>
+			<!-- 缴费方式 -->
+			<pay_freq>
+				<item code="year" />
+				<item code="month" />
+			</pay_freq>
+			<!--交费期间-->
+			<pay>
+				<item code="term_10"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="full_106" default="yes"/>
+			</insure>
+			<duty>
+				<item code="sg_0"/>
+				<item code="sg_1"/>
+				<item code="sg_2"/>
+			</duty>
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<!-- 轻症 -->
+			<var name="QZCSV" param="A1" formula="try(Q * DS.QZCV[A1][0],0)" />
+			<var name="QZRATE" param="A1" formula="try(Q * DS.QZRATE[A1][0],0)" />
+			<!-- 轻症豁免 -->
+			<var name="QZHMCSV" param="A1" formula="try(Q * DS.QZHMCV[A1][0],0)" />
+			<var name="QZHMRATE" param="A1" formula="try(Q * DS.QZHMRATE[A1][0],0)" />
+			<!-- 身故 -->
+			<var name="SGCSV" param="A1" formula="try(Q * DS.SGCV[A1][0],0)" />
+			<var name="SGRATE" param="A1" formula="try(Q * DS.SGRATE[A1][0],0)" />
+			<!-- 特定疾病 -->
+			<var name="TDJBCSV" param="A1" formula="try(Q * DS.TDJBCV[A1][0],0)" />
+			<var name="TDJBRATE" param="A1" formula="try(Q * DS.TDJBRATE[A1][0],0)" />
+			<!-- 重疾 -->
+			<var name="ZGCSV" param="A1" formula="try(Q * DS.ZGCV[A1][0],0)" />
+			<var name="ZGRATE" param="A1" formula="try(Q * DS.ZGRATE[A1][0],0)" />
+			<!-- 中症 -->
+			<var name="ZZCSV" param="A1" formula="try(Q * DS.ZZCV[A1][0],0)" />
+			<var name="ZZRATE" param="A1" formula="try(Q * DS.ZZRATE[A1][0],0)" />
+			<!-- 中症豁免 -->
+			<var name="ZZHMCSV" param="A1" formula="try(Q * DS.ZZHMCV[A1][0],0)" />
+			<var name="ZZHMRATE" param="A1" formula="try(Q * DS.ZZHMRATE[A1][0],0)" />
+			
+			<var name="SUMCSV" param="A1" formula="IT.QZCSV(A1)+IT.SGCSV(A1)+IT.TDJBCSV(A1)+IT.ZGCSV(A1)+IT.ZZCSV(A1)" />
+			<var name="SUMRATE" param="A1" formula="IT.QZRATE(A1)+IT.SGRATE(A1)+IT.TDJBRATE(A1)+IT.ZGRATE(A1)+IT.ZZRATE(A1)" />
+			
+			<var name="SUMCSV" param="A1" formula="IT.QZCSV(A1)+IT.SGCSV(A1)+IT.TDJBCSV(A1)+IT.ZGCSV(A1)+IT.ZZCSV(A1)" />
+			
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当期保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'重症保险金'</blank>
+							<blank row="1">'轻症保险金'</blank>
+							<blank row="1">'中症保险金'</blank>
+							<blank row="1">'特定疾病保险金'</blank>
+							<blank row="1">'身故保险金(至70岁)'</blank>
+							<blank row="1">'年末现金价值'</blank>
+							<blank row="1">'责任'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right">round(IT.PRM(I),2)</blank>
+								<blank align="right">round(IT.PRM_T(I),2)</blank>
+								<blank align="right">AMOUNT</blank>
+								<blank align="right">round(AMOUNT*0.3,2)</blank>
+								<blank align="right">round(AMOUNT*0.5,2)</blank>
+								<blank align="right">round(AMOUNT*0.3,2)</blank>
+								<blank align="right">AMOUNT</blank>
+								<blank align="right">round(IT.SUMCSV(I),2)</blank>
+								<blank align="right">DUTY_CODE</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1. 100种重疾保障（必选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，初次确诊重疾给付'+AMOUNT+'万元，本主险合同终止。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.身故保障（可选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，给付'+AMOUNT+'万元，本主险合同终止。 '</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3. 20种中症疾病保障（可选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，给付50%基本保额'+AMOUNT*0.5+'万元，本项责任终止，主险合同有效。 '</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="4. 50种轻症疾病保障（可选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，给付30%基本保额'+AMOUNT*0.3+'万元，本项责任终止，主险合同有效。 '</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="5. 7种女性特定疾病保障（可选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，额外给付30%基本保额'+AMOUNT*0.3+'万元，本主险合同终止。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="6. 13种男性特定疾病保障（可选）">
+					<table>
+						<row >
+							<blank>'90日内，给付累计所交保险费；因意外伤害或90日后，额外给付30%基本保额'+AMOUNT*0.3+'万元，本主险合同终止。'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="7. 轻/中症豁免保费保障">
+					<table>
+						<row >
+							<blank>'因意外伤害或90日后，初次发生合同所指的轻症疾病/中症疾病，豁免本合同自轻症疾病/中症疾病确诊之日起的续期保险费，主险合同继续有效。'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<!--<if condition="DAY lt 28 or AGE gt 50" type="customer">-->
+				<!--被保人年龄：28天-50周岁-->
+			<!--</if>-->
+			<!--<if condition="(AGE gt 36 and AGE  le 40) and PAY_CODE =='term_30' " type="customer">-->
+				<!--交费期间选择不正确:36-40 周岁可选 10 年、20年交；-->
+			<!--</if>-->
+			<!--<if condition="(AGE gt 41 and AGE  le 50) and (PAY_CODE =='term_30' or PAY_CODE =='term_20')" type="customer">-->
+				<!--41-50 周岁可选 10年交；-->
+			<!--</if>-->
+			<!--<if condition="AMOUNT lt 100000 or AMOUNT % 50000 != 0">-->
+				<!--最低保险金额10万元，超过部分需为5万元的整数倍-->
+			<!--</if>-->
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="FXL000037"
+			corporation_id="fuxing"
+			code="110055"
+			name="复星联合妈咪保贝少儿重大疾病保险"
+			name_abbr="妈咪宝贝"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="PREMIUM_T"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="FXL000037" />
+		</data>
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="term_5"/>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<insure>
+				<item code="term_20"/>
+				<item code="term_25"/>
+				<item code="term_30"/>
+				<item code="to_70"/>
+				<item code="to_80"/>
+				<item code="full_105"/>
+			</insure>
+
+			<second_insurance>
+				<item code="1" />
+				<item code="2" />
+			</second_insurance>
+
+			<rare_disease>
+				<item code="1" />
+				<item code="2" />
+			</rare_disease>
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="PREMIUM_T" >
+				var ret=0;
+				if(SECOND_INSURANCE_VALUE == 1 and RARE_DISEASE_VALUE ==1){
+				ret=Q*DS.RATE[0][3];
+				}else if(SECOND_INSURANCE_VALUE == 1 ){
+				ret=Q*DS.RATE[0][2];
+				}else if(RARE_DISEASE_VALUE ==1){
+				ret=Q*DS.RATE[0][1];
+				}else{
+				ret=Q*DS.RATE[0][0];
+				}
+				return ret;
+			</item>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" >
+				var ret=0;
+				if(SECOND_INSURANCE_VALUE == 1 and RARE_DISEASE_VALUE ==1){
+				ret=Q*try(DS.CV[A1][3],0);
+				}else if(SECOND_INSURANCE_VALUE == 1 ){
+				ret=Q*try(DS.CV[A1][1],0);
+				}else if(RARE_DISEASE_VALUE ==1){
+				ret=Q*try(DS.CV[A1][2],0);
+				}else{
+				ret=Q*try(DS.CV[A1][0],0);
+				}
+				return ret;
+			</var>
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'首次重大疾病保障'</blank>
+							<blank row="1">'身故或全残保障'</blank>
+							<blank row="1">'轻症疾病保障'</blank>
+							<blank row="1">'中症疾病保障'</blank>
+							<blank row="1">'现金价值'</blank>
+							<blank row="1" condition="SECOND_INSURANCE_VALUE == 1">'第二次重大疾病保障'</blank>
+							<blank row="1" condition="RARE_DISEASE_VALUE == 1">'少儿特定疾病保障'</blank>
+							<blank row="1" condition="RARE_DISEASE_VALUE == 1">'少儿罕见疾病保障'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="########0.00">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(AMOUNT,2)+'元'</blank>
+								<blank align="right" style="########0.00">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="########0.00">round(AMOUNT*0.3,2)+'元'</blank>
+								<blank align="right" style="########0.00">round(AMOUNT*0.5,2)+'元'</blank>
+								<blank align="right" style="########0.00">IT.CSV(I+1)</blank>
+								<blank align="right" style="########0.00" condition="SECOND_INSURANCE_VALUE == 1">round(AMOUNT,2)+'元'</blank>
+								<blank align="right" style="########0.00" condition="RARE_DISEASE_VALUE == 1">round(AMOUNT,2)+'元'</blank>
+								<blank align="right" style="########0.00" condition="RARE_DISEASE_VALUE == 1">round(AMOUNT*2,2)+'元'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1.首次重大疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖108种重大疾病'</blank>
+							<blank>round(AMOUNT,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.2.首次重大疾病豁免保险费">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'犹豫期过后，若在交费期间内被保险人确诊初次发生一种或多种重大疾病，可豁免保费，无需再交纳剩余应交保费，合同继续有效。'</blank>
+							<blank>''</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="3.身故保险金或全残保险金 ">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人在保险期间内身故或全残'</blank>
+							<blank>round(IT.PRM_T(INSURE_PERIOD-1),2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="4.中症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖25类中症疾病，限给付两次'</blank>
+							<blank>round(AMOUNT*0.5,2)+'元/次'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="5.轻症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖40种轻症疾病，限给付两次'</blank>
+							<blank>round(AMOUNT*0.3,2)+'元/次'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="6.轻症疾病或中症疾病豁免保险费 ">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'犹豫期过后，若在交费期间内被保险人确诊初次发生一种或多种轻中症疾病，可豁免保费，无需再交纳剩余应交保费，合同继续有效。'</blank>
+							<blank>''</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="7.第二次重大疾病保险金" condition="SECOND_INSURANCE_VALUE == 1">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'给付首次重大疾病保险金后，自第一次重大疾病确诊之日起365天后，被保险人确诊初次发生除第一次重大疾病以外的一种或多种重大疾病'</blank>
+							<blank>round(AMOUNT,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="8.少儿特定疾病保险金" condition="RARE_DISEASE_VALUE == 1">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖18种少儿特定疾病'</blank>
+							<blank>round(AMOUNT,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="9.少儿罕见疾病保险金" condition="RARE_DISEASE_VALUE == 1">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'覆盖5种少儿罕见疾病'</blank>
+							<blank>round(AMOUNT*2,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="APPLICANT.AGE lt 18 " type="customer">
+				最小投保人年龄18周岁
+			</if>
+			<!--<if condition="APPLICANT.AGE+PAY_VALUE + PAY_VALUE gt 70" type="customer">-->
+				<!--投保人年龄在缴费期满时不能超过70周岁-->
+			<!--</if>-->
+			<if condition="DAY lt 30 ">
+				最小投保人年龄出生满30天
+			</if>
+			<if condition="AGE gt 17">
+				最大被保人年龄17周岁
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT%1000!=0">
+				基本保额最低10000元，且须为1000的整数倍
+			</if>
+			<if condition="AGE le 10 and AMOUNT gt 800000">
+				被保人0-10周岁，最高保额限制为80万元
+			</if>
+			<if condition="(AGE ge 11 and AGE le 17)  and AMOUNT gt 1000000">
+				被保人11-17周岁，最高保额限制为100万元
+			</if>
+		</rule>
+	</product>
+</declare>

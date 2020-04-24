@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="DJ00002"
+			corporation_id="fuxing"
+			code="L11191"
+			name="安邦万年盈年金保险"
+			name_abbr="万年盈年金"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="DJ00002" />
+		</data>
+		
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<!--交费期间-->
+			<pay>
+				<item code="term_3"/>
+				<item code="term_5"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="full_106"/>
+			</insure>
+
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.CV[A1][0], 0)" />
+			<var name="SC" param="A1" formula="(A1 lt 5?0:(A1 lt 10?(PAY_PERIOD ==3?IT.PRM(1)*0.18:IT.PRM(1)*0.30):(A1+AGE lt 60?AMOUNT*0.2:AMOUNT*0.6)))" />
+
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+					<table>
+						<row type="title">
+							<blank row="1">'保单年度'</blank>
+							<blank row="1">'年龄'</blank>
+							<blank row="1">'当前保费'</blank>
+							<blank row="1">'累计保费'</blank>
+							<blank row="1">'生存年金'</blank>
+							<blank row="1">'身故保险金'</blank>
+							<blank row="1">'现金价值'</blank>
+						</row>
+						<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+							<row>
+								<blank style="##0">I+1</blank>
+								<blank style="##0">AGE+I+1</blank>
+								<blank align="right" style="#,###">round(IT.PRM(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.SC(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.PRM_T(I),2)+'元'</blank>
+								<blank align="right" style="#,###">round(IT.CSV(I),2)+'元'</blank>
+							</row>
+						</loop>
+					</table>
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+				<paragraph  title="1. 生存年金">
+					<table>
+						<row>
+							<blank>'被保险人在万年盈主险合同第5至第9个保单周年日零时生存且本主险合同有效的：
+								根据主险合同交费期间的不同，在第5至第9个保单周年日按照主险合同年交保险费的一定比例给付。
+								交费期间  给付比例
+								三年        18%
+								五年        30% '</blank>
+						</row>
+						<row>
+							<blank>'被保险人自万年盈主险合同第10个保单周年日起，被保险人在每个保单周年日零时生存且主险合同有效的：
+								按主险合同的基本保险金额的一定比例给付。
+								被保险人未满 60 周岁的，则给付比例为 20%；
+								被保险人年满 60 周岁的，则给付比例为 60%。直至终身。 '</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="2.身故保险金">
+					<table>
+						<row>
+							<blank>'被保险人身故的，按万年盈主险合同已交保险费与当时的现金价值较高者“较大者数字”元给付。本主险合同终止。'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="AGE gt 60 " type="customer">
+				被保人年龄：28天-60周岁
+			</if>
+			<if condition="AMOUNT lt 1000 or AMOUNT % 1000 != 0">
+				基本保险金额≥1000元，超出部分须为1000元整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

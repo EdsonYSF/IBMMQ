@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<parameter>
+		<!--
+			code  默认为 string
+			show  默认为 string
+			mode  默认为 formula，代表计算算法，可选值为0(value)，1(value-AGE)，2(value+AGE)，默认值为0
+			value 默认为 formula
+			desc  默认为 formula
+		-->
+		<!--<pay_freq>-->
+			<!--<item code="choice" value="100" show="请选择" />-->
+			<!--<item code="single" value="0" show="躉繳" />-->
+			<!--<item code="elastic" value="0" show="彈性繳" />-->
+			<!--<item code="year" value="1" show="年交" />-->
+			<!--<item code="month" value="2" show="月交" />-->
+			<!--<item code="season" value="3" show="季交" />-->
+			<!--<item code="half_year" value="4" show="半年交" />-->
+			<!--<item code="parent" value="PARENT.pay_freq.VALUE" desc="PARENT.pay_freq.DESC" show="同主险" />-->
+		<!--</pay_freq>-->
+
+		<!--繳別-->
+		<pay_freq>
+			<item code="choice" value="100" show="请选择" />
+			<item code="single" value="0" show="躉繳" />
+			<item code="trading" value="0" show="趸交" />
+			<item code="flexable" value="0" show="彈性繳" />
+			<item code="annually" value="1" show="年繳" />
+			<item code="monthly" value="2" show="月繳" />
+			<item code="quarterly" value="3" show="季繳" />
+			<item code="semi_annually" value="4" show="半年繳" />
+			<item code="parent" value="PARENT.pay_freq.VALUE" desc="PARENT.pay_freq.DESC" show="同主险" />
+		</pay_freq>
+
+
+		<pay>
+		    <item code="choice" value="0" show="请选择" />
+			<item code="single" value="1" show="一次交清" />
+
+			<item code="term_1" value="1" show="1年期" />
+			<item code="term_2" value="2" show="2年期" />
+			<item code="term_3" value="3" show="3年期" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_6" value="6" show="6年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_19" value="19" show="19年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+
+			<item code="to_12" mode="1" value="12" show="交至12岁" />
+			<item code="to_15" mode="1" value="15" show="交至15岁" />
+			<item code="to_18" mode="1" value="18" show="交至18岁" />
+			<item code="to_45" mode="1" value="45" show="交至45岁" />
+			<item code="to_50" mode="1" value="50" show="交至50岁" />
+			<item code="to_55" mode="1" value="55" show="交至55岁" />
+			<item code="to_60" mode="1" value="60" show="交至60岁" />
+			<item code="to_65" mode="1" value="65" show="交至65岁" />
+			<item code="to_70" mode="1" value="70" show="交至70岁" />
+			<item code="to_75" mode="1" value="75" show="交至75岁" />
+			<item code="to_88" mode="1" value="88" show="交至88岁" />
+			<item code="to_105" mode="1" value="105" show="交至105岁" />
+
+
+			<item code="insure" mode="1" value="THIS.INSURE_VALUE" show="至保障" />
+			<item code="none" value="0" show="-" />
+			<item code="input" value="THIS.YEAR" desc="'交'+THIS.YEAR+'年'" show="自定义" />
+			<item code="exempt" value="PARENT.PAY_PERIOD-1" desc="round(PARENT.PAY_PERIOD-1)+'年期'" show="豁免期间" />
+			<item code="draw" mode="1" value="THIS.DRAW_AGE" desc="'交至'+DRAW_AGE+'岁'" show="交至领取" />
+			<item code="parent" mode="PARENT.PAY_MODE" value="PARENT.PAY_VALUE" desc="PARENT.PAY_DESC" show="同主险" />
+		</pay>
+
+
+		<insure>
+		    <item code="choice" value="0" show="请选择" />
+			<item code="month_1" mode="2" value="1" show="1个月" />
+			<item code="month_2" mode="2" value="2" show="2个月" />
+			<item code="month_3" mode="2" value="3" show="3个月" />
+			<item code="month_4" mode="2" value="4" show="4个月" />
+			<item code="month_5" mode="2" value="5" show="5个月" />
+			<item code="month_6" mode="2" value="6" show="6个月" />
+			<item code="month_7" mode="2" value="7" show="7个月" />
+			<item code="month_8" mode="2" value="8" show="8个月" />
+			<item code="month_9" mode="2" value="9" show="9个月" />
+			<item code="month_10" mode="2" value="10" show="10个月" />
+			<item code="month_11" mode="2" value="11" show="11个月" />
+			<item code="month_12" mode="2" value="12" show="12个月" />
+			<item code="term_1" value="1" show="1年期" />
+			<item code="term_2" value="2" show="2年期" />
+			<item code="term_3" value="3" show="3年期" />
+			<item code="term_4" value="4" show="4年期" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_6" value="6" show="6年期" />
+			<item code="term_7" value="7" show="7年期" />
+			<item code="term_8" value="8" show="8年期" />
+			<item code="term_9" value="9" show="9年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_11" value="11" show="11年期" />
+			<item code="term_12" value="12" show="12年期" />
+			<item code="term_13" value="13" show="13年期" />
+			<item code="term_14" value="14" show="14年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_16" value="16" show="16年期" />
+			<item code="term_17" value="17" show="17年期" />
+			<item code="term_18" value="18" show="18年期" />
+			<item code="term_19" value="19" show="19年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_21" value="21" show="21年期" />
+			<item code="term_22" value="22" show="22年期" />
+			<item code="term_23" value="23" show="23年期" />
+			<item code="term_24" value="24" show="24年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_26" value="26" show="26年期" />
+			<item code="term_27" value="27" show="27年期" />
+			<item code="term_28" value="28" show="28年期" />
+			<item code="term_29" value="29" show="29年期" />
+			<item code="term_30" value="30" show="30年期" />
+			<item code="term_31" value="31" show="31年期" />
+			<item code="term_32" value="32" show="32年期" />
+			<item code="term_33" value="33" show="33年期" />
+			<item code="term_34" value="34" show="34年期" />
+			<item code="term_35" value="35" show="35年期" />
+			<item code="term_36" value="36" show="36年期" />
+			<item code="term_37" value="37" show="37年期" />
+			<item code="term_38" value="38" show="38年期" />
+			<item code="term_39" value="39" show="39年期" />
+			<item code="term_40" value="40" show="40年期" />
+			<item code="to_14" mode="1" value="14" show="保至14岁" />
+			<item code="to_17" mode="1" value="17" show="保至17岁" />
+			<item code="to_21" mode="1" value="21" show="保至21岁" />
+			<item code="to_25" mode="1" value="25" show="保至25岁" />
+			<item code="to_28" mode="1" value="28" show="保至28岁" />
+			<item code="to_40" mode="1" value="40" show="保至40岁" />
+			<item code="to_45" mode="1" value="45" show="保至45岁" />
+			<item code="to_50" mode="1" value="50" show="保至50岁" />
+			<item code="to_55" mode="1" value="55" show="保至55岁" />
+			<item code="to_60" mode="1" value="60" show="保至60岁" />
+			<item code="to_65" mode="1" value="65" show="保至65岁" />
+			<item code="to_70" mode="1" value="70" show="保至70岁" />
+			<item code="to_75" mode="1" value="75" show="保至75岁" />
+			<item code="to_80" mode="1" value="80" show="保至80岁" />
+			<item code="to_85" mode="1" value="85" show="保至85岁" />
+			<item code="to_88" mode="1" value="88" show="保至88岁" />
+			<item code="to_100" mode="1" value="100" show="保至100岁" />
+			<item code="to_105" mode="1" value="105" show="保至105岁" />
+			<item code="to_full" mode="1" value="106" show="终身" />
+			<item code="full_90" mode="1" value="90" show="终身" />
+			<item code="full_105" mode="1" value="105" show="终身" />
+			<item code="full_106" mode="1" value="106" show="终身" />
+			<item code="full_110" mode="1" value="110" show="终身" />
+
+			<item code="pay" mode="pay.MODE" value="pay.VALUE" desc="pay.DESC" show="同缴费" />
+			<item code="input" value="THIS.YEAR" desc="'保'+THIS.YEAR+'年'" show="自定义" />
+			<item code="parent" mode="PARENT.INSURE_MODE" value="PARENT.INSURE_VALUE" desc="PARENT.INSURE_DESC" show="同主险" />
+			<item code="rank" value="0" desc="IT.RANK_INSURE_DESC" show="按档次" />
+			<item code="exempt" value="PARENT.PAY_PERIOD-1" desc="round(PARENT.PAY_PERIOD-1)+'年期'" show="豁免期间" />
+		</insure>
+		<annuity_reward_age>
+			<item code="55" value="55" show="55岁领取" />
+			<item code="60" value="60" show="60岁领取" />
+			<item code="65" value="65" show="65岁领取" />
+			<item code="70" value="70" show="70岁领取" />
+			<item code="75" value="75" show="75岁领取" />
+		</annuity_reward_age>
+		<annuity_reward_way>
+			<item code="single" value="1" show="一次给付" />
+			<item code="term" value="2" show="分期给付" />
+		</annuity_reward_way>
+		<annuity_reward_period>
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_19" value="19" show="19年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+		</annuity_reward_period>
+		<annuity_reward_freq>
+			<item code="monthly" value="1" show="月給付"/>
+			<item code="quarterly" value="2" show="季給付" />
+			<item code="semi_annually" value="3" show="半年付" />
+			<item code="annually" value="4" show="年給付" />
+		</annuity_reward_freq>
+		<!--幣別-->
+		<currency>
+			<item code="please_choose" value="0" show="請選擇" />
+			<item code="NTD" value="1" show="新臺幣" />
+			<item code="USD" value="2" show="美元" />
+			<item code="AUD" value="3" show="澳幣" />
+			<item code="CAD" value="4" show="加幣" />
+			<item code="HKD" value="5" show="港幣" />
+			<item code="EUR" value="6" show="歐元" />
+			<item code="GBP" value="7" show="英鎊" />
+			<item code="JPY" value="8" show="日圓" />
+			<item code="NZD" value="9" show="紐幣" />
+			<item code="CNY" value="10" show="人民幣" />
+			<item code="ZAR" value="11" show="南非幣"/>
+		</currency>
+
+		<pay_method>
+			<item code="cash" value="1" show="現金" />
+			<item code="loan" value="2" show="融資" />
+		</pay_method>
+		<pay_way>
+			<item code="remit" value="1" show="匯款" />
+			<item code="autopay" value="2" show="自動轉帳" />
+			<item code="credit" value="3" show="信用卡" />
+		</pay_way>
+
+		<pay_way_xq>
+			<item code="remit" value="1" show="匯款" />
+			<item code="autopay" value="2" show="自動轉帳" />
+			<item code="credit" value="3" show="信用卡" />
+		</pay_way_xq>
+
+		<pay_way_xq_a>
+			<item code="remit" value="1" show="匯款" />
+			<item code="autopay" value="2" show="自動轉帳" />
+			<item code="credit" value="3" show="信用卡" />
+		</pay_way_xq_a>
+
+		<pay_way_xq_c>
+			<item code="remit" value="1" show="匯款" />
+			<item code="autopay" value="2" show="自動轉帳" />
+			<item code="credit" value="3" show="信用卡" />
+		</pay_way_xq_c>
+
+		<loan_term>
+			<item code="term_1" value="1" show="1年期" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+		</loan_term>
+		<product_sort>
+			<item code="sort_1" value="1" show="甲型" />
+			<item code="sort_2" value="2" show="乙型" />
+			<item code="sort_3" value="3" show="丙型" />
+			<item code="sort_4" value="4" show="丁型" />
+			<item code="A" value="A" show="A型" />
+			<item code="B" value="B" show="B型" />
+			<item code="C" value="C" show="C型" />
+		</product_sort>
+		<auto_pay>
+			<item code="Y" value="Y" show="同意" />
+			<item code="N" value="N" show="不同意" />
+		</auto_pay>
+		<percentage>
+			<item code="130" value="130" show="130%" />
+			<item code="115" value="115" show="115%" />
+			<item code="101" value="101" show="101%" />
+			<item code="0" value="0" show="其他" />
+		</percentage>
+
+		<percentage_two>
+			<item code="30" value="30" show="30%" />
+			<item code="15" value="15" show="15%" />
+			<item code="1" value="1" show="1%" />
+			<item code="0" value="0" show="其他" />
+		</percentage_two>
+	</parameter>
+</declare>

@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="HQL00160"
+			corporation_id="hengqin"
+			code="17160"
+			name="横琴琴心守护医疗保险"
+			name_abbr="琴心守护"
+			unit="10000"
+			type_code="life"
+			sequence="1000"
+			sale_begin_date="2017-01-01"
+			sale_end_date=""
+			input="none"
+			quantity="1"
+			premium="IT.PRM_PREMIUM"
+			amount="AMOUNT_REQUIRED_VALUE"
+			last_modify_date="2017-01-01"
+			prod_category="3"
+			sub_category="1"
+			design_type="2"
+			grade_type="1"
+			period_type="1"
+	>
+
+		<data>
+			<item parser="dds" value="HQL00160" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+
+			<pay>
+				<item code="term_1" />
+			</pay>
+
+			<insure>
+				<item code="term_1"  />
+			</insure>
+
+			<medicare>
+				<item code="yes" default="yes"/>
+				<item code="no" />
+			</medicare>
+
+			<renewal>
+				<item code="yes" default="yes"/>
+				<item code="no" />
+			</renewal>
+
+			<amount_required>
+				<item code="200" />
+				<item code="400" default="yes"/>
+			</amount_required>
+
+			<loss_ration>
+				<item code="0" default="yes"/>
+				<item code="1"/>
+				<item code="2"/>
+				<item code="3"/>
+			</loss_ration>
+
+		</param>
+
+		<rider>
+			<product id="HQL00029"/>
+			<product id="HQL00024"/>
+			<product id="HQL00025"/>
+			<product id="HQL00026"/>
+			<product id="HQL00027"/>
+			<product id="HQL00028"/>
+		</rider>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<!-- 是否指定受益人 -->
+			<item name="ISSHOWBENEFICIARY">true</item>
+			<!-- 是否为长险 -->
+			<item name="ISLONG">false</item>
+			<!-- 是否为年金险 -->
+			<item name="ISANNUITY">true</item>
+			<!-- 是否可以添加附加险 -->
+			<item name="RIDERAVAILABLE">true</item>
+			<!-- 是否可以添加附加豁免险 -->
+			<item name="EXEMPT_RIDER_AVAILABLE">
+				!(PAY_PERIOD == 1 or (INSURANT.AGE == APPLICANT.AGE and INSURANT.GENDER == APPLICANT.GENDER and INSURANT.NAME == APPLICANT.NAME))
+			</item>
+			<!-- 是否需要产品说明书 -->
+			<item name="NEEDPRODUCTSTATE">false</item>
+			<!-- 是否需要风险抄录 -->
+			<item name="NEEDRISKCA">false</item>
+			<!-- 是否需要选择职业 -->
+			<item name="OCCUPATIONVISIBLE">true</item>
+			<!--产品责任-->
+			<item name="hasDuty">true</item>
+			<item name="dutyNum" type="string">1</item>
+			<item name="DUTY_1_CODE" type="string">ID7160</item>
+			<item name="DUTY_1_AMNT" value="round(AMOUNT_REQUIRED_VALUE, 2)"/>
+			<item name="DUTY_1_PREM" value="round(IT.PRM_PREMIUM, 2)"/>
+			<item name="DUTY_1_LIMIT" value="10000.00"/><!-- 免赔额固定1万 -->
+			<item name="DUTY_1_RATE" value="product_rate"/>
+
+			<item name="product_rate">
+				var ret=0;
+				if(LOSS_RATION_SHOW =='100%'){
+				ret =1;
+				}else if(LOSS_RATION_SHOW == '90%'){
+				ret =0.9;
+				}else if(LOSS_RATION_SHOW == '80%'){
+				ret =0.8;
+				}else if(LOSS_RATION_SHOW == '70%'){
+				ret =0.7;
+				}
+				return ret;
+			</item>
+		</init>
+
+		<interest>
+			<var name="PRM_PREMIUM"  formula="AMOUNT_REQUIRED_CODE =='200' ? DS.RATE[0][0]*product_rate : DS.RATE[0][1]*product_rate" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_app filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'内地医疗保险金'</blank>
+						<blank row="1">'境外保障医疗保险金'</blank>
+						<blank row="1">'日投入'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT_REQUIRED_VALUE/2,2)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT_REQUIRED_VALUE/2,2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)/365,2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_app>
+
+			<!-- 规范要求：符号使用中文符号，和前端约定使用英文逗号换行 -->
+			<liability filter="liability" parser="liability">
+				<paragraph title="1.内地医疗保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'在保险期间内，被保险人因遭受意外伤害事故或在等待期后因意外伤害事故以外的原因，在中国内地的医疗机构接受治疗的，我们对住院医疗费用、 特殊门诊医疗费用、 门诊手术医疗费用、住院前后门急诊医疗费用， 在扣除本合同约定的免赔额后，按照本合同约定的赔付比例给付内地医疗保险金；在本合同保险期间内，以上四类费用的累计给付金额以内地医疗保险金年度给付限额为限，累计给付金额达到内地医疗保险金年度给付限额时，内地医疗保险金 的责任终止。'
+							</blank>
+							<blank>round(AMOUNT_REQUIRED_VALUE/2,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="2.境外保障医疗保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'在保险期间内，被保险人因遭受意外伤害事故或在等待期后因意外伤害事故以外 的原因，经我们指定的授权服务商提供的第二诊疗意见服务确认，需要接受本合同约定的保障的医学治疗，并由授权服务商安排前往初步医疗诊断证明中明确的境外医疗机构进行本合同约定的保障的医学治疗，在治疗期间所产生的合理且必须的床位费、陪床费和膳食费 、药品费 、材料费 、医生费（诊疗费）、护理费及门诊服务费、检查化验费 、治疗及手术费用、转运费、翻译费、远程咨询费，我们按本合同约定 的赔付比例给付境外保障医疗保险金；在本合同保险期间内，以上费用的累计给付金额以境外保障医疗保险金年度给付限额为限，累计给付金额达到境外保障医疗保险金年度给付限额时，境外保障医 疗保险金的责任终止。'</blank>
+							<blank>round(AMOUNT_REQUIRED_VALUE/2,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+
+		</attachment>
+
+		<rule skip="">
+			<if condition="DAY lt 28 or AGE >65" type="customer">
+				投保年龄范围为出生满28天至65周岁。
+			</if>
+			<if condition="OCCUPATION_CODE == '' or  OCCUPATION_CODE == NULL">
+				需要校验职业等级，请选择被保人职业。
+			</if>
+			<if condition="OCCUPATION_CATEGORY > 4">
+				仅接受职业风险等级1-4级投保。
+			</if>
+		</rule>
+	</product>
+</declare>

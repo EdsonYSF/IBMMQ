@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00150"
+		corporation_id="hengqin"
+		code="16210"
+		name="横琴琴童一号终身重大疾病"
+		name_abbr="琴童一号重疾"
+		unit="10000"
+		type_code="life"
+		sequence="1000"
+		sale_begin_date="2017-01-01"
+		sale_end_date=""
+		input="amount"
+		quantity="1"
+		premium="Q * DS.RATE[0][0]"
+		last_modify_date="2017-01-01">
+		<!--如果此产品需要校验职业等级,type_code不能填medicare,
+		    因为底层OCCUPATION_CATEGORY是根据type_code来获取寿险等级还是医疗等级的，目前项目中的等级统一取寿险等级-->
+		<data>
+			<item parser="dds" value="HQL00150" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="single" />
+				<item code="year" default="yes"/>
+			</pay_freq>
+
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_18" />
+				<item code="term_19" />
+				<item code="term_20" default="yes"/>
+			</pay>
+
+			<insure>
+				<item code="to_full"  />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="HQL00150"/>
+		</rider>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<!-- 是否指定受益人 -->
+			<item name="ISSHOWBENEFICIARY">true</item>
+			<!-- 是否为长险 -->
+			<item name="ISLONG">true</item>
+			<!-- 是否为年金险 -->
+			<item name="ISANNUITY">false</item>
+			<!-- 是否可以添加附加险 -->
+			<item name="RIDERAVAILABLE">true</item>
+			<!-- 是否可以添加附加豁免险 -->
+			<item name="EXEMPT_RIDER_AVAILABLE">
+				!(PAY_PERIOD == 1 or (INSURANT.AGE == APPLICANT.AGE and INSURANT.GENDER == APPLICANT.GENDER and INSURANT.NAME == APPLICANT.NAME))
+			</item>
+			<!-- 是否需要选择职业 -->
+			<item name="OCCUPATIONVISIBLE">true</item>
+		</init>
+
+		<interest>
+			<var name="TRANSFER_DESC" param="A1" formula="(A1%10000 gt 0 ? round(A1/10000,1) : round(A1/10000))+'万元'" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="Q*DS.CV[A1,0]" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'现金价值'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			<cashvalue_table filter="table" parser="table">
+				<table>
+					<row><blank>'ID6210'</blank></row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="########0.00">IT.CSV(I)</blank>
+						</row>
+					</loop>
+				</table>
+			</cashvalue_table>
+			
+			<liability_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">AMOUNT+',横琴琴童一号终身重大疾病保险,ID6210,' + Q * DS.RATE[0][0]</blank>
+					</row>
+				</table>
+			</liability_table>
+		</attachment>
+
+		<rule skip="">
+			<if condition="DAY lt 27 or AGE >65" type="customer">
+				投保年龄范围为出生满28天至65周岁。
+			</if>
+			<if condition="OCCUPATION_CODE == '' or  OCCUPATION_CODE == NULL">
+				需要校验职业等级，请选择被保人职业。
+			</if>
+			<if condition="AMOUNT lt 100000 or AMOUNT % 10000>0">
+				最低基本保险金额10万元，超过部份须为1万元的整数倍。
+			</if>
+			<if condition="PAY_VALUE == 3 and (DAY lt 27 or AGE > 65)">
+				交费期间为3年交时投保年龄只能是出生满28天至65周岁。
+			</if>
+			<if condition="PAY_VALUE == 5 and (DAY lt 27 or AGE > 60)">
+				交费期间为5年交时投保年龄只能是出生满28天至60周岁。
+			</if>
+			<if condition="PAY_VALUE == 10 and (DAY lt 27 or AGE > 55)">
+				交费期间为10年交时投保年龄只能是出生满28天至55周岁。
+			</if>
+			<if condition="PAY_VALUE == 15 and (DAY lt 27 or AGE > 50)">
+				交费期间为15年交时投保年龄只能是出生满28天至50周岁。
+			</if>
+			<if condition=" PAY_VALUE == 18 and (DAY lt 27 or AGE > 45)">
+				交费期间为18年交时投保年龄只能是出生满28天至45周岁。
+			</if>
+			<if condition=" PAY_VALUE == 19 and (DAY lt 27 or AGE > 45)">
+				交费期间为19年交时投保年龄只能是出生满28天至45周岁。
+			</if>
+			<if condition=" PAY_VALUE == 20 and (DAY lt 27 or AGE > 45)">
+				交费期间为20年交时投保年龄只能是出生满28天至45周岁。
+			</if>
+			<if condition="OCCUPATION_CATEGORY > 4">
+				仅接受职业风险等级1-4级投保。
+			</if>
+		</rule>
+	</product>
+</declare>

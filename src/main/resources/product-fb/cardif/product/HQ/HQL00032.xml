@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+		id="HQL00032"
+		corporation_id="hq"
+		code="16180"
+		name="横琴附加豁免保险费重大疾病保险（2019版）"
+		name_abbr="附加豁免保险费重疾"
+		unit="1000"
+		type_code="exempt"
+		sequence="3000"
+		sale_begin_date="2015-01-01"
+		sale_end_date=""
+		is_main="no"
+        is_rider="yes"
+		quantity="1"
+		input="none"
+		amount="PRM_EXEMPT"
+		premium="Q*DS.RATE[0][RATE_ITEM]"
+		last_modify_date="2015-01-01"
+		prod_category="3"
+		sub_category="2"
+		design_type="1"
+		grade_type="2"
+		period_type="1">
+
+		<data>
+			<item parser="dds" value="HQL00032" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="exempt"/>
+				<item code="term_4"/>
+			</pay>
+			<insure>
+				<item code="parent"/>
+				<item code="term_30"/>
+			</insure>
+		</param>
+		
+		<init>
+			<item name="INSURANT">APPLICANT</item>
+			<item name="INS">PARENT.INSURANT</item>
+			<item name="PRM_EXEMPT">
+		        var total = 0;
+		        var list = PLAN.PRODUCTS;
+		        for (var x = 0; x lt size(list); x++) {
+		        	var p = list[x];
+		        	if ((p.PARENT == THIS.PARENT or p == THIS.PARENT) and p != THIS and p.PAY_PERIOD == THIS.PARENT.PAY_PERIOD) {
+		        		total += p.PREMIUM;
+		        	}
+		        }
+				print('total:'+total);
+		        return total;
+			</item>
+			<item name="RATE_ITEM">
+		        var total = 0;
+				total = PAY_VALUE-2;
+		        return total;
+			</item>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<item name="isShowApplicantInform">true</item>
+			<item name="isExempt">true</item>
+			<!-- 是否为长险 -->
+			<item name="ISLONG">true</item>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="A1>=PAY_PERIOD?0:try(Q * (DS.DATA[A1][0]), 0)" />
+			<var name="SCD" param="A1" formula="(A1>=0 and (A1+1) lt PARENT.PAY_PERIOD)? PREMIUM*(PAY_PERIOD-A1-1) : 0"/>
+			<var name="PARENT_SCD" param="A1" formula="(A1>=0 and (A1+1) lt PARENT.PAY_PERIOD) ? PRM_EXEMPT*(PARENT.PAY_PERIOD-A1-1) : 0" /><!-- 以后各期所交主险保费之和 -->
+		</interest>
+
+		<attachment>
+			<benefit_app filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度末'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'重大疾病豁免保险费'</blank>
+						<blank row="1">'特定疾病豁免保险费'</blank>
+						<blank row="1">'身故豁免保险费'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'日投入'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM_T(I), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round((IT.SCD(I)+IT.PARENT_SCD(I)), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round((IT.SCD(I)+IT.PARENT_SCD(I)), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round((IT.SCD(I)+IT.PARENT_SCD(I)), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.CSV(I), 2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)/365,2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_app>
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="1.重大疾病豁免保险费">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'本附加合同的被保险人初次发生并被医院的专科医生确诊患有本附加合同约定的重大疾病（无论一种或多种），我们将豁免被保险人重大疾病确诊日后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费，本附加合同终止。'</blank>
+				  		<blank>'豁免被保险人重大疾病确诊日后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="2.特定疾病豁免保险费">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'本附加合同的被保险人初次发生并被医院的专科医生确诊患有本附加合同约定的特定疾病（无论一种或多种），我们将豁免被保险人特定疾病确诊日后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费，本附加合同终止。'</blank>
+				  		<blank>'豁免被保险人特定疾病确诊日后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+				<paragraph title="3.身故豁免保险费">
+				  <table>
+				  	<row type="title">
+				  		<blank>'给付原因及标准'</blank>
+				  		<blank>'给付限额'</blank>
+				  	</row>
+					<row>
+				  		<blank>'本附加合同的被保险人身故，我们将豁免被保险人身故后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费，本附加合同终止。'</blank>
+				  		<blank>'将豁免被保险人身故后主合同和保险期间超过1年的双方约定的其他附加合同以后各期应交纳的保险费'</blank>
+				  	</row>
+				  </table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule>
+            <if condition="!(PARENT.APPLICANT.AGE ge 18 and PARENT.APPLICANT.AGE le 65)" type="customer">
+                主险投保人年龄需为18周岁至65周岁。
+            </if>
+			<if condition="PARENT.INSURANT == PARENT.APPLICANT">
+				投被保人为同一人时，不允许勾选本豁免险。
+			</if>
+			<if condition="PARENT.PAY_PERIOD==1">
+				主险为趸交或终身交费方式时，不得附加本附加险。
+			</if>
+			<if condition="AGE + PAY_VALUE > 70">
+				交费期满时被保险人年龄须≤70周岁。
+			</if>
+		</rule>
+	</product>
+</declare>

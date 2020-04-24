@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="DJ00011"
+			corporation_id="dajia"
+			code="L11204"
+			name="大家附加华欣无忧两全保险"
+			name_abbr="大家附加华欣无忧"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			is_main="no"
+			is_rider="yes"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="DJ00011" />
+		</data>
+		
+
+		<param>
+			<!--交费方式-->
+			<pay_freq>
+				<item code="year"/>
+			</pay_freq>
+			<!--交费期间-->
+			<pay>
+				<item code="term_10"/>
+				<item code="term_15"/>
+				<item code="term_20"/>
+				<item code="term_30"/>
+			</pay>
+			<!--保险期间-->
+			<insure>
+				<item code="to_70"/>
+				<item code="to_80"/>
+			</insure>
+
+		</param>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+			<var name="CSV" param="A1" formula="try(Q * DS.DATA[A1][0],0)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="DAY lt 28 " type="customer">
+				被保人年龄：28天-55周岁
+			</if>
+			<if condition="AGE gt 55 " type="customer">
+				被保人年龄：28天-55周岁
+			</if>
+			<if condition="OCCUPATION_CATEGORY>6 or OCCUPATION_CATEGORY lt 1" type="customer">
+				仅限职业风险等级为1-6级的客户投保。
+			</if>
+			<if condition="AMOUNT lt 10000 or AMOUNT % 1000 != 0">
+				最低保险金额>=1000元，超过部分需为1000元的整数倍
+			</if>
+			<if >
+				if(PLAN.HasProduct('DJ00010')){
+					if(PARENT.PAY_CODE !=PAY_CODE){
+						return '交费期间需要和主险保持一致';
+					}
+				}
+			</if>
+		</rule>
+	</product>
+</declare>

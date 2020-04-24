@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="HQL00130"
+			corporation_id="hengqin"
+			code="16170"
+			name="横琴优倍保终身重大疾病保险"
+			name_abbr="优倍保终身重疾"
+			unit="10000"
+			type_code="life"
+			sequence="1000"
+			sale_begin_date="2017-01-01"
+			sale_end_date=""
+			input="amount"
+			quantity="1"
+			premium="Q * DS.RATE[0][0]"
+			last_modify_date="2017-01-01"
+			prod_category="3"
+			sub_category="1"
+			design_type="2"
+			grade_type="1"
+			period_type="1"
+	>
+		<!--如果此产品需要校验职业等级,type_code不能填medicare,
+		    因为底层OCCUPATION_CATEGORY是根据type_code来获取寿险等级还是医疗等级的，目前项目中的等级统一取寿险等级-->
+		<data>
+			<item parser="dds" value="HQL00130" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="single" />
+				<item code="year" default="yes"/>
+			</pay_freq>
+
+			<pay>
+				<item code="single" />
+				<item code="term_3" />
+				<item code="term_5" />
+				<item code="term_10" />
+				<item code="term_15" />
+				<item code="term_20" default="yes"/>
+				<item code="term_30" />
+			</pay>
+
+			<insure>
+				<item code="to_full"  />
+			</insure>
+		</param>
+
+		<rider>
+			<product id="HQL00022"/>
+			<product id="HQL00023"/>
+			<product id="HQL00032"/>
+		</rider>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+			<!-- 是否指定受益人 -->
+			<item name="ISSHOWBENEFICIARY">true</item>
+			<!-- 是否为长险 -->
+			<item name="ISLONG">true</item>
+			<!-- 是否为年金险 -->
+			<item name="ISANNUITY">false</item>
+			<!-- 是否可以添加附加险 -->
+			<item name="RIDERAVAILABLE">true</item>
+			<!-- 是否可以添加附加豁免险 -->
+			<item name="EXEMPT_RIDER_AVAILABLE">
+				!(PAY_PERIOD == 1 or (INSURANT.AGE == APPLICANT.AGE and INSURANT.GENDER == APPLICANT.GENDER and INSURANT.NAME == APPLICANT.NAME))
+			</item>
+			<!-- 是否需要选择职业 -->
+			<item name="OCCUPATIONVISIBLE">true</item>
+
+		</init>
+
+		<interest>
+			<var name="TRANSFER_DESC" param="A1" formula="(A1%10000 gt 0 ? round(A1/10000,1) : round(A1/10000))+'万元'" />
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+
+			<!--身故保险金/疾病终末期保险金/重大疾病保险金-->
+			<var name="BENEFIT_AMOUNT" param="A1" formula="(A1+AGE+1>18 ? max(AMOUNT,IT.PRM_T(A1)) : 2*IT.PRM_T(A1))" />
+			<!--豁免保险金-->
+			<var name="EXEMPT_AMOUNT" param="A1" formula="((PAY_PERIOD-A1-1)>0 ? IT.PRM(A1)*(PAY_PERIOD-A1-1) : 0)" />
+			<var name="CSV" param="A1" formula="try(Q * (DS.DATA[A1][0]), 0)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年交保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'身故保险金'</blank>
+						<blank row="1">'疾病终末期保险金'</blank>
+						<blank row="1">'重大疾病保险金'</blank>
+						<blank row="1">'中症疾病保险金'</blank>
+						<blank row="1">'轻症疾病保险金'</blank>
+						<blank row="1">'重疾、中症或轻症豁免保险金'</blank>
+						<blank row="1">'现金价值'</blank>
+						<blank row="1">'日投入'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">AGE+I+1</blank>
+							<blank style="##0">I+1</blank>
+							<blank align="right" style="########0">round(IT.PRM(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.PRM_T(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.BENEFIT_AMOUNT(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.BENEFIT_AMOUNT(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*7.7,2)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT,2)+'元'</blank>
+							<blank align="right" style="########0">round(AMOUNT*0.9,2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.EXEMPT_AMOUNT(I),2)+'元'</blank>
+							<blank align="right" style="########0">round(IT.CSV(I),2)+'元'</blank>
+							<blank align="right" style="########0.00">round(IT.PRM(I)/365,2)+'元'</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+
+			<!-- 规范要求：符号使用中文符号，和前端约定使用英文逗号换行 -->
+			<liability filter="liability" parser="liability">
+				<paragraph title="1.身故保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人于年满18周岁前（含18周岁生日当天）身故，我们按本合同已交保险费的200%给付身故保险金，本合同终止。;
+								被保险人于年满18周岁后身故，我们按以下两项的较大者给付身故保险金，本合同终止：（1）本合同基本保险金额；（2）本合同已交保险费。'
+							</blank>
+							<blank>round(AGE le 18 ? PREMIUM*2 : max(AMOUNT,IT.PRM_T(INSURE_PERIOD-1)),2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="2.疾病终末期保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人初次被医院（见条款 9.10）的专科医生（见条款 9.11）确诊达到疾病终末期阶段,我们按以下约定给付疾病终末期保险金：（1）被保险人于年满18周岁前（含18周岁生日当天）达到疾病终末期阶段，我们按本合同已交保险费200%给付疾病终末期保险金，本合同终止；（2）被保险人于年满18周岁后达到疾病终末期阶段，我们按以下两项的较大者给付疾病终末期保险金，本合同终止：①本合同基本保险金额；②本合同已交保险费。'</blank>
+							<blank>round(AGE le 18 ? PREMIUM*2 : max(AMOUNT,IT.PRM_T(INSURE_PERIOD-1)),2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="3.重大疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'本合同约定的重大疾病分为 A、B、C、D、E 五组,详细分组信息请见《重大疾病分组表》（见条款 9.12）。A组重大疾病保险金的累计给付次数以三次为限，当累计给付达到三次时，该组重大疾病的保险责任终止。B、C、D、E 每组重大疾病保险金的给付次数以一次为限，给付后该组重大疾病的保险责任终止。本合同重大疾病保险金的累计给付次数以七次为限，当累计给付达到七次时,本项保险责任终止。;
+								被保险人初次发生（见条款 9.13）并被医院的专科医生确诊患有本合同约定的重大疾病（无论一项或多项），我们按以下约定给付重大疾病保险金：（1）被保险人确诊患有本合同所指的A组重大疾病,我们按以下约定给付重大疾病保险金：①首次A组重大疾病保险金为本合同基本保险金额；②第二次A组重大疾病保险金为本合同基本保险金额的120%；③第三次A组重大疾病保险金为本合同基本保险金额的150%。（2）被保险人确诊患有本合同所指的B、C、D、E组重大疾病,我们按本合同基本保险金额给付重大疾病保险金。;
+								在本合同保险期间内，被保险人多次确诊初次发生本合同约定的重大疾病，对于相邻两次确诊初次发生的重大疾病，当且仅当后次重大疾病确诊初次发生日期自前次重大疾病确诊初次发生日期已届满1年，我们按重大疾病保险金给付约定对后次重大疾病承担保险责任。;
+								若被保险人在保险期间内确诊初次发生本合同约定的恶性肿瘤后,再次确诊恶性肿瘤且后次确诊满足五年恶性肿瘤等待期（见条款 9.14）的，则后次确诊恶性肿瘤视同初次发生；如后次确诊恶性肿瘤不满足五年恶性肿瘤等待期的，则后次确诊不视同初次发生。;
+								若我们已经给付过一次重大疾病保险金,则本合同的现金价值自首次重大疾病确诊之日起降低为零，同时身故保险金的保险责任、疾病终末期保险金的保险责任、中症疾病保险金的保险责任与轻症疾病保险金的保险责任均终止,我们仅继续承担重大疾病保险金的保险责任。;
+								身故保险金、疾病终末期保险金与重大疾病保险金三者不可兼得，即若我们给付其中任何一项保险金，则其余两项保险金将不再给付。'
+							</blank>
+							<blank>round(AMOUNT*7.7,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="4.中症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人初次发生并被医院的专科医生确诊患有本合同约定的中症疾病（无论一项或多项），我们按本合同基本保险金额的50%给付中症疾病保险金。每项中症疾病保险金的给付次数以一次为限，给付后该项中症疾病的保险责任终止。本合同中症疾病保险金的累计给付次数以两次为限，当累计给付达到两次时，本项保险责任终止。;
+								如果被保险人确诊患有两项或两项以上的中症疾病，且两次中症疾病的确诊之日相距不超过180天，我们只给付一次中症疾病保险金。'
+							</blank>
+							<blank>round(AMOUNT,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="5.轻症疾病保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人初次发生并被医院的专科医生确诊患有本合同约定的轻症疾病（无论一项或多项），我们按本合同基本保险金额的30%给付轻症疾病保险金。;
+								每项轻症疾病保险金的给付次数以一次为限，给付后该项轻症疾病的保险责任终止。本合同轻症疾病保险金的累计给付次数以三次为限，当累计给付达到 三次时，本项保险责任终止。;
+								如果被保险人确诊患有两项或两项以上的轻症疾病,且两次轻症疾病的确诊之日相距不超过180天，我们只给付一次轻症疾病保险金。;
+								若被保险人同时确诊初次发生一项或多项本合同约定的轻症疾病、中症疾病、 重大疾病或达到疾病终末期阶段，我们仅给付其中金额最高的一项保险金。'
+							</blank>
+							<blank>round(AMOUNT*0.9,2)+'元'</blank>
+						</row>
+					</table>
+				</paragraph>
+
+				<paragraph title="6.重大疾病、中症疾病或轻症疾病豁免保险金">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'被保险人初次发生并被医院的专科医生确诊患有本合同约定的任何一项重大疾病、任何一项中症疾病或任何一项轻症疾病，我们将豁免疾病确诊日后本合同保险期间内的各期保险费。'</blank>
+							<blank>round(PREMIUM,2)+'元*剩余应交期数'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+
+		</attachment>
+
+		<rule skip="">
+			<if condition="DAY lt 28 or AGE >65" type="customer">
+				投保年龄范围为出生满28天至65周岁。
+			</if>
+			<if condition="OCCUPATION_CODE == '' or  OCCUPATION_CODE == NULL">
+				需要校验职业等级，请选择被保人职业。
+			</if>
+			<if condition="OCCUPATION_CATEGORY > 4">
+				仅接受职业风险等级1-4级投保。
+			</if>
+			<if condition="AMOUNT lt 50000 or AMOUNT % 10000>0">
+				最低基本保险金额50000元，超过部份须为10000元的整数倍。
+			</if>
+
+
+			<if condition="(DAY lt 28 or AGE > 60) and PAY_PERIOD == 5">
+				交费期间为5年交时投保年龄只能是出生满28天至60周岁。
+			</if>
+			<if condition="(DAY lt 28 or AGE > 55) and PAY_PERIOD == 10">
+				交费期间为10年交时投保年龄只能是出生满28天至55周岁。
+			</if>
+			<if condition="(DAY lt 28 or AGE > 55) and PAY_PERIOD == 10">
+				交费期间为10年交时投保年龄只能是出生满28天至55周岁。
+			</if>
+			<if condition="(DAY lt 28 or AGE > 50) and PAY_PERIOD == 15">
+				交费期间为15年交时投保年龄只能是出生满28天至50周岁。
+			</if>
+			<if condition="(DAY lt 28 or AGE > 45) and PAY_PERIOD == 20">
+				交费期间为20年交时投保年龄只能是出生满28天至45周岁。
+			</if>
+			<if condition="(DAY lt 28 or AGE > 40) and PAY_PERIOD == 30">
+				交费期间为30年交时投保年龄只能是出生满28天至40周岁。
+			</if>
+
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="HF000017"
+			corporation_id="hsbc"
+			code="STB"
+			name="汇丰稳得福B款年金保险"
+			name_abbr="稳得福B款年金保险"
+			unit="10000"
+			type_code="life"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			maxSellAge="70"
+			minSellAge="0"
+			quantity="1"
+			input="premium"
+			amount="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="HF000017" />
+		</data>
+
+		<param>
+			<!-- 交费方式 -->
+			<pay_freq label="交费方式">
+				<!--  <item code="choice" />-->
+				<item code="year" />
+			</pay_freq>
+			<!-- 交费年期 -->
+			<pay label="交费年期">
+				<!-- <item code="choice" />-->
+				<item code="term_3"/>
+			</pay>
+			<!-- 保险期间 -->
+			<insure label="保险期间">
+				<item code="term_10" />
+			</insure>
+			<draw_age label="年金领取年龄">
+				<item code="term_5"  />
+			</draw_age>
+			<!-- 年金领取期间 -->
+			<draw label="年金领取期间">
+				<item code="to_term_10"  />
+			</draw>
+			<!-- 保障满期日 -->
+			<get_annuity_end label="保障满期日">
+				<item code="10"/>
+			</get_annuity_end>
+		</param>
+
+
+        <!--初始化自定义计算公式，name为自定义名称，value为计算公式-->
+		<init>
+			<item name="Q" value="PREMIUM/UNIT"/>
+		</init>
+
+        <!--自定义计算公式，benefit_table中可以调用-->
+        <!--
+
+        函数调用：IT.function();
+        A1:保单年度；
+        PAY_PERIOD：缴费期间；
+        INSURE_PERIOD：保险期间；
+        DS:从数据源读取；
+        -->
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" /><!-- 当年度保险费 -->
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" /><!--累计保险费   递归-->
+
+			<var name="PRM_A_" param="A1" formula="Q*DS.DATA[A1][1]" /><!-- 身故保障因子 -->
+
+			<var name="PRM_A" param="A1" formula="IT.PRM_A_(A1) gt IT.PRM_T(A1)?IT.PRM_A_(A1):IT.PRM_T(A1)" /> <!--身故保障 -->
+
+			<!--<var name="PRM_A" param="A1" formula="DS.DATA[A1][1]" /> -->
+			<var name="PRM_SCJ" param="A1" formula="A1 == INSURE_PERIOD-1?36*AMOUNT:0" /><!--期满生存金   36*年交保险费/10000*费率-->
+
+			<var name="PRM_NJ" param="A1" formula="A1 == INSURE_PERIOD-1?Q*DS.DATA[A1][0]-IT.PRM_SCJ(A1):Q*DS.DATA[A1][0]" /><!--当年度年金：1）非满期日：年交保险费/10000*生存保险金因子；2）满期日：年交保险费/10000*生存保险金因子-满期生存金-->
+
+			<var name="PRM_SCJF" param="A1" formula="A1 == INSURE_PERIOD-1?IT.PRM_NJ(A1)+IT.PRM_SCJ(A1):IT.PRM_NJ(A1)" /><!--当生存给付-->
+
+			<var name="PRM_LJNJ" param="A1" formula="(A1>0?IT.PRM_LJNJ(A1-1):0)+IT.PRM_NJ(A1)+IT.PRM_SCJ(A1)" /><!--累计年金-->
+
+			<var name="PRM_LJNJ2" param="A1" formula="(A1>0?IT.PRM_LJNJ2(A1-1)*1.03:0)+IT.PRM_NJ(A1)+IT.PRM_SCJ(A1)" /><!--累积年金   1.03：累计生息-->
+
+			<var name="PRM_LJSCJ_" param="A1" formula="IT.PRM_SCJ(A1)+IT.PRM_NJ(A1)" /><!--年金+期满生存金-->
+
+			<var name="PRM_LJSCJ" param="A1" formula="(A1>0?IT.PRM_LJSCJ(A1-1):0)+IT.PRM_LJSCJ_(A1)" /><!--累计年金期+满生存金：当年度年金 + 满期生存金 + 上一年“累计年金及满期生存金-->
+
+			<var name="PRM_TB" param="A1" formula="A1 == INSURE_PERIOD-1?0:Q*(DS.DATA[A1][1]-DS.DATA[A1][0])" /><!--退保给付-->
+
+		</interest>
+
+		<attachment>
+			<!--pdf显示的表格数据-->
+			<benefit_pdf filter="table" parser="table">
+				<table>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="#,###" >round(IT.PRM(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_T(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_A(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_NJ(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_SCJ(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_LJSCJ(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_TB(I),0)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_pdf>
+			<benefit_table filter="table" parser="table">
+				<table desc="低档">
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'当年度保险费'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'身故保险金'</blank>
+						<blank row="1">'当年度年金'</blank>
+						<blank row="1">'满期生存金'</blank>
+						<blank row="1">'累计年金及满期生存金'</blank>
+						<blank row="1">'退保给付/现金价值'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="#,###">round(IT.PRM(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_T(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_A(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_NJ(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_SCJ(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_LJSCJ(I),0)</blank>
+							<blank align="right" style="#,###">round(IT.PRM_TB(I),0)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table>
+			<benefit_table2 filter="table" parser="table">
+				<table>
+					<row type="title">
+						<blank row="1">'保单年度'</blank>
+						<blank row="1">'年龄'</blank>
+						<blank row="1">'累计保险费'</blank>
+						<blank row="1">'当年度生存给付'</blank>
+						<blank row="1">'累计生存给付'</blank>
+						<blank row="1">'累积生存给付（含累积生息）'</blank>
+					</row>
+					<loop from="0" to="INSURE_PERIOD-1" step="1" name="I">
+						<row>
+							<blank style="##0">I+1</blank>
+							<blank style="##0">AGE+I+1</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_T(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_SCJF(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_LJNJ(I),0)</blank>
+							<blank align="right" style="#,###" >round(IT.PRM_LJNJ2(I),0)</blank>
+						</row>
+					</loop>
+				</table>
+			</benefit_table2>
+
+			<benefit_chart filter="chart" parser="chart">
+				<chart from="0" to="INSURE_PERIOD-1" name="I">
+					<line name="身故保险金" code="DeathBenefit" color="#459E82">round(IT.PRM_A(I),0)</line>
+					<bar name="累计生存给付" code="AccumulatedPremium1" color="#FF0000">round(IT.PRM_LJNJ(I),0)</bar>
+					<bar name="累积生存给付与累计生存给付之差" code="AccumulatedPremium2" color="#FF0000">round(IT.PRM_LJNJ2(I)-IT.PRM_LJNJ(I),0)</bar>
+				</chart>
+			</benefit_chart>
+
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="生存保障">
+					<table>
+						<row>
+							<blank>'累计年金'</blank>
+							<blank style="#,###">round(IT.PRM_LJNJ(INSURE_PERIOD-1)-IT.PRM_SCJ(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+						<row>
+							<blank>'满期生存金'</blank>
+							<blank style="#,###">round(IT.PRM_SCJ(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="寿险保障">
+					<table>
+						<row>
+							<blank>'非意外身故保险金'</blank>
+							<blank style="#,###">round(IT.PRM_A(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="意外保障">
+					<table>
+						<row>
+							<blank>'意外身故保险金'</blank>
+							<blank style="#,###">round(IT.PRM_A(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+
+			<liability_en filter="liability" parser="liability">
+				<paragraph title="Living Benefits">
+					<table>
+						<row>
+							<blank>'Total Annuity'</blank>
+							<blank style="#,###">round(IT.PRM_LJNJ(INSURE_PERIOD-1)-IT.PRM_SCJ(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+						<row>
+							<blank>'Maturity Benefit'</blank>
+							<blank style="#,###">round(IT.PRM_SCJ(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="Life Protection">
+					<table>
+						<row>
+							<blank>'Non-accidental Death Benefit'</blank>
+							<blank style="#,###">round(IT.PRM_A(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="Accident Protection">
+					<table>
+						<row>
+							<blank>'Accidental Death Benefit'</blank>
+							<blank style="#,###">round(IT.PRM_A(INSURE_PERIOD-1),0,"#,###")</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability_en>
+		</attachment>
+
+		<rule>
+			<if condition="DAY lt 30 or AGE gt 70">
+                被保险人出生满30天至70周岁。
+			</if>
+			<if condition="APPLICANT.AGE lt 18">
+                投保人须满18周岁。
+			</if>
+
+			<if condition="PREMIUM lt 100000 or PREMIUM%10000 > 0">
+                最低十万元，须为一万元的整数倍。
+			</if>
+		</rule>
+	</product>
+</declare>

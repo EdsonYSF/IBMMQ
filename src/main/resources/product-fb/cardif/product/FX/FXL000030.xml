@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id = "FXL000030"
+			corporation_id = "fuxing"
+			code = "110049"
+			name = "复星联合药神一号疾病保险"
+			name_abbr = "药神一号疾病保险"
+			unit = "1000"
+			type_code = "accident"
+			sequence = "1000"
+			sale_begin_date = "2017-01-01"
+			sale_end_date = ""
+			quantity = "1"
+			is_main="no"
+			is_rider="yes"
+			input = "none"
+			bind=""
+			amount = "TOTAL_AMOUNT"
+			premium = "TOTAL_PREMIUM"
+			last_modify_date = "2017-01-01">
+		<data>
+			<item parser="dds" value="FXL000030" />
+		</data>
+
+		<param>
+			<pay_freq>
+				<item code="single" />
+			</pay_freq>
+			<pay>
+				<item code="single" />
+			</pay>
+			<insure>
+				<item code="term_1" />
+			</insure>
+			<ys_tdzl>
+				<item code="50000" />
+			</ys_tdzl>
+			<ys_tdyl>
+				<item code="1000000" />
+			</ys_tdyl>
+		</param>
+		<input>
+			<item name="PREMIUM_ZL" label="肿瘤保费" widget="hidden">PREMIUM_ZL</item>
+			<item name="PREMIUM_YL" label="医疗保费" widget="hidden">PREMIUM_YL</item>
+		</input>
+		<init>
+			
+			<item name="TOTAL_AMOUNT">
+				var amount = 0;
+				amount = YS_TDYL_VALUE + YS_TDZL_VALUE;
+				return amount;
+			</item>
+			<item name="PREMIUM_ZL">
+				if(YS_TDZL_VALUE == 0) {
+					return 0;
+				}
+				var Q = YS_TDZL_VALUE/UNIT;
+				var premium_tdzl = 0;
+				if(AGE ge 0 and AGE le 4) {
+					premium_tdzl = Q*0.20;
+				}
+				if(AGE ge 5 and AGE le 9){
+					premium_tdzl = Q*0.10;
+				}
+				if(AGE ge 10 and AGE le 14){
+					premium_tdzl = Q*0.10;
+				}
+				if(AGE ge 15 and AGE le 19){
+					premium_tdzl = Q*0.20;
+				}
+				if(AGE ge 20 and AGE le 24){
+					premium_tdzl = Q*0.20;
+				}
+				if(AGE ge 25 and AGE le 29){
+					premium_tdzl = Q*0.40;
+				}
+				if(AGE ge 30 and AGE le 34){
+					premium_tdzl = Q*0.80;
+				}
+				if(AGE ge 35 and AGE le 39){
+					premium_tdzl = Q*1.30;
+				}
+				if(AGE ge 40 and AGE le 44){
+					premium_tdzl = Q*2.20;
+				}
+				if(AGE ge 45 and AGE le 49){
+					premium_tdzl = Q*3.30;
+				}
+				if(AGE ge 50 and AGE le 54){
+					premium_tdzl = Q*4.80;
+				}
+				if(AGE ge 55 and AGE le 59){
+					premium_tdzl = Q*6.80;
+				}
+				if(AGE ge 60 and AGE le 64){
+					premium_tdzl = Q*9.20;
+				}
+				return round(premium_tdzl*0.9,2);
+			</item>
+			
+			<item name="PREMIUM_YL">
+				if(YS_TDYL_VALUE == 0) {
+					return 0;
+				}
+				var premium_tdyl = 0;
+				if(AGE ge 0 and AGE le 4) {
+					premium_tdyl = 90.00;
+				}
+				if(AGE ge 5 and AGE le 9){
+					premium_tdyl = 90.00;
+				}
+				if(AGE ge 10 and AGE le 14){
+					premium_tdyl = 90.00;
+				}
+				if(AGE ge 15 and AGE le 19){
+					premium_tdyl = 100.00;
+				}
+				if(AGE ge 20 and AGE le 24){
+					premium_tdyl = 100.00;
+				}
+				if(AGE ge 25 and AGE le 29){
+					premium_tdyl = 109.00;
+				}
+				if(AGE ge 30 and AGE le 34){
+					premium_tdyl = 109.00;
+				}
+				if(AGE ge 35 and AGE le 39){
+					premium_tdyl = 146.00;
+				}
+				if(AGE ge 40 and AGE le 44){
+					premium_tdyl = 146.00;
+				}
+				if(AGE ge 45 and AGE le 49){
+					premium_tdyl = 237.00;
+				}
+				if(AGE ge 50 and AGE le 54){
+					premium_tdyl = 237.00;
+				}
+				if(AGE ge 55 and AGE le 59){
+					premium_tdyl = 273.00;
+				}
+				if(AGE ge 60 and AGE le 64){
+					premium_tdyl = 273.00;
+				}
+				return round(premium_tdyl*0.9,2);
+			</item>
+			
+			
+			<item name="TOTAL_PREMIUM">
+				return PREMIUM_ZL + PREMIUM_YL;
+			</item>
+		</init>
+		<attachment>
+
+			<liability filter="liability" parser="liability">
+				<paragraph title="特定恶性肿瘤疾病保险责任" condition="YS_TDZL_VALUE != 0">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'在本合同保险期内，被保险人在等待期后在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同列明的一种或多种特定恶性肿瘤，本公司按本合同载明的特定恶性肿瘤疾病保险责任分项限额给付特定恶性肿瘤疾病保险金，本项保险责任终止。'</blank>
+							<blank>'限额5万元'</blank>
+						</row>
+					</table>
+				</paragraph>
+				<paragraph title="特药医疗费用保险责任" condition="YS_TDYL_VALUE != 0">
+					<table>
+						<row type="title">
+							<blank>'给付原因及标准'</blank>
+							<blank>'给付限额'</blank>
+						</row>
+						<row>
+							<blank>'在本合同保险期内，被保险人在等待期后在本公司指定或认可的医疗机构由专科医生确诊初次发生本合同列明的一种或多种特定恶性肿瘤，对于治疗该特定恶性肿瘤发生的且同时满足条件的药品费用，本公司根据“特药医疗费用计算方法”的约定，给付特药医疗费用保险金，特药医疗费用保险金累计以本合同载明的该被保险人的特药医疗费用保险责任分项为限额为上限，当到达该限额时，本项保险责任终止。'</blank>
+							<blank>'限额100万元'</blank>
+						</row>
+					</table>
+				</paragraph>
+			</liability>
+		</attachment>
+
+		<rule skip="">
+			<if condition="APPLICANT.AGE lt 18 or APPLICANT.AGE gt 70" type="customer">
+				投保人：年满18周岁至70岁。
+			</if>
+			<if condition="DAY lt 30 or AGE gt 60">
+				被保人：年满30天至60岁。
+			</if>
+			<if condition="OCCUPATION_CATEGORY > 4 or OCCUPATION_CATEGORY lt 1">
+				仅接受职业风险等级1-4级投保。
+			</if>
+			
+			<if condition="YS_TDZL_VALUE == 0 and YS_TDYL_VALUE == 0">
+				至少选择一个保险责任。
+			</if>
+
+			<if condition="PARENT.AMOUNT lt 100000">
+				主险保额小于10万时，不得投保药神一号。
+			</if>
+		</rule>
+
+	</product>
+</declare>

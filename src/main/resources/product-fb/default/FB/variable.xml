@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="plan">
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="BIRTHDAY" formula="INSURANT.BIRTHDAY"/>
+	</variable>
+
+	<variable type="product">
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="DEF_ID" formula="PRODUCT_ID"/>
+
+		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
+		<item name="COMMISSION_PAY_FREQ_YEAR" formula="0" param="YEAR"/>
+		<item name="COMMISSION_RATE" formula="0" param="MONTH"/>
+
+		<item name="PAY_FREQ_CODE" formula="pay_freq.CODE"/>
+		<item name="PAY_FREQ_VALUE" formula="pay_freq.VALUE"/>
+
+		<item name="PREMIUM_DTL" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="PREMIUM_FY" formula="PREMIUM"/> <!-- 首年保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="PREMIUM_FT" formula="PREMIUM"/> <!-- 首期保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="AMOUNT_DTL" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY_DTL" formula="AMOUNT/UNIT"/>
+
+		<item name="INSURE_CODE" formula="insure.CODE"/>
+		<item name="INSURE_VALUE" formula="insure.VALUE"/>
+		<item name="INSURE_MODE" formula="insure.MODE"/>
+		<item name="INSURE_DESC" formula="insure.DESC"/>
+		<item name="INSURE_PERIOD" formula="insure.PERIOD"/>
+
+		<item name="PAY_VALUE" formula="pay.VALUE"/>
+		<item name="PAY_DESC" formula="pay.DESC"/>
+		<item name="PAY_MODE" formula="pay.MODE"/>
+		<item name="PAY_PERIOD" formula="pay.PERIOD"/>
+		<item name="PAY_CODE" formula="pay.CODE"/>
+
+		<item name="RANK_VALUE" formula="rank.VALUE"/>
+		<item name="RANK_CODE" formula="rank.CODE"/>
+
+		<item name="DRAW_AGE" formula="draw_age.VALUE"/>
+		<item name="DRAW_VALUE" formula="draw.VALUE"/>
+		<item name="DRAW_DESC" formula="draw.DESC"/>
+		<item name="DRAW_FREQ_DESC" formula="draw_freq.DESC"/>
+		<item name="DRAW_FREQ_VALUE" formula="draw_freq.VALUE"/>
+
+		<!--<item name="PERIODICITY_CODE" formula="periodicity.CODE"/>-->
+		<!--<item name="PERIODICITY_VALUE" formula="periodicity.VALUE"/>-->
+
+		<item name="MEDICARE_CODE" formula="medicare.CODE"/>
+		<item name="MEDICARE_VALUE" formula="medicare.VALUE"/>
+
+		<item name="INIT_LOAN_AMOUNT_VALUE" formula="LOAN_AMOUNT" />
+		<item name="INIT_LOAN_TERM_VALUE" formula="LOAN_TERM" />
+		<item name="LOAN_GRACE_PERIOD_VALUE" formula="LOAN_GRACE_PERIOD"/>
+
+		<item name="PAY_METHOD_VALUE" formula="pay_method.VALUE" />
+
+		<item name="CTR_REF_CURR_VALUE" formula="ctr_ref_curr.VALUE" />
+		<item name="CTR_REF_CURR_CODE" formula="ctr_ref_curr.CODE" />
+
+		<item name="RATE_INFO_VALUE" formula="rate_info" />
+
+		<item name="REWARD_RATE_1_VALUE" formula="reward_rate_1" />
+		<item name="REWARD_RATE_2_VALUE" formula="reward_rate_2" />
+		<item name="REWARD_RATE_3_VALUE" formula="reward_rate_3" />
+
+		<item name="MF_RATE_VALUE" formula="mf_rate" />
+		<item name="ETF_RATE_VALUE" formula="etf_rate" />
+		<item name="INVEST_RATE_VALUE" formula="invest_rate" />
+		<item name="CURRENCY_RATE_VALUE" formula="currency_rate" />
+
+		<item name="INIT_BIRTHDAY_PAYMENT_AGE_VALUE" formula="birthday_payment_age" />
+		<item name="INIT_AMOUNT_RATE_VALUE" formula="amount_rate" />
+
+		<item name="PRODUCT_TYPE_VALUE" formula="product_type.VALUE" />
+		<item name="PRODUCT_TYPE_CODE" formula="product_type.CODE" />
+
+		<item name="PRODUCT_SORT_VALUE" formula="product_sort.VALUE" />
+		<item name="PRODUCT_SORT_CODE" formula="product_sort.CODE" />
+
+		<item name="AUTO_PAY_VALUE" formula="auto_pay.VALUE" />
+		<item name="AUTO_PAY_CODE" formula="auto_pay.CODE" />
+
+		<item name="PERCENTAGE_VALUE" formula="percentage.VALUE" />
+		<item name="PERCENTAGE_CODE" formula="percentage.CODE" />
+
+		<item name="PERCENTAGE_TWO_VALUE" formula="percentage_two.VALUE" />
+		<item name="PERCENTAGE_TWO_CODE" formula="percentage_two.CODE" />
+
+		<item name="PAY_WAY_XQ_VALUE" formula="pay_way_xq.VALUE" />
+		<item name="PAY_WAY_XQ_CODE" formula="pay_way_xq.CODE" />
+
+		<item name="CURRENCY_VALUE" formula="currency.VALUE" />
+		<item name="CURRENCY_CODE" formula="currency.CODE" />
+
+		<item name="JUDGE_VALUE" formula="judge" />
+		<item name="SCORE_VALUE" formula="SCORE" />
+		<item name="INSURER_BIRTH_VALUE" formula="insurer_birth" />
+	</variable>
+</declare>

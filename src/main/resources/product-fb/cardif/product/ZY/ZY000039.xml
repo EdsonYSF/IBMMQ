@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="ZY000039"
+			corporation_id="fuxing"
+			code="110063"
+			name="中意附加个人综合意外伤害保险"
+			name_abbr="中意附加个人综合意外伤害保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			is_rider="yes"
+			input="amount"
+			premium="RES_PREMIUM_VALUE"
+			last_modify_date="2015-01-01">
+
+
+		<param>
+
+		</param>
+
+		<input>
+			<item name="AMOUNT" label="基本保险金额" widget="input"></item>
+			<item name="PREMIUM" label="首年保费" widget="label">PREMIUM</item>
+		</input>
+
+		<init>
+			<item name="Q" value="(AMOUNT*10000)/UNIT"/>
+			<item name="RES_PREMIUM_VALUE">
+				var res = 0;
+				if(OCCUPATIONLEVEL == 1) {
+					if(AGE le 69){
+						res=Q*135;
+					}
+				}else if(OCCUPATIONLEVEL == 2) {
+					if(AGE lt 18){
+						res=Q*135;
+					}else if(AGE ge 18 and AGE le 69){
+						res=Q*176;
+					}
+				}else if(OCCUPATIONLEVEL == 3) {
+					if(AGE le 69){
+						res=Q*270;
+					}
+				}else if(OCCUPATIONLEVEL == 4) {
+					if(AGE le 69){
+						res=Q*351;
+					}
+				}
+				return res;
+			</item>
+		</init>
+
+		<interest>
+			<var name="BP"  formula="RIDER('ZY000047').PAY_FREQ_CODE == ''"/>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="AMOUNT%1 !=0" type="customer">
+				保额只可输入整数
+			</if>
+		</rule>
+	</product>
+</declare>

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<product
+			id="ZY000043"
+			corporation_id="zhongyi"
+			code="MH11"
+			name="中意附加乐游天下意外医疗保险"
+			name_abbr="中意附加乐游天下意外医疗保险"
+			unit="1000"
+			type_code="thunder"
+			sequence="1000"
+			sale_begin_date="2015-01-01"
+			sale_end_date=""
+			quantity="1"
+			is_rider="yes"
+			input="amount"
+			premium="Q*DS.RATE[0][0]"
+			last_modify_date="2015-01-01">
+
+		<data>
+			<item parser="dds" value="ZY000043" />
+		</data>
+
+
+		<param>
+			<pay_freq>
+				<item code="year" />
+			</pay_freq>
+			<pay>
+				<item code="term_10"/>
+			</pay>
+            <insure>
+                <item code="term_30"/>
+            </insure>
+		</param>
+
+		<input>
+			<item name="PAY_FREQ" label ="交费方式" widget="select">buildOption('pay_freq')</item>
+			<item name="PAY" label ="交费年期" widget="select">buildOption('pay')</item>
+			<item name="INSURE" label="保险期间" widget="select">buildOption('insure')</item>
+			<item name="PLAN_SELECT" label="保障计划" widget="select">buildOption('plan_select')</item>
+			<item name="AMOUNT" label="基本保险金额" widget="input"></item>
+			<item name="PREMIUM" label="首年保费" widget="label">PREMIUM</item>
+		</input>
+
+		<init>
+			<item name="Q" value="AMOUNT/UNIT"/>
+		</init>
+
+		<interest>
+			<var name="PRM" param="A1" formula="A1>=PAY_PERIOD?0:PREMIUM" />
+			<var name="PRM_T" param="A1" formula="(A1>0?IT.PRM_T(A1-1):0)+IT.PRM(A1)" />
+		</interest>
+
+		<attachment>
+			<benefit_table filter="table" parser="table">
+
+			</benefit_table>
+
+			<liability filter="liability" parser="liability">
+
+			</liability>
+		</attachment>
+
+		<rule >
+			<if condition="APPLICANT.AGE lt 18" type="customer">
+				投保人年龄大于18周岁
+			</if>
+			<if condition="AGE lt 18" type="customer">
+				被保险人18-50周岁
+			</if>
+			<if condition="AGE gt 50" type="customer">
+				被保险人18-50周岁
+			</if>
+
+			<if condition="AMOUNT lt 2500 or AMOUNT % 500 != 0" type="customer">
+				最低2500元，投保单位为500元
+			</if>
+
+		</rule>
+	</product>
+</declare>

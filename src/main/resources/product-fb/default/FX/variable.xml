@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<declare>
+	<variable type="plan">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<item name="PARENT_PRODUCT" formula="parent.PRODUCT"/>
+		<item name="BIRTHDAY" formula="INSURANT.BIRTHDAY"/>
+		<!-- <item name="APPLICANT" formula="THIS.APPLICANT"/> -->
+	</variable>
+
+	<variable type="product">
+		<item name="INSURED" formula="INSURANT"/>
+		<item name="AGE" formula="INSURANT.AGE"/>
+		<item name="DAY" formula="INSURANT.DAY"/>
+		<item name="GENDER" formula="INSURANT.GENDER"/>
+		<item name="GENDER_CODE" formula="INSURANT.GENDER"/> <!-- 以前用的是GENDER_CODE -->
+		<item name="OCCUPATION_CODE" formula="INSURANT.OCCUPATION_CODE"/>
+		<item name="OCCUPATION_CATEGORY" formula="INSURANT.OCCUPATION_CATEGORY"/>
+		<item name="SOCIAL_INS" formula="INSURANT.SOCIAL_INS"/>
+		<item name="SMOKE" formula="INSURANT.SMOKE"/>
+		<!-- <item name="APPLICANT" formula="THIS.APPLICANT"/> -->
+		<item name="DEF_ID" formula="PRODUCT_ID"/>
+
+		<item name="COMMISSION" formula="COMMISSION_RATE(MONTH)*PREMIUM" param="MONTH"/>
+		<item name="COMMISSION_PAY_FREQ_YEAR" formula="0" param="YEAR"/>
+		<item name="COMMISSION_RATE" formula="0" param="MONTH"/>
+
+		<item name="PREMIUM_DTL" formula="DS.RATE[0,0]*QUANTITY"/>
+		<item name="PREMIUM_FY" formula="PREMIUM"/> <!-- 首年保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="PREMIUM_FT" formula="PREMIUM"/> <!-- 首期保费，包括追加保费（有公司叫弹性保费） -->
+		<item name="AMOUNT_DTL" formula="UNIT*QUANTITY"/>
+		<item name="QUANTITY_DTL" formula="AMOUNT/UNIT"/>
+
+		<item name="INSURE_VALUE" formula="insure.VALUE"/>
+		<item name="INSURE_MODE" formula="insure.MODE"/>
+		<item name="INSURE_DESC" formula="insure.DESC"/>
+		<item name="INSURE_PERIOD" formula="insure.PERIOD"/>
+
+		<item name="PAY_VALUE" formula="pay.VALUE"/>
+		<item name="PAY_DESC" formula="pay.DESC"/>
+		<item name="PAY_MODE" formula="pay.MODE"/>
+		<item name="PAY_PERIOD" formula="pay.PERIOD"/>
+		<item name="PAY_CODE" formula="pay.CODE"/>
+
+		<item name="RANK_VALUE" formula="rank.VALUE"/>
+		<item name="RANK_CODE" formula="rank.CODE"/>
+
+		<item name="DRAW_AGE" formula="draw_age.VALUE"/>
+		<item name="DRAW_VALUE" formula="draw.VALUE"/>
+		<item name="DRAW_DESC" formula="draw.DESC"/>
+		<item name="DRAW_FREQ_DESC" formula="draw_freq.DESC"/>
+		<item name="DRAW_FREQ_VALUE" formula="draw_freq.VALUE"/>
+
+		<item name="PAY_FREQ_CODE" formula="pay_freq.CODE"/>
+		<item name="PAY_FREQ_VALUE" formula="pay_freq.VALUE"/>
+
+		<!--社保(含新农合)-->
+		<item name="MEDICARE_CODE" formula="medicare.CODE"/>
+		<item name="MEDICARE_VALUE" formula="medicare.VALUE"/>
+
+		<item name="BIRTH_GOLD_DRAW_AGE_VALUE" formula="birth_gold_draw_age.VALUE"/><!--祝寿金领取年龄-->
+
+		<item name="HOSIPTAL_PACKAGE_SELECT_VALUE" formula="hospital_package_select.VALUE" />
+		<item name="HOSIPTAL_PACKAGE_SELECT_CODE" formula="hospital_package_select.CODE" />
+		<item name="HOSIPTAL_PACKAGE_SELECT_SHOW" formula="hospital_package_select.DESC" />
+		
+		<item name="CLINIC_PACKAGE_SELECT_VALUE" formula="clinic_package_select.VALUE" />
+		<item name="CLINIC_PACKAGE_SELECT_CODE" formula="clinic_package_select.CODE" />
+		<item name="CLINIC_PACKAGE_SELECT_SHOW" formula="clinic_package_select.DESC" />
+		
+		<item name="HOSPITAL_DEDUCTIBLE_VALUE" formula="hospital_deductible.VALUE" />
+		<item name="HOSPITAL_DEDUCTIBLE_SHOW" formula="hospital_deductible.DESC" />
+		
+		<item name="CLINIC_DEDUCTIBLE_VALUE" formula="clinic_deductible.VALUE" />
+		<item name="CLINIC_DEDUCTIBLE_SHOW" formula="clinic_deductible.DESC" />
+		
+		<item name="CLINIC_DEDUCTIBLE_SECOND_VALUE" formula="clinic_deductible_second.VALUE" />
+		<item name="CLINIC_DEDUCTIBLE_SECOND_SHOW" formula="clinic_deductible_second.DESC" />
+		
+		<item name="CLINIC_TYPE_VALUE" formula="clinic_deductible_second_type.VALUE" />
+		<item name="CLINIC_TYPE_SHOW" formula="clinic_deductible_second_type.DESC" />
+		
+		<item name="SINCE_THE_PAY_SCALE_VALUE" formula="since_the_pay_scale.VALUE" />
+		<item name="SINCE_THE_PAY_SCALE_SHOW" formula="since_the_pay_scale.DESC" />
+		
+		<item name="MATERNAL_VALUE" formula="maternal.VALUE" />
+		<item name="MATERNAL_SHOW" formula="maternal.DESC" />
+		
+		<item name="DELIVERY_AND_NEWBORN_VALUE" formula="delivery_and_newborn_protection.VALUE" />
+		<item name="DELIVERY_AND_NEWBORN_SHOW" formula="delivery_and_newborn_protection.DESC" />
+		
+		<item name="DEDUCTIBLE_TYPE_VALUE" formula="deductible_type.VALUE" />
+		<item name="DEDUCTIBLE_TYPE_SHOW" formula="deductible_type.SHOW" />
+		
+		<item name="PLACE_OF_BIRTH_VALUE" formula="place_of_birth.VALUE" />
+		<item name="PLACE_OF_BIRTH_SHOW" formula="place_of_birth.DESC" />
+		
+		<item name="DEDUCTIBLE_VALUE" formula="deductible.VALUE"/>
+		<item name="DEDUCTIBLE_CODE" formula="deductible.CODE"/>
+
+		<item name="PLAN_SELECT_VALUE" formula="plan_select.VALUE"/>
+		<item name="PLAN_SELECT_SHOW" formula="plan_select.SHOW"/>
+
+		<item name="PHASE_ARR_VALUE" formula="phase_arr.VALUE"/>
+		<item name="PHASE_ARR_SHOW" formula="phase_arr.SHOW"/>
+
+		<item name="TYPE_ARR_VALUE" formula="type_arr.VALUE"/>
+		<item name="TYPE_ARR_SHOW" formula="type_arr.SHOW"/>
+
+		<item name="COUNTRY_TO_GO_VALUE" formula="country_to_go.VALUE"/>
+		<item name="COUNTRY_TO_GO_SHOW" formula="country_to_go.SHOW"/>
+
+		<item name="PROTECTION_PLAN_VALUE" formula="protection_plan.VALUE"/>
+		<item name="PROTECTION_PLAN_SHOW" formula="protection_plan.SHOW"/>
+		
+		<item name="OV_STUDENT_PLAN_VALUE" formula="ov_student_plan.VALUE"/>
+		<item name="OV_STUDENT_PLAN_SHOW" formula="ov_student_plan.SHOW"/>
+		
+		<item name="YS_TDYL_VALUE" formula="ys_tdyl.VALUE"/>
+		<item name="YS_TDYL_SHOW" formula="ys_tdyl.SHOW"/>
+		
+		<item name="YS_TDZL_VALUE" formula="ys_tdzl.VALUE"/>
+		<item name="YS_TDZL_SHOW" formula="ys_tdzl.SHOW"/>
+
+
+		<!--  乳果爱分型按钮-->
+		<!--ER-->
+		<item name="TYPE_ARR_ER_VALUE" formula="type_arr_ER.VALUE"/>
+		<item name="TYPE_ARR_ER_SHOW" formula="type_arr_ER.SHOW"/>
+		<!--PR-->
+		<item name="TYPE_ARR_PR_VALUE" formula="type_arr_PR.VALUE"/>
+		<item name="TYPE_ARR_PR_SHOW" formula="type_arr_PR.SHOW"/>
+		<!--Ki-67-->
+		<item name="TYPE_ARR_KI_VALUE" formula="type_arr_Ki.VALUE"/>
+		<item name="TYPE_ARR_KI_SHOW" formula="type_arr_Ki.SHOW"/>
+		<!--Her-2-->
+		<item name="TYPE_ARR_HER_VALUE" formula="type_arr_Her.VALUE"/>
+		<item name="TYPE_ARR_HER_SHOW" formula="type_arr_Her.SHOW"/>
+
+
+		<item name="MALIGNANCY_VALUE" formula="malignancy.VALUE"/>
+		<item name="MALIGNANCY_SHOW" formula="malignancy.SHOW"/>
+
+		<item name="JUVENILES_VALUE" formula="juveniles.VALUE" />
+		<item name="JUVENILES_SECOND_CODE" formula="juveniles.CODE" />
+
+		<item name="COMPENSATION_RATION_VALUE" formula="compensation_ratio.VALUE" />
+		<item name="COMPENSATION_RATION_CODE" formula="compensation_ratio.CODE" />
+
+		<item name="HOSPITAL_DUTY_CODE" formula="hospital_duty.CODE"/>
+		<item name="HOSPITAL_DUTY_VALUE" formula="hospital_duty.VALUE"/>
+
+		<item name="CANCER_DUTY_VALUE" formula="cancer_duty.VALUE" />
+		<item name="CANCER_DUTY_CODE" formula="cancer_duty.CODE" />
+
+		<item name="OUTPATIENT_DUTY_VALUE" formula="outpatient_duty.VALUE" />
+		<item name="OUTPATIENT_DUTY_CODE" formula="outpatient_duty.CODE" />
+
+
+		<item name="SECOND_INSURANCE_VALUE" formula="second_insurance.VALUE" />
+		<item name="SECOND_INSURANCE_CODE" formula="second_insurance.CODE" />
+
+		<item name="RARE_DISEASE_VALUE" formula="rare_disease.VALUE" />
+		<item name="RARE_DISEASE_CODE" formula="rare_disease.CODE" />
+	</variable>
+</declare>

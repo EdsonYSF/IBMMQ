@@ -1,0 +1,413 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<declare>
+	<parameter>
+		<!--
+			code  默认为 string
+			show  默认为 string
+			mode  默认为 formula，代表计算算法，可选值为0(value)，1(value-AGE)，2(value+AGE)，默认值为0
+			value 默认为 formula
+			desc  默认为 formula
+		-->
+		<pay_freq>
+			<item code="single" value="0" show="一次交清" />
+			<item code="year" value="1" show="年交" />
+			<item code="month" value="2" show="月交" />
+			<item code="season" value="3" show="季交" />
+			<item code="half_year" value="4" show="半年交" />
+			<item code="parent" value="PARENT.pay_freq.VALUE" desc="PARENT.pay_freq.DESC" show="同主险" />
+		</pay_freq>
+
+		<pay>
+			<item code="single" value="1" show="一次交清" />
+
+			<item code="term_1" value="1" show="1年期" />
+			<item code="term_2" value="2" show="2年期" />
+			<item code="term_3" value="3" show="3年期" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_6" value="6" show="6年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+
+			<item code="to_12" mode="1" value="12" show="交至12岁" />
+			<item code="to_15" mode="1" value="15" show="交至15岁" />
+			<item code="to_18" mode="1" value="18" show="交至18岁" />
+			<item code="to_45" mode="1" value="45" show="交至45岁" />
+			<item code="to_50" mode="1" value="50" show="交至50岁" />
+			<item code="to_55" mode="1" value="55" show="交至55岁" />
+			<item code="to_60" mode="1" value="60" show="交至60岁" />
+			<item code="to_65" mode="1" value="65" show="交至65岁" />
+			<item code="to_70" mode="1" value="70" show="交至70岁" />
+			<item code="to_75" mode="1" value="75" show="交至75岁" />
+			<item code="to_88" mode="1" value="88" show="交至88岁" />
+			<item code="to_105" mode="1" value="105" show="交至105岁" />
+
+
+			<item code="insure" mode="1" value="THIS.INSURE_VALUE" show="至保障" />
+			<item code="none" value="0" show="-" />
+			<item code="input" value="THIS.YEAR" desc="'交'+THIS.YEAR+'年'" show="自定义" />
+			<item code="exempt" value="PARENT.PAY_PERIOD-1" desc="round(PARENT.PAY_PERIOD-1)+'年期'" show="豁免期间" />
+			<item code="draw" mode="1" value="THIS.DRAW_AGE" desc="'交至'+DRAW_AGE+'岁'" show="交至领取" />
+			<item code="parent" mode="PARENT.PAY_MODE" value="PARENT.PAY_VALUE" desc="PARENT.PAY_DESC" show="同主险" />
+		</pay>
+
+		<insure>
+			<item code="month_1" mode="2" value="1" show="1个月" />
+			<item code="month_2" mode="2" value="2" show="2个月" />
+			<item code="month_3" mode="2" value="3" show="3个月" />
+			<item code="month_4" mode="2" value="4" show="4个月" />
+			<item code="month_5" mode="2" value="5" show="5个月" />
+			<item code="month_6" mode="2" value="6" show="6个月" />
+			<item code="term_1" value="1" show="1年期" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+			<item code="to_14" mode="1" value="14" show="保至14岁" />
+			<item code="to_17" mode="1" value="17" show="保至17岁" />
+			<item code="to_21" mode="1" value="21" show="保至21岁" />
+			<item code="to_25" mode="1" value="25" show="保至25岁" />
+			<item code="to_28" mode="1" value="28" show="保至28岁" />
+			<item code="to_40" mode="1" value="40" show="保至40岁" />
+			<item code="to_45" mode="1" value="45" show="保至45岁" />
+			<item code="to_50" mode="1" value="50" show="保至50岁" />
+			<item code="to_55" mode="1" value="55" show="保至55岁" />
+			<item code="to_60" mode="1" value="60" show="保至60岁" />
+			<item code="to_65" mode="1" value="65" show="保至65岁" />
+			<item code="to_70" mode="1" value="70" show="保至70岁" />
+			<item code="to_75" mode="1" value="75" show="保至75岁" />
+			<item code="to_80" mode="1" value="80" show="保至80岁" />
+			<item code="to_85" mode="1" value="85" show="保至85岁" />
+			<item code="to_88" mode="1" value="88" show="保至88岁" />
+			<item code="to_100" mode="1" value="100" show="保至100岁" />
+			<item code="to_105" mode="1" value="105" show="保至终身" />
+			<item code="to_full" mode="1" value="106" show="终身" />
+			<item code="full_90" mode="1" value="90" show="终身" />
+			<item code="full_105" mode="1" value="105" show="保至终身" />
+			<item code="full_106" mode="1" value="106" show="终身" />
+			<item code="full_110" mode="1" value="110" show="终身" />
+			<item code="pay" mode="pay.MODE" value="pay.VALUE" desc="pay.DESC" show="同缴费" />
+			<item code="input" value="THIS.YEAR" desc="'保'+THIS.YEAR+'年'" show="自定义" />
+			<item code="parent" mode="PARENT.INSURE_MODE" value="PARENT.INSURE_VALUE" desc="PARENT.INSURE_DESC" show="同主险" />
+			<item code="rank" value="0" desc="IT.RANK_INSURE_DESC" show="按档次" />
+			<item code="term_one" value="1" show="一年期"  />
+			<item code="term_half" mode="2" value="6" show="半年期"  />
+			<item code="big_term_1" value="1" show="一年" />
+		</insure>
+
+		<draw_freq>
+			<item code="single" value="0" show="趸领" />
+			<item code="year" value="1" show="年领" />
+			<item code="month" value="2" show="月领" />
+			<item code="season" value="3" show="季领" />
+			<item code="half_year" value="4" show="半年领" />
+		</draw_freq>
+
+		<draw_age>
+			<item code="40" value="40" show="40岁领取" />
+			<item code="45" value="45" show="45岁领取" />
+			<item code="50" value="50" show="50岁领取" />
+			<item code="55" value="55" show="55岁领取" />
+			<item code="60" value="60" show="60岁领取" />
+			<item code="65" value="65" show="65岁领取" />
+			<item code="70" value="70" show="70岁领取" />
+			<item code="75" value="75" show="75岁领取" />
+			<item code="after_10" mode="2" value="10" show="10年后" />
+			<item code="after_20" mode="2" value="20" show="20年后" />
+		</draw_age>
+
+		<draw>
+			<item code="single" value="1" show="趸领" />
+			<item code="term_5" value="5" show="5年期" />
+			<item code="term_10" value="10" show="10年期" />
+			<item code="term_15" value="15" show="15年期" />
+			<item code="term_20" value="20" show="20年期" />
+			<item code="term_25" value="25" show="25年期" />
+			<item code="term_30" value="30" show="30年期" />
+			<item code="to_ensure" mode="1" value="INSURE.VALUE" show="至保障" />
+		</draw>
+
+		<rank>
+			<item code="1" value="1" show="一档" />
+			<item code="2" value="2" show="二档" />
+			<item code="3" value="3" show="三档" />
+			<item code="4" value="4" show="四档" />
+			<item code="5" value="5" show="五档" />
+			<item code="6" value="6" show="六档" />
+			<item code="7" value="7" show="七档" />
+			<item code="8" value="8" show="八档" />
+			<item code="9" value="9" show="九档" />
+			<item code="10" value="10" show="十档" />
+		</rank>
+
+		<dividend>
+			<item code="interest" value="1" show="累积生息" />
+			<item code="premium" value="2" show="减额交清" />
+			<item code="amount" value="3" show="交清增额" />
+		</dividend>
+
+		<medicare>
+			<item code="default" value="null" show="default" />
+			<item code="yes" value="1" show="有" />
+			<item code="no" value="2" show="无" />
+		</medicare>
+
+		<renewal>
+			<item code="yes" value="1" show="是" />
+			<item code="no" value="2" show="否" />
+		</renewal>
+
+		<birth_gold_draw_age>
+			<item code="60"  value="60" show="60岁" />
+			<item code="65" value="65" show="65岁" />
+		</birth_gold_draw_age>
+
+		<plan_select>
+			<item code="0" value="0" show="计划一"/>
+			<item code="1" value="1" show="计划二"/>
+			<item code="2" value="2" show="计划三"/>
+			<item code="3" value="3" show="计划四"/>
+			<item code="4" value="4" show="计划五"/>
+			<item code="5" value="5" show="计划六"/>
+			<item code="6" value="6" show="计划七"/>
+		</plan_select>
+
+		<region>
+			<item code="china_mainLand" value="1" show="中国大陆"/>
+			<item code="china_all" value="2" show="中国大陆及港澳台保障"/>
+			<item code="global" value="3" show="全球保障"/>
+		</region>
+		
+		<hospital_package_select><!-- 住院计划 -->
+			<item code="1" value="100000" show="套餐一"/>
+			<item code="2" value="200000" show="套餐二"/>
+			<item code="3" value="500000" show="套餐三"/>
+			<item code="4" value="1000000" show="套餐四"/>
+			<item code="6" value="500000" show="套餐六"/>
+			<item code="7" value="1000000" show="套餐七"/>
+			<item code="8" value="2000000" show="套餐八"/>
+		</hospital_package_select>
+		
+		<clinic_package_select><!-- 门诊计划 -->
+			<item code="0" value="0" show="无"/>
+			<item code="1" value="10000" show="套餐一"/>
+			<item code="2" value="15000" show="套餐二"/>
+			<item code="3" value="20000" show="套餐三"/>
+			<item code="4" value="35000" show="套餐四"/>
+		</clinic_package_select>
+		
+		<hospital_deductible><!-- 住院年免赔额 -->
+			<item code="0" value="0" show="0"/>
+			<item code="5000" value="1" show="5000"/>
+			<item code="10000" value="2" show="10000"/>
+			<item code="15000" value="3" show="15000"/>
+			<item code="20000" value="4" show="20000"/>
+		</hospital_deductible>
+		
+		<clinic_deductible><!-- 门诊年免赔额 -->
+			<item code="0" value="0" show="0"/>
+			<item code="200" value="1" show="200"/>
+			<item code="500" value="2" show="500"/>
+			<item code="1300" value="3" show="1300"/>
+		</clinic_deductible>
+		
+		<clinic_deductible_second><!-- 门诊次免配额 -->
+			<item code="0" value="0" show="0"/>
+			<item code="50" value="1" show="50"/>
+			<item code="100" value="2" show="100"/>
+			<item code="200" value="3" show="200"/>
+			<item code="500" value="4" show="500"/>
+		</clinic_deductible_second>
+		
+		<clinic_deductible_second_type><!-- 门诊次免配额类型 -->
+			<item code="0" value="0" show="普通门诊"/>
+			<item code="1" value="1" show="特需门诊"/>
+		</clinic_deductible_second_type>
+		
+		<since_the_pay_scale><!--自付比例  -->
+			<item code="0" value="0" show="0%"/>
+			<item code="1" value="1" show="10%"/>
+			<item code="2" value="2" show="20%"/>
+			<item code="3" value="3" show="30%"/>
+			<item code="4" value="4" show="40%"/>
+			<item code="5" value="5" show="50%"/>
+		</since_the_pay_scale>
+		
+		<maternal><!--孕检孕产  -->
+			<item code="-1" value="-1" show=""/>
+			<item code="0" value="0" show="是"/>
+			<item code="1" value="1" show="否"/>
+		</maternal>
+		
+		<delivery_and_newborn_protection><!--分娩期及新生儿保障  -->
+			<item code="-1" value="-1" show=""/>
+			<item code="0" value="0" show="是"/>
+			<item code="1" value="1" show="否"/>
+		</delivery_and_newborn_protection>
+		
+		<place_of_birth><!--分娩地 -->
+			<item code="-1" value="-1" show=""/>
+			<item code="0" value="0" show="天津"/>
+			<item code="1" value="1" show="青岛"/>
+		</place_of_birth>
+
+		<!--免赔额-->
+		<deductible>
+			<item code="0" value="0" show="0元" />
+			<item code="1" value="5000" show="5000元" />
+			<item code="3" value="10000" show="10000元" />
+			<item code="4" value="15000" show="15000元" />
+			<item code="5" value="20000" show="20000元" />
+		</deductible>
+
+		<!-- 免赔额类型 -->
+		<deductible_type>
+			<item code="0" value="0" show="门诊次免赔额"/>
+			<item code="1" value="1" show="门诊年免赔额"/>
+		</deductible_type>
+
+		<zytsmzbz>
+			<item code="0" value="200" show="住院和特殊门诊保障"/>
+		</zytsmzbz>
+
+		<exzlylbz>
+			<item code="0" value="200" show="恶性肿瘤医疗保障"/>
+		</exzlylbz>
+
+		<!-- 分期 -->
+		<phase_arr>
+			<item code="0" value="0" show="0-0"/>
+			<item code="1" value="1" show="1-I"/>
+			<item code="2" value="2" show="2-II"/>
+		</phase_arr>
+		<!-- 分型 -->
+		<type_arr>
+			<item code="A" value="0" show="Luminal A型"/>
+			<item code="B1" value="1" show="Luminal B型且HER2阴性"/>
+			<item code="B2" value="2" show="Luminal B型且HER2阳性"/>
+			<item code="H" value="3" show="HER2过表达"/>
+			<item code="3-TNBC" value="4" show="三阴性乳腺癌"/>
+		</type_arr>
+
+		<!-- 前往国家 -->
+		<country_to_go>
+			<item code="USA" value="1" show="USA-美国"/>
+			<item code="CAN" value="2" show="CAN-加拿大"/>
+		</country_to_go>
+		
+
+		<protection_plan>
+			<item code="0" value="0" show=" 乐享计划"/>
+			<item code="1" value="1" show="惠享计划"/>
+			<item code="2" value="2" show="优享计划"/>
+			<item code="-1" value="-1" show=""/>
+			<item code="3" value="3" show="精制计划"/>
+			<item code="5" value="5" show="智享计划"/>
+			<item code="4" value="4" show="匠制计划"/>
+			<item code="6" value="6" show="悠享计划"/>
+		</protection_plan>
+		
+		<!--留学生意外计划-->
+		<ov_student_plan>
+			<item code="1" value="1" show="一年期" />
+			<item code="0" value="0" show="半年期" />
+		</ov_student_plan>
+		<!--药神 特定肿瘤-->
+		<ys_tdzl>
+			<item code="50000" value="50000" show="5万" />
+			<item code="0" value="0" show="0" />
+		</ys_tdzl>
+		<!--药神 特定医疗-->
+		<ys_tdyl>
+			<item code="1000000" value="1000000" show="100万" />
+			<item code="0" value="0" show="0" />
+		</ys_tdyl>
+	<!--  乳果爱按钮分型-->
+	<type_arr_ER>
+		<item code="1" value="1" show="+" />
+		<item code="0" value="0" show="-" />
+	</type_arr_ER>
+	<type_arr_PR>
+		<item code="1" value="1" show="+（>20%）" />
+		<item code="2" value="2" show="+（≤20%）" />
+		<item code="3" value="3" show="+" />
+		<item code="0" value="0" show="-" />
+	</type_arr_PR>
+	<type_arr_Ki>
+		<item code="0" value="0" show="＞14%" />
+		<item code="1" value="1" show="≤14%" />
+	</type_arr_Ki>
+	<type_arr_Her>
+		<item code="1" value="1" show="阳性" />
+		<item code="0" value="0" show="阴性" />
+	</type_arr_Her>
+
+	<malignancy>
+		<item code="yes" value="0" show="是" />
+		<item code="no" value="1" show="否" />
+	</malignancy>
+
+
+		<!-- 未成年人检查与免疫医疗责任 -->
+		<juveniles>
+			<item code="0" value="0" show="无"/>
+			<item code="9" value="9" show="套餐九"/>
+		</juveniles>
+
+		<!-- 赔付比例 -->
+		<compensation_ratio>
+			<item code="1" value="1" show="100%"/>
+		</compensation_ratio>
+
+		<!--一般住院、恶性肿瘤医疗责任-->
+		<hospital_duty>
+			<item code="1" value="1" show="套餐一"/>
+			<item code="2" value="2" show="套餐二"/>
+			<item code="3" value="3" show="套餐三"/>
+			<item code="4" value="4" show="套餐四"/>
+			<item code="5" value="5" show="套餐五"/>
+			<item code="6" value="6" show="套餐六"/>
+			<item code="7" value="7" show="套餐七"/>
+			<item code="8" value="8" show="套餐八"/>
+			<item code="9" value="9" show="套餐九"/>
+		</hospital_duty>
+		<!-- 恶性肿瘤住院津贴责任 -->
+		<cancer_duty>
+			<item code="1" value="1" show="套餐一"/>
+			<item code="2" value="2" show="套餐二"/>
+			<item code="3" value="3" show="套餐三"/>
+			<item code="4" value="4" show="套餐四"/>
+			<item code="5" value="5" show="套餐五"/>
+			<item code="6" value="6" show="套餐六"/>
+			<item code="7" value="7" show="套餐七"/>
+			<item code="8" value="8" show="套餐八"/>
+			<item code="9" value="9" show="套餐九"/>
+		</cancer_duty>
+		<!-- 门急诊医疗责任 -->
+		<outpatient_duty>
+			<item code="0" value="0" show="无"/>
+			<item code="1" value="1" show="套餐一"/>
+			<item code="2" value="2" show="套餐二"/>
+			<item code="3" value="3" show="套餐三"/>
+			<item code="4" value="4" show="套餐四"/>
+			<item code="9" value="9" show="套餐九"/>
+		</outpatient_duty>
+
+		<!--第二次重大保险责任-->
+		<second_insurance>
+			<item code="1" value="1" show="是"/>
+			<item code="2" value="2" show="否"/>
+		</second_insurance>
+
+		<!--少儿特定和罕见疾病保险金保险责任-->
+		<rare_disease>
+			<item code="1" value="1" show="是"/>
+			<item code="2" value="2" show="否"/>
+		</rare_disease>
+
+	</parameter>
+</declare>
